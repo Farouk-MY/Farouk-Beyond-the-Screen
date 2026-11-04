@@ -1,0 +1,33 @@
+{
+  "act": "act-05",
+  "safeAreas": [
+    {
+      "id": "contact-center-left",
+      "scrollRange": [
+        0.2,
+        1
+      ],
+      "normalizedCoords": {
+        "x": 0.08,
+        "y": 0.15,
+        "w": 0.48,
+        "h": 0.72
+      },
+      "description": "Expansive open sky and coastal sea horizon on the left half. Exceptional visual calm and emotional weight for contact terminal and links."
+    },
+    {
+      "id": "footer-status-bar",
+      "scrollRange": [
+        0.5,
+        1
+      ],
+      "normalizedCoords": {
+        "x": 0.08,
+        "y": 0.88,
+        "w": 0.84,
+        "h": 0.08
+      },
+      "description": "Bottom bar across the lower terrace floor."
+    }
+  ]
+}

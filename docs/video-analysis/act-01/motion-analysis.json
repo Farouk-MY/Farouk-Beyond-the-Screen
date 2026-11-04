@@ -1,0 +1,13 @@
+{
+  "act": "act-01",
+  "title": "The Studio",
+  "theme": "The Origin & Workstation",
+  "characterMotion": "Seated at desk typing code (0-50%), standing up from ergonomic chair (50-70%), turning and walking to glass patio door (70-100%).",
+  "cameraMotion": "Subtle slow cinematic push-in (0-50%), slight pan right to follow standing motion (50-100%). Very stable.",
+  "focalPoints": [
+    "Workstation desk with dual monitors (0-50%)",
+    "Farouk typing (0-50%)",
+    "Standing transition (50-70%)",
+    "Doorway exit (70-100%)"
+  ]
+}

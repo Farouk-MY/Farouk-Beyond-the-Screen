@@ -1,0 +1,12 @@
+{
+  "act": "act-02",
+  "title": "The Threshold",
+  "theme": "Stepping Beyond & Outdoor Passage",
+  "characterMotion": "Opens sliding glass door (0-20%), steps onto sunlit stone terrace (20-40%), walks along the terrace path towards distant pavilion (40-100%).",
+  "cameraMotion": "Third-person tracking dolly following behind character, smooth steady motion forward along terrace path.",
+  "focalPoints": [
+    "Threshold exit (0-20%)",
+    "Terrace path and ocean panorama (20-70%)",
+    "Pavilion entrance ahead (70-100%)"
+  ]
+}

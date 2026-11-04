@@ -1,0 +1,81 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-heading: var(--font-space-grotesk), sans-serif;
+    --font-body: var(--font-manrope), sans-serif;
+    --font-mono: var(--font-ibm-plex-mono), monospace;
+
+    /* DAY THEME (Warm Plaster, Natural Walnut & Linen) */
+    --theme-bg: #F7F5F0;
+    --theme-surface: rgba(255, 255, 255, 0.88);
+    --theme-surface-glass: rgba(255, 255, 255, 0.75);
+    --theme-border: rgba(28, 25, 23, 0.12);
+    --theme-border-subtle: rgba(28, 25, 23, 0.06);
+    --theme-fg: #1C1917;
+    --theme-fg-muted: #57534E;
+    --theme-accent: #BA5227;
+    --theme-accent-hover: #9C411B;
+    --theme-pill: rgba(28, 25, 23, 0.06);
+    --theme-pill-active: #1C1917;
+    --theme-pill-active-fg: #FAF8F5;
+    --theme-shadow: 0 20px 40px -15px rgba(28, 25, 23, 0.08);
+  }
+
+  [data-theme="sunset"] {
+    /* SUNSET THEME (Golden Hour, Terracotta & Smoked Amber) */
+    --theme-bg: #18110D;
+    --theme-surface: rgba(34, 23, 18, 0.88);
+    --theme-surface-glass: rgba(28, 18, 14, 0.75);
+    --theme-border: rgba(234, 126, 75, 0.24);
+    --theme-border-subtle: rgba(234, 126, 75, 0.10);
+    --theme-fg: #FDF7F0;
+    --theme-fg-muted: #BFA598;
+    --theme-accent: #EA7E4B;
+    --theme-accent-hover: #F29569;
+    --theme-pill: rgba(234, 126, 75, 0.12);
+    --theme-pill-active: #EA7E4B;
+    --theme-pill-active-fg: #140D0A;
+    --theme-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+  }
+
+  [data-theme="night"] {
+    /* NIGHT THEME (Obsidian Studio, Warm Incandescent & Brushed Brass) */
+    --theme-bg: #090B0E;
+    --theme-surface: rgba(14, 17, 23, 0.88);
+    --theme-surface-glass: rgba(10, 13, 18, 0.75);
+    --theme-border: rgba(255, 255, 255, 0.08);
+    --theme-border-subtle: rgba(255, 255, 255, 0.04);
+    --theme-fg: #F4F0E8;
+    --theme-fg-muted: #8E95A5;
+    --theme-accent: #D4AF37;
+    --theme-accent-hover: #E5C358;
+    --theme-pill: rgba(255, 255, 255, 0.06);
+    --theme-pill-active: #D4AF37;
+    --theme-pill-active-fg: #090B0E;
+    --theme-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+  }
+}
+
+body {
+  background-color: var(--theme-bg);
+  color: var(--theme-fg);
+  font-family: var(--font-body);
+}
+
+h1, h2, h3, h4, .font-heading {
+  font-family: var(--font-heading);
+}
+
+.font-mono, code, pre {
+  font-family: var(--font-mono);
+}
+
+/* Editorial Glass Morphism */
+.editorial-glass {
+  background: var(--theme-surface-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--theme-border);
+  box-shadow: var(--theme-shadow);
+}

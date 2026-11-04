@@ -1,0 +1,507 @@
+{
+  "timestamp": "2026-11-04T17:00:35.536Z",
+  "targetRef": "refs/heads/cinematic-video-rebuild",
+  "countObjects": "count: 944\nsize: 814.86 MiB\nin-pack: 0\npacks: 0\nsize-pack: 0 bytes\nprune-packable: 0\ngarbage: 0\nsize-garbage: 0 bytes\n",
+  "gitObjectsSizeMiB": "814.86",
+  "trackedWorkingTreeSizeMiB": "110.80",
+  "targetBranch": {
+    "totalBlobs": 715,
+    "blobsOver100MiB": [],
+    "blobsOver50MiB": [
+      {
+        "sha": "30a2c36a25639690cbf765bb5700fe8b9185045c",
+        "path": "public/FAROUK_REDESIGN_ASSETS/HDRI/Night/qwantani_night_puresky_4k.exr",
+        "sizeBytes": 73075343,
+        "sizeMiB": "69.69",
+        "sizeMB": "73.08",
+        "commits": [
+          "45007bf chore: remove obsolete procedural 3d assets and clean cinematic portfolio repository",
+          "b9df9f2 feat(redesign): complete Phase 02 cinematic experience redesign with hero workstation, sliding door, and Act II threshold terrace"
+        ]
+      },
+      {
+        "sha": "0438ced0f84a88e96e292613e941078afc9c324d",
+        "path": "public/FAROUK_REDESIGN_ASSETS/HDRI/Day/qwantani_noon_puresky_4k.exr",
+        "sizeBytes": 70185754,
+        "sizeMiB": "66.93",
+        "sizeMB": "70.19",
+        "commits": [
+          "45007bf chore: remove obsolete procedural 3d assets and clean cinematic portfolio repository",
+          "b9df9f2 feat(redesign): complete Phase 02 cinematic experience redesign with hero workstation, sliding door, and Act II threshold terrace"
+        ]
+      },
+      {
+        "sha": "2e9b05bb17149df1d21b16449667e63006ab765e",
+        "path": "public/FAROUK_REDESIGN_ASSETS/HDRI/Sunset/qwantani_sunset_puresky_4k.exr",
+        "sizeBytes": 69677404,
+        "sizeMiB": "66.45",
+        "sizeMB": "69.68",
+        "commits": [
+          "45007bf chore: remove obsolete procedural 3d assets and clean cinematic portfolio repository",
+          "b9df9f2 feat(redesign): complete Phase 02 cinematic experience redesign with hero workstation, sliding door, and Act II threshold terrace"
+        ]
+      }
+    ],
+    "top15LargestBlobs": [
+      {
+        "sha": "30a2c36a25639690cbf765bb5700fe8b9185045c",
+        "path": "public/FAROUK_REDESIGN_ASSETS/HDRI/Night/qwantani_night_puresky_4k.exr",
+        "sizeBytes": 73075343,
+        "sizeMiB": "69.69",
+        "sizeMB": "73.08",
+        "commits": [
+          "45007bf chore: remove obsolete procedural 3d assets and clean cinematic portfolio repository",
+          "b9df9f2 feat(redesign): complete Phase 02 cinematic experience redesign with hero workstation, sliding door, and Act II threshold terrace"
+        ]
+      },
+      {
+        "sha": "0438ced0f84a88e96e292613e941078afc9c324d",
+        "path": "public/FAROUK_REDESIGN_ASSETS/HDRI/Day/qwantani_noon_puresky_4k.exr",
+        "sizeBytes": 70185754,
+        "sizeMiB": "66.93",
+        "sizeMB": "70.19",
+        "commits": [
+          "45007bf chore: remove obsolete procedural 3d assets and clean cinematic portfolio repository",
+          "b9df9f2 feat(redesign): complete Phase 02 cinematic experience redesign with hero workstation, sliding door, and Act II threshold terrace"
+        ]
+      },
+      {
+        "sha": "2e9b05bb17149df1d21b16449667e63006ab765e",
+        "path": "public/FAROUK_REDESIGN_ASSETS/HDRI/Sunset/qwantani_sunset_puresky_4k.exr",
+        "sizeBytes": 69677404,
+        "sizeMiB": "66.45",
+        "sizeMB": "69.68",
+        "commits": [
+          "45007bf chore: remove obsolete procedural 3d assets and clean cinematic portfolio repository",
+          "b9df9f2 feat(redesign): complete Phase 02 cinematic experience redesign with hero workstation, sliding door, and Act II threshold terrace"
+        ]
+      },
+      {
+        "sha": "d6d0090a62f17c1fbe463e636ad5f121d41fe095",
+        "path": "public/assets/models/coast_land_rocks_02.glb",
+        "sizeBytes": 39611320,
+        "sizeMiB": "37.78",
+        "sizeMB": "39.61"
+      },
+      {
+        "sha": "ef551537189685ff4f44346488cd0244458f7063",
+        "path": "public/assets/models/coast_land_rocks_02/coast_land_rocks_02.bin",
+        "sizeBytes": 36700376,
+        "sizeMiB": "35.00",
+        "sizeMB": "36.70"
+      },
+      {
+        "sha": "5269ff4f3c55d388a79f27b84f42cf75b2d216ad",
+        "path": "public/FAROUK_REDESIGN_ASSETS/PBR/WhitePlaster/textures/white_plaster_02_disp_4k.png",
+        "sizeBytes": 31653720,
+        "sizeMiB": "30.19",
+        "sizeMB": "31.65"
+      },
+      {
+        "sha": "0c6695db154b9b744d637d38b0c0e9d51e7dc831",
+        "path": "public/FAROUK_REDESIGN_ASSETS/PBR/WhitePlaster/textures/white_plaster_02_nor_gl_4k.exr",
+        "sizeBytes": 31646694,
+        "sizeMiB": "30.18",
+        "sizeMB": "31.65"
+      },
+      {
+        "sha": "64f731509b04045175998d679c86205e11f3e059",
+        "path": "public/FAROUK_REDESIGN_ASSETS/PBR/Rock/textures/rock_face_01_nor_gl_4k.exr",
+        "sizeBytes": 31024593,
+        "sizeMiB": "29.59",
+        "sizeMB": "31.02"
+      },
+      {
+        "sha": "c2c106120a52f5f06c9b52db35ed2c469427ec36",
+        "path": "public/FAROUK_REDESIGN_ASSETS/Models/Nature/textures/namaqualand_boulders_01_nor_gl_4k.exr",
+        "sizeBytes": 28282215,
+        "sizeMiB": "26.97",
+        "sizeMB": "28.28"
+      },
+      {
+        "sha": "0173519c1c614a4c1ea5572e2ad20be1ffbe2ed8",
+        "path": "public/FAROUK_REDESIGN_ASSETS/PBR/Marble/textures/marble_01_disp_4k.png",
+        "sizeBytes": 28168379,
+        "sizeMiB": "26.86",
+        "sizeMB": "28.17"
+      },
+      {
+        "sha": "474ac1145c9c715ccacaf9f6e73434f64ae03d83",
+        "path": "public/FAROUK_REDESIGN_ASSETS/PBR/WoodFloor/textures/wood_floor_disp_4k.png",
+        "sizeBytes": 27831647,
+        "sizeMiB": "26.54",
+        "sizeMB": "27.83"
+      },
+      {
+        "sha": "40b0a8869514377ea4b362888031ec497c06d3ab",
+        "path": "public/FAROUK_REDESIGN_ASSETS/PBR/Walnut/textures/walnut_veneer_disp_4k.png",
+        "sizeBytes": 22509972,
+        "sizeMiB": "21.47",
+        "sizeMB": "22.51"
+      },
+      {
+        "sha": "d744d22845141264840b7c8db3964674819ec62b",
+        "path": "public/assets/models/coast_rocks_01.glb",
+        "sizeBytes": 21683520,
+        "sizeMiB": "20.68",
+        "sizeMB": "21.68"
+      },
+      {
+        "sha": "01cfc1c060f4dd1bf1c6631317422211248e8685",
+        "path": "public/FAROUK_REDESIGN_ASSETS/PBR/WoodFloor/textures/wood_floor_rough_4k.exr",
+        "sizeBytes": 19809283,
+        "sizeMiB": "18.89",
+        "sizeMB": "19.81"
+      },
+      {
+        "sha": "bdfbd36e6d21496c658a6144d02b74603634897f",
+        "path": "public/FAROUK_REDESIGN_ASSETS/Models/Nature/textures/natural_walnut_veneer_disp_4k.png",
+        "sizeBytes": 19465478,
+        "sizeMiB": "18.56",
+        "sizeMB": "19.47"
+      }
+    ]
+  },
+  "otherRefs": {
+    "refs/heads/backup/cinematic-pre-cleanup": {
+      "totalBlobs": 706,
+      "blobsOver50": [
+        {
+          "sha": "30a2c36a25639690cbf765bb5700fe8b9185045c",
+          "path": "public/FAROUK_REDESIGN_ASSETS/HDRI/Night/qwantani_night_puresky_4k.exr",
+          "sizeBytes": 73075343,
+          "sizeMiB": "69.69",
+          "sizeMB": "73.08"
+        },
+        {
+          "sha": "0438ced0f84a88e96e292613e941078afc9c324d",
+          "path": "public/FAROUK_REDESIGN_ASSETS/HDRI/Day/qwantani_noon_puresky_4k.exr",
+          "sizeBytes": 70185754,
+          "sizeMiB": "66.93",
+          "sizeMB": "70.19"
+        },
+        {
+          "sha": "2e9b05bb17149df1d21b16449667e63006ab765e",
+          "path": "public/FAROUK_REDESIGN_ASSETS/HDRI/Sunset/qwantani_sunset_puresky_4k.exr",
+          "sizeBytes": 69677404,
+          "sizeMiB": "66.45",
+          "sizeMB": "69.68"
+        }
+      ],
+      "blobsOver100": [],
+      "top5": [
+        {
+          "sha": "30a2c36a25639690cbf765bb5700fe8b9185045c",
+          "path": "public/FAROUK_REDESIGN_ASSETS/HDRI/Night/qwantani_night_puresky_4k.exr",
+          "sizeBytes": 73075343,
+          "sizeMiB": "69.69",
+          "sizeMB": "73.08"
+        },
+        {
+          "sha": "0438ced0f84a88e96e292613e941078afc9c324d",
+          "path": "public/FAROUK_REDESIGN_ASSETS/HDRI/Day/qwantani_noon_puresky_4k.exr",
+          "sizeBytes": 70185754,
+          "sizeMiB": "66.93",
+          "sizeMB": "70.19"
+        },
+        {
+          "sha": "2e9b05bb17149df1d21b16449667e63006ab765e",
+          "path": "public/FAROUK_REDESIGN_ASSETS/HDRI/Sunset/qwantani_sunset_puresky_4k.exr",
+          "sizeBytes": 69677404,
+          "sizeMiB": "66.45",
+          "sizeMB": "69.68"
+        },
+        {
+          "sha": "d6d0090a62f17c1fbe463e636ad5f121d41fe095",
+          "path": "public/assets/models/coast_land_rocks_02.glb",
+          "sizeBytes": 39611320,
+          "sizeMiB": "37.78",
+          "sizeMB": "39.61"
+        },
+        {
+          "sha": "ef551537189685ff4f44346488cd0244458f7063",
+          "path": "public/assets/models/coast_land_rocks_02/coast_land_rocks_02.bin",
+          "sizeBytes": 36700376,
+          "sizeMiB": "35.00",
+          "sizeMB": "36.70"
+        }
+      ]
+    },
+    "refs/heads/master": {
+      "totalBlobs": 17,
+      "blobsOver50": [],
+      "blobsOver100": [],
+      "top5": [
+        {
+          "sha": "4005f6c1eacc7c9356c62b2bc42be7e1ccd5a3ab",
+          "path": "package-lock.json",
+          "sizeBytes": 233283,
+          "sizeMiB": "0.22",
+          "sizeMB": "0.23"
+        },
+        {
+          "sha": "af98450595e8b8efd9e505cddc5ed705b665a4d8",
+          "path": "app/favicon.ico",
+          "sizeBytes": 15086,
+          "sizeMiB": "0.01",
+          "sizeMB": "0.02"
+        },
+        {
+          "sha": "c887311c6a3904ef8b109f67effd5cad7def8b04",
+          "path": "app/page.tsx",
+          "sizeBytes": 3076,
+          "sizeMiB": "0.00",
+          "sizeMB": "0.00"
+        },
+        {
+          "sha": "e215bc4ccf138bbc38ad58ad57e92135484b3c0f",
+          "path": "README.md",
+          "sizeBytes": 1450,
+          "sizeMiB": "0.00",
+          "sizeMB": "0.00"
+        },
+        {
+          "sha": "5174b28c565c285e3e312ec5178be64fbeca8398",
+          "path": "public/next.svg",
+          "sizeBytes": 1375,
+          "sizeMiB": "0.00",
+          "sizeMB": "0.00"
+        }
+      ]
+    },
+    "refs/heads/redesign-phase-01": {
+      "totalBlobs": 94,
+      "blobsOver50": [],
+      "blobsOver100": [],
+      "top5": [
+        {
+          "sha": "13638e78f599309843bfc7cb650ab06b923d9ba9",
+          "path": "public/FAROUK_REDESIGN_ASSETS/PBR/optimized_1k/plaster_diff_1k.jpg",
+          "sizeBytes": 293891,
+          "sizeMiB": "0.28",
+          "sizeMB": "0.29"
+        },
+        {
+          "sha": "4005f6c1eacc7c9356c62b2bc42be7e1ccd5a3ab",
+          "path": "package-lock.json",
+          "sizeBytes": 233283,
+          "sizeMiB": "0.22",
+          "sizeMB": "0.23"
+        },
+        {
+          "sha": "727f19ea138508c43d76669a860e04a5a67ad658",
+          "path": "public/FAROUK_REDESIGN_ASSETS/PBR/optimized_1k/wood_floor_diff_1k.jpg",
+          "sizeBytes": 183960,
+          "sizeMiB": "0.18",
+          "sizeMB": "0.18"
+        },
+        {
+          "sha": "031f80ea582faa1f32724b41ad0a2d27f03da465",
+          "path": "public/FAROUK_REDESIGN_ASSETS/PBR/optimized_1k/plaster_rough_1k.jpg",
+          "sizeBytes": 158913,
+          "sizeMiB": "0.15",
+          "sizeMB": "0.16"
+        },
+        {
+          "sha": "2cf238497c3b8ef09e4a952149385765e3f8395b",
+          "path": "public/FAROUK_REDESIGN_ASSETS/PBR/optimized_1k/marble_diff_1k.jpg",
+          "sizeBytes": 117344,
+          "sizeMiB": "0.11",
+          "sizeMB": "0.12"
+        }
+      ]
+    },
+    "refs/heads/redesign-phase-02": {
+      "totalBlobs": 444,
+      "blobsOver50": [
+        {
+          "sha": "30a2c36a25639690cbf765bb5700fe8b9185045c",
+          "path": "public/FAROUK_REDESIGN_ASSETS/HDRI/Night/qwantani_night_puresky_4k.exr",
+          "sizeBytes": 73075343,
+          "sizeMiB": "69.69",
+          "sizeMB": "73.08"
+        },
+        {
+          "sha": "0438ced0f84a88e96e292613e941078afc9c324d",
+          "path": "public/FAROUK_REDESIGN_ASSETS/HDRI/Day/qwantani_noon_puresky_4k.exr",
+          "sizeBytes": 70185754,
+          "sizeMiB": "66.93",
+          "sizeMB": "70.19"
+        },
+        {
+          "sha": "2e9b05bb17149df1d21b16449667e63006ab765e",
+          "path": "public/FAROUK_REDESIGN_ASSETS/HDRI/Sunset/qwantani_sunset_puresky_4k.exr",
+          "sizeBytes": 69677404,
+          "sizeMiB": "66.45",
+          "sizeMB": "69.68"
+        }
+      ],
+      "blobsOver100": [],
+      "top5": [
+        {
+          "sha": "30a2c36a25639690cbf765bb5700fe8b9185045c",
+          "path": "public/FAROUK_REDESIGN_ASSETS/HDRI/Night/qwantani_night_puresky_4k.exr",
+          "sizeBytes": 73075343,
+          "sizeMiB": "69.69",
+          "sizeMB": "73.08"
+        },
+        {
+          "sha": "0438ced0f84a88e96e292613e941078afc9c324d",
+          "path": "public/FAROUK_REDESIGN_ASSETS/HDRI/Day/qwantani_noon_puresky_4k.exr",
+          "sizeBytes": 70185754,
+          "sizeMiB": "66.93",
+          "sizeMB": "70.19"
+        },
+        {
+          "sha": "2e9b05bb17149df1d21b16449667e63006ab765e",
+          "path": "public/FAROUK_REDESIGN_ASSETS/HDRI/Sunset/qwantani_sunset_puresky_4k.exr",
+          "sizeBytes": 69677404,
+          "sizeMiB": "66.45",
+          "sizeMB": "69.68"
+        },
+        {
+          "sha": "d6d0090a62f17c1fbe463e636ad5f121d41fe095",
+          "path": "public/assets/models/coast_land_rocks_02.glb",
+          "sizeBytes": 39611320,
+          "sizeMiB": "37.78",
+          "sizeMB": "39.61"
+        },
+        {
+          "sha": "ef551537189685ff4f44346488cd0244458f7063",
+          "path": "public/assets/models/coast_land_rocks_02/coast_land_rocks_02.bin",
+          "sizeBytes": 36700376,
+          "sizeMiB": "35.00",
+          "sizeMB": "36.70"
+        }
+      ]
+    },
+    "refs/heads/redesign-phase-02-1": {
+      "totalBlobs": 459,
+      "blobsOver50": [
+        {
+          "sha": "30a2c36a25639690cbf765bb5700fe8b9185045c",
+          "path": "public/FAROUK_REDESIGN_ASSETS/HDRI/Night/qwantani_night_puresky_4k.exr",
+          "sizeBytes": 73075343,
+          "sizeMiB": "69.69",
+          "sizeMB": "73.08"
+        },
+        {
+          "sha": "0438ced0f84a88e96e292613e941078afc9c324d",
+          "path": "public/FAROUK_REDESIGN_ASSETS/HDRI/Day/qwantani_noon_puresky_4k.exr",
+          "sizeBytes": 70185754,
+          "sizeMiB": "66.93",
+          "sizeMB": "70.19"
+        },
+        {
+          "sha": "2e9b05bb17149df1d21b16449667e63006ab765e",
+          "path": "public/FAROUK_REDESIGN_ASSETS/HDRI/Sunset/qwantani_sunset_puresky_4k.exr",
+          "sizeBytes": 69677404,
+          "sizeMiB": "66.45",
+          "sizeMB": "69.68"
+        }
+      ],
+      "blobsOver100": [],
+      "top5": [
+        {
+          "sha": "30a2c36a25639690cbf765bb5700fe8b9185045c",
+          "path": "public/FAROUK_REDESIGN_ASSETS/HDRI/Night/qwantani_night_puresky_4k.exr",
+          "sizeBytes": 73075343,
+          "sizeMiB": "69.69",
+          "sizeMB": "73.08"
+        },
+        {
+          "sha": "0438ced0f84a88e96e292613e941078afc9c324d",
+          "path": "public/FAROUK_REDESIGN_ASSETS/HDRI/Day/qwantani_noon_puresky_4k.exr",
+          "sizeBytes": 70185754,
+          "sizeMiB": "66.93",
+          "sizeMB": "70.19"
+        },
+        {
+          "sha": "2e9b05bb17149df1d21b16449667e63006ab765e",
+          "path": "public/FAROUK_REDESIGN_ASSETS/HDRI/Sunset/qwantani_sunset_puresky_4k.exr",
+          "sizeBytes": 69677404,
+          "sizeMiB": "66.45",
+          "sizeMB": "69.68"
+        },
+        {
+          "sha": "d6d0090a62f17c1fbe463e636ad5f121d41fe095",
+          "path": "public/assets/models/coast_land_rocks_02.glb",
+          "sizeBytes": 39611320,
+          "sizeMiB": "37.78",
+          "sizeMB": "39.61"
+        },
+        {
+          "sha": "ef551537189685ff4f44346488cd0244458f7063",
+          "path": "public/assets/models/coast_land_rocks_02/coast_land_rocks_02.bin",
+          "sizeBytes": 36700376,
+          "sizeMiB": "35.00",
+          "sizeMB": "36.70"
+        }
+      ]
+    },
+    "refs/tags/checkpoint/cinematic-pre-cleanup": {
+      "totalBlobs": 706,
+      "blobsOver50": [
+        {
+          "sha": "30a2c36a25639690cbf765bb5700fe8b9185045c",
+          "path": "public/FAROUK_REDESIGN_ASSETS/HDRI/Night/qwantani_night_puresky_4k.exr",
+          "sizeBytes": 73075343,
+          "sizeMiB": "69.69",
+          "sizeMB": "73.08"
+        },
+        {
+          "sha": "0438ced0f84a88e96e292613e941078afc9c324d",
+          "path": "public/FAROUK_REDESIGN_ASSETS/HDRI/Day/qwantani_noon_puresky_4k.exr",
+          "sizeBytes": 70185754,
+          "sizeMiB": "66.93",
+          "sizeMB": "70.19"
+        },
+        {
+          "sha": "2e9b05bb17149df1d21b16449667e63006ab765e",
+          "path": "public/FAROUK_REDESIGN_ASSETS/HDRI/Sunset/qwantani_sunset_puresky_4k.exr",
+          "sizeBytes": 69677404,
+          "sizeMiB": "66.45",
+          "sizeMB": "69.68"
+        }
+      ],
+      "blobsOver100": [],
+      "top5": [
+        {
+          "sha": "30a2c36a25639690cbf765bb5700fe8b9185045c",
+          "path": "public/FAROUK_REDESIGN_ASSETS/HDRI/Night/qwantani_night_puresky_4k.exr",
+          "sizeBytes": 73075343,
+          "sizeMiB": "69.69",
+          "sizeMB": "73.08"
+        },
+        {
+          "sha": "0438ced0f84a88e96e292613e941078afc9c324d",
+          "path": "public/FAROUK_REDESIGN_ASSETS/HDRI/Day/qwantani_noon_puresky_4k.exr",
+          "sizeBytes": 70185754,
+          "sizeMiB": "66.93",
+          "sizeMB": "70.19"
+        },
+        {
+          "sha": "2e9b05bb17149df1d21b16449667e63006ab765e",
+          "path": "public/FAROUK_REDESIGN_ASSETS/HDRI/Sunset/qwantani_sunset_puresky_4k.exr",
+          "sizeBytes": 69677404,
+          "sizeMiB": "66.45",
+          "sizeMB": "69.68"
+        },
+        {
+          "sha": "d6d0090a62f17c1fbe463e636ad5f121d41fe095",
+          "path": "public/assets/models/coast_land_rocks_02.glb",
+          "sizeBytes": 39611320,
+          "sizeMiB": "37.78",
+          "sizeMB": "39.61"
+        },
+        {
+          "sha": "ef551537189685ff4f44346488cd0244458f7063",
+          "path": "public/assets/models/coast_land_rocks_02/coast_land_rocks_02.bin",
+          "sizeBytes": 36700376,
+          "sizeMiB": "35.00",
+          "sizeMB": "36.70"
+        }
+      ]
+    }
+  }
+}

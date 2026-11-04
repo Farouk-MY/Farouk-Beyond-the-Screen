@@ -1,0 +1,18 @@
+{
+  "act": "act-01",
+  "title": "The Studio - Stationary Coding Idle Loop",
+  "sourceVideo": "assets/source-videos/act-01.mp4",
+  "idleAsset": "assets/processed-videos/act-01-idle.mp4",
+  "pingpongAsset": "assets/processed-videos/act-01-idle-pingpong.mp4",
+  "startTime": 0.0,
+  "endTime": 2.5,
+  "duration": 2.5,
+  "startFrame": 0,
+  "endFrame": 60,
+  "nativeFps": 24,
+  "cameraMotion": "Static locked workstation angle, zero jitter, sub-0.5% push",
+  "characterAction": "Seated at desk typing on Keychron mechanical keyboard",
+  "seamlessRating": "5/5 (Continuous typing cycle, ping-pong turnaround at 2.5s is frame-perfect)",
+  "handoffStrategy": "When user initiates scroll, if scrollProgress > 0.005, fade out idle loop and drive main timeline video.currentTime from 0.0s upwards. When returning to scrollProgress == 0 and after 1.5s stationary inactivity, fade idle loop back in."
+}
+

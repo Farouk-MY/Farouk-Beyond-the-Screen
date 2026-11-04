@@ -1,0 +1,12 @@
+{
+  "act": "act-05",
+  "title": "The Horizon",
+  "theme": "The Horizon & Contact Terminal",
+  "characterMotion": "Steps through balcony doorway (0-30%), walks to glass balustrade railing (30-50%), places hands on railing gazing over the sunset ocean (50-100%).",
+  "cameraMotion": "Magnificent slow wide track along the terrace, settling into an iconic profile of Farouk looking out to the golden sea.",
+  "focalPoints": [
+    "Balcony entrance (0-30%)",
+    "Farouk at railing (50-100%)",
+    "Sunset ocean and horizon (0-100%)"
+  ]
+}

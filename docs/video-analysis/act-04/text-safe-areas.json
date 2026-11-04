@@ -1,0 +1,33 @@
+{
+  "act": "act-04",
+  "safeAreas": [
+    {
+      "id": "skills-left-quadrant",
+      "scrollRange": [
+        0.1,
+        0.8
+      ],
+      "normalizedCoords": {
+        "x": 0.06,
+        "y": 0.12,
+        "w": 0.4,
+        "h": 0.76
+      },
+      "description": "Left vertical third covering travertine wall and high window frame. Perfectly balanced opposite the holographic console."
+    },
+    {
+      "id": "skills-top-banner",
+      "scrollRange": [
+        0,
+        1
+      ],
+      "normalizedCoords": {
+        "x": 0.06,
+        "y": 0.05,
+        "w": 0.5,
+        "h": 0.1
+      },
+      "description": "Header area above the panoramic door and travertine wall."
+    }
+  ]
+}
