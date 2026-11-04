@@ -10,8 +10,15 @@ export interface SkillItem {
 
 export interface ProjectVisualAnchor {
   sceneKey: 'mobile-display' | 'dashboard-display' | '3d-configurator' | string;
-  timeSeconds: number; // local time in Act III video (0 - 10s)
+  timeSeconds: number; // local time in Selected Work video (0 - 10s)
   label: string;
+}
+
+export interface ProjectMedia {
+  src: string;
+  alt: string;
+  caption?: string;
+  isPlaceholder?: boolean;
 }
 
 export interface ProjectItem {
@@ -31,6 +38,9 @@ export interface ProjectItem {
   };
   metrics?: { label: string; value: string }[];
   visualAnchor?: ProjectVisualAnchor;
+  coverImage?: ProjectMedia;
+  galleryImages?: ProjectMedia[];
+  featured?: boolean;
 }
 
 export interface DeveloperProfile {

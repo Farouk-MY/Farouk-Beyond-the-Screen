@@ -106,7 +106,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
       'Engineered with React Native (Expo) on the mobile client communicating via WebSocket and REST to an asynchronous Python / FastAPI backend, supported by Supabase PostgreSQL.',
     status: 'Architecture Prototype',
     links: {
-      github: 'https://github.com/Farouk-MY',
+      github: null,
       live: null,
     },
     metrics: [
@@ -119,6 +119,32 @@ export const PROJECTS_DATA: ProjectItem[] = [
       timeSeconds: 3.5,
       label: 'Smartphone / Mobile Display',
     },
+    coverImage: {
+      src: '/projects/mediconnect/cover.webp',
+      alt: 'MediConnect Telemedicine & Consultation Platform Preview',
+      isPlaceholder: true,
+    },
+    galleryImages: [
+      {
+        src: '/projects/mediconnect/cover.webp',
+        alt: 'MediConnect Architecture Overview',
+        caption: 'Cross-platform Telemedicine & Clinical Coordination System',
+        isPlaceholder: true,
+      },
+      {
+        src: '/projects/mediconnect/screen-01.webp',
+        alt: 'Client-to-Signaling Node Flow',
+        caption: 'React Native (Expo) client signaling pipeline to FastAPI gateway',
+        isPlaceholder: true,
+      },
+      {
+        src: '/projects/mediconnect/screen-02.webp',
+        alt: 'WebRTC P2P Session Lifecycle',
+        caption: 'Peer-to-peer encrypted WebRTC session handshake and telemetry',
+        isPlaceholder: true,
+      },
+    ],
+    featured: true,
   },
   {
     id: 'smart-class',
@@ -139,7 +165,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
       'Built with Flutter across web, tablet, and mobile utilizing Riverpod for reactive state, supported by a Node.js / Express backend with Prisma ORM and PostgreSQL with pgvector.',
     status: 'Completed Application',
     links: {
-      github: 'https://github.com/Farouk-MY',
+      github: null,
       live: null,
     },
     metrics: [
@@ -152,6 +178,26 @@ export const PROJECTS_DATA: ProjectItem[] = [
       timeSeconds: 6.0,
       label: 'Dashboard / Learning Platform Display',
     },
+    coverImage: {
+      src: '/projects/smart-class/cover.webp',
+      alt: 'Smart Class Education Management & Analytics Platform Preview',
+      isPlaceholder: true,
+    },
+    galleryImages: [
+      {
+        src: '/projects/smart-class/cover.webp',
+        alt: 'Smart Class Analytics Dashboard',
+        caption: 'Institutional Education Management & Real-Time Analytics',
+        isPlaceholder: true,
+      },
+      {
+        src: '/projects/smart-class/screen-01.webp',
+        alt: 'Real-time Analytics Pipeline',
+        caption: 'Edge aggregator and Prisma ORM data progression pipeline',
+        isPlaceholder: true,
+      },
+    ],
+    featured: true,
   },
   {
     id: 'nexform',
@@ -172,7 +218,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
       'Constructed with Next.js App Router and React Three Fiber / Three.js for real-time WebGL rendering, backed by Supabase PostgreSQL and Zustand for scene state management.',
     status: 'Production Prototype',
     links: {
-      github: 'https://github.com/Farouk-MY',
+      github: null,
       live: null,
     },
     metrics: [
@@ -185,6 +231,26 @@ export const PROJECTS_DATA: ProjectItem[] = [
       timeSeconds: 8.5,
       label: '3D Controller Configurator',
     },
+    coverImage: {
+      src: '/projects/nexform/cover.webp',
+      alt: 'NEXFORM 3D Product Customization Engine Preview',
+      isPlaceholder: true,
+    },
+    galleryImages: [
+      {
+        src: '/projects/nexform/cover.webp',
+        alt: 'NEXFORM 3D Viewport',
+        caption: 'Interactive 3D Setup Studio & Product Customization Platform',
+        isPlaceholder: true,
+      },
+      {
+        src: '/projects/nexform/screen-01.webp',
+        alt: 'GLSL Shader Pipeline',
+        caption: 'Custom PBR material model and HDR reflection pipeline',
+        isPlaceholder: true,
+      },
+    ],
+    featured: true,
   },
   {
     id: 'linguamate',
@@ -205,7 +271,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
       'Constructed natively in Flutter and Dart with Riverpod for state management, Dio for network communications, Supabase for cloud data persistence and authentication, and native audio/speech plugins.',
     status: 'Production Prototype',
     links: {
-      github: 'https://github.com/Farouk-MY',
+      github: null,
       live: null,
     },
     metrics: [
@@ -218,5 +284,25 @@ export const PROJECTS_DATA: ProjectItem[] = [
       timeSeconds: 3.5,
       label: 'Smartphone / Mobile Display',
     },
+    coverImage: {
+      src: '/projects/linguamate/cover.webp',
+      alt: 'LinguaMate Language Learning Companion Preview',
+      isPlaceholder: true,
+    },
+    galleryImages: [
+      {
+        src: '/projects/linguamate/cover.webp',
+        alt: 'LinguaMate Dual-Surface UI',
+        caption: 'Conversational Speech Dialogue & Language Learning App',
+        isPlaceholder: true,
+      },
+      {
+        src: '/projects/linguamate/screen-01.webp',
+        alt: 'Speech Analysis Pipeline',
+        caption: 'Whisper ASR and phonetic accuracy scoring pipeline',
+        isPlaceholder: true,
+      },
+    ],
+    featured: true,
   },
 ];

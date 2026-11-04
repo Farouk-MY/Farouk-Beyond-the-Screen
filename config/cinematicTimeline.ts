@@ -9,14 +9,14 @@ export const ACT_CLIP_DURATION = 10.0; // seconds
 export const ACT_TOTAL_FRAMES = 240; // 0..239
 
 // Total scroll runway: 600svh provides 500svh of actual travel inside a 100svh sticky viewport.
-// Each of the 5 Acts corresponds to exactly 100svh of travel (20% of scroll span).
+// Each of the 5 scenes corresponds to exactly 100svh of travel (20% of scroll span).
 export const RUNWAY_HEIGHT_SVH = 600;
 
 export const CINEMATIC_CLIPS: CinematicClipConfig[] = [
   {
     id: 'origin',
-    actNumber: 'ACT I',
-    name: 'THE STUDIO',
+    actNumber: '01',
+    name: 'Studio',
     subtitle: 'Architectural Workspace & Origin',
     src: '/videos/act-01-scrub.mp4',
     poster: '/posters/act-01-poster.jpg',
@@ -40,8 +40,8 @@ export const CINEMATIC_CLIPS: CinematicClipConfig[] = [
   },
   {
     id: 'journey',
-    actNumber: 'ACT II',
-    name: 'THE THRESHOLD',
+    actNumber: '02',
+    name: 'Journey',
     subtitle: 'Exterior Terrace & Natural Landscape',
     src: '/videos/act-02-scrub.mp4',
     poster: '/posters/act-02-poster.jpg',
@@ -65,8 +65,8 @@ export const CINEMATIC_CLIPS: CinematicClipConfig[] = [
   },
   {
     id: 'work',
-    actNumber: 'ACT III',
-    name: 'THE WORK',
+    actNumber: '03',
+    name: 'Selected Work',
     subtitle: 'Digital Project Exhibition',
     src: '/videos/act-03-scrub.mp4',
     poster: '/posters/act-03-poster.jpg',
@@ -77,10 +77,10 @@ export const CINEMATIC_CLIPS: CinematicClipConfig[] = [
     safeArea: {
       x: 0.06,
       y: 0.12,
-      w: 0.38,
-      h: 0.78,
-      maxWidthPx: 560,
-      visibilityWindow: [0.10, 0.98], // Reveals once Farouk settles at the exhibition display wall
+      w: 0.40,
+      h: 0.82,
+      maxWidthPx: 580,
+      visibilityWindow: [0.08, 0.98], // Reveals once Farouk settles at the exhibition display wall
       description: 'Left architectural corridor; leaves center display and Farouk visible on right',
     },
     objectPosition: {
@@ -90,8 +90,8 @@ export const CINEMATIC_CLIPS: CinematicClipConfig[] = [
   },
   {
     id: 'craft',
-    actNumber: 'ACT IV',
-    name: 'THE CRAFT',
+    actNumber: '04',
+    name: 'Engineering',
     subtitle: 'Systems Lab & Engineering Domains',
     src: '/videos/act-04-scrub.mp4',
     poster: '/posters/act-04-poster.jpg',
@@ -105,8 +105,6 @@ export const CINEMATIC_CLIPS: CinematicClipConfig[] = [
       w: 0.42,
       h: 0.70,
       maxWidthPx: 600,
-      // Left side is NOT safe for full 10s: Farouk enters from left, walks to center, then exits back left.
-      // Overlay is art-directed to appear while he is at the center pedestal.
       visibilityWindow: [0.22, 0.74],
       description: 'Travertine wall opposite holographic pedestal; fades before character crosses to exit',
     },
@@ -117,8 +115,8 @@ export const CINEMATIC_CLIPS: CinematicClipConfig[] = [
   },
   {
     id: 'beyond',
-    actNumber: 'ACT V',
-    name: 'THE HORIZON',
+    actNumber: '05',
+    name: 'Contact',
     subtitle: 'Sunset Balcony & Contact Terminal',
     src: '/videos/act-05-scrub.mp4',
     poster: '/posters/act-05-poster.jpg',
@@ -146,51 +144,48 @@ export const CINEMATIC_CLIPS: CinematicClipConfig[] = [
 export const CINEMATIC_TRANSITIONS: CinematicTransitionConfig[] = [
   {
     boundaryProgress: 0.20,
-    overlapSpan: 0.024, // +/- 0.012 scroll progress (~0.24s video duration)
+    overlapSpan: 0.024,
     strategy: 'short-crossfade',
-    description: 'Act 1 reaching door handle -> Act 2 opening door onto terrace',
+    description: 'Studio reaching door handle -> Journey opening door onto terrace',
   },
   {
     boundaryProgress: 0.40,
-    overlapSpan: 0.020, // +/- 0.010 scroll progress (~0.20s video duration)
+    overlapSpan: 0.020,
     strategy: 'architectural-cut',
-    description: 'Act 2 terrace promenade threshold -> Act 3 gallery interior cut',
+    description: 'Terrace promenade threshold -> Gallery interior cut',
   },
   {
     boundaryProgress: 0.60,
     overlapSpan: 0.024,
     strategy: 'corridor-dissolve',
-    description: 'Act 3 gallery exit -> Act 4 systems lab entrance',
+    description: 'Gallery exit -> Systems lab entrance',
   },
   {
     boundaryProgress: 0.80,
     overlapSpan: 0.024,
     strategy: 'balcony-dissolve',
-    description: 'Act 4 window walk -> Act 5 open sunset balcony',
+    description: 'Lab window walk -> Open sunset balcony',
   },
 ];
 
-// Act I Idle Typing Loop Configuration
+// Act I Idle Typing Loop Configuration (Long natural forward typing: 0.208s -> 3.708s with 0.25s boundary crossfade)
 export const IDLE_LOOP_CONFIG = {
   src: '/videos/act-01-idle-forward.mp4',
-  duration: 2.833333,
+  duration: 3.250,
   sourceFps: 24,
-  totalFrames: 68,
-  // Mapping from idle time to Act 1 source time (from scripts/test-forward-loop.mjs)
+  totalFrames: 78,
   mapIdleTimeToSourceTime: (tIdle: number): number => {
-    const wrapped = ((tIdle % 2.833333) + 2.833333) % 2.833333;
-    // For t <= 2.4s, src = 0.4 + t. For 2.4 < t <= 2.833s, it crossfades back into 0.0..0.4
-    if (wrapped <= 2.4) {
-      return 0.4 + wrapped;
-    }
-    // During 0.4s crossfade window, linearly interpolate between end and beginning
-    const frac = (wrapped - 2.4) / 0.433333;
-    return 2.8 + frac * 0.4; // between 2.8s and 3.2s
+    const wrapped = ((tIdle % 3.250) + 3.250) % 3.250;
+    return Math.min(3.6, 0.208 + wrapped);
+  },
+  mapSourceTimeToIdleTime: (tSource: number): number => {
+    const rel = Math.max(0, tSource - 0.208);
+    return Math.min(3.20, rel % 3.250);
   },
 };
 
 /**
- * Returns the active Act definition for a given scroll progress [0..1]
+ * Returns the active scene definition for a given scroll progress [0..1]
  */
 export function getActiveCinematicAct(progress: number): CinematicClipConfig {
   const clamped = Math.max(0, Math.min(1, progress));
@@ -203,7 +198,7 @@ export function getActiveCinematicAct(progress: number): CinematicClipConfig {
 }
 
 /**
- * Calculates local progress [0..1] within an act's scroll range
+ * Calculates local progress [0..1] within a scene's scroll range
  */
 export function getActLocalProgress(progress: number, actIndex: number): number {
   const clip = CINEMATIC_CLIPS[actIndex];

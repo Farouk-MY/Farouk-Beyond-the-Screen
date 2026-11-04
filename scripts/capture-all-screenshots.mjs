@@ -10,7 +10,7 @@ if (!fs.existsSync(artifactDir)) fs.mkdirSync(artifactDir, { recursive: true });
 if (!fs.existsSync(localDir)) fs.mkdirSync(localDir, { recursive: true });
 
 console.log('====================================================');
-console.log('FAROUK PORTFOLIO — COMPREHENSIVE VISUAL CAPTURE');
+console.log('FAROUK PORTFOLIO — PHASE 2 EDITORIAL VISUAL CAPTURE');
 console.log('====================================================');
 
 const appPort = 3000;
@@ -61,8 +61,8 @@ ws.onmessage = (event) => {
 await send('Runtime.enable');
 await send('Page.enable');
 
-console.log('Browser initialized. Waiting 4s for assets and initial render...');
-await setTimeout(4000);
+console.log('Browser initialized. Waiting 3.5s for video playback and UI hydration...');
+await setTimeout(3500);
 
 async function capture(filename) {
   const shot = await send('Page.captureScreenshot', { format: 'png' });
@@ -76,12 +76,11 @@ async function setScroll(p) {
   await send('Runtime.evaluate', {
     expression: `if (window.__FAROUK_SET_SCROLL_PROGRESS) window.__FAROUK_SET_SCROLL_PROGRESS(${p});`,
   });
-  // Allow video seek and layout to present
-  await setTimeout(600);
+  await setTimeout(700);
 }
 
 const desktopMoments = [
-  // Act I: The Origin
+  // Studio
   { p: 0.00, file: 'act1-moment-00-idle-seated.png' },
   { p: 0.05, file: 'act1-moment-05-active-coding.png' },
   { p: 0.10, file: 'act1-moment-10-hands-resting.png' },
@@ -89,28 +88,28 @@ const desktopMoments = [
   { p: 0.18, file: 'act1-moment-18-walking-door.png' },
   { p: 0.20, file: 'transition-act1-act2.png' },
 
-  // Act II: The Journey
+  // Journey
   { p: 0.20, file: 'act2-moment-20-threshold-step.png' },
   { p: 0.25, file: 'act2-moment-25-terrace-start.png' },
   { p: 0.30, file: 'act2-moment-30-promenade-ocean.png' },
   { p: 0.35, file: 'act2-moment-35-approaching-pavilion.png' },
   { p: 0.40, file: 'transition-act2-act3.png' },
 
-  // Act III: The Work
+  // Selected Work (Photo-first gallery)
   { p: 0.40, file: 'act3-moment-40-gallery-entrance.png' },
   { p: 0.45, file: 'act3-moment-45-mobile-display.png' },
   { p: 0.50, file: 'act3-moment-50-analytics-dashboard.png' },
   { p: 0.55, file: 'act3-moment-55-nexform-3d-customizer.png' },
   { p: 0.60, file: 'transition-act3-act4.png' },
 
-  // Act IV: The Philosophy & Systems
+  // Engineering
   { p: 0.60, file: 'act4-moment-60-lab-corridor.png' },
   { p: 0.65, file: 'act4-moment-65-approaching-pedestal.png' },
   { p: 0.70, file: 'act4-moment-70-holographic-graph.png' },
   { p: 0.75, file: 'act4-moment-75-turning-to-balcony.png' },
   { p: 0.80, file: 'transition-act4-act5.png' },
 
-  // Act V: Beyond the Horizon
+  // Contact
   { p: 0.80, file: 'act5-moment-80-stepping-balcony.png' },
   { p: 0.85, file: 'act5-moment-85-walking-railing.png' },
   { p: 0.90, file: 'act5-moment-90-resting-at-railing.png' },
@@ -124,31 +123,50 @@ for (const moment of desktopMoments) {
   await capture(moment.file);
 }
 
-// Act III Modal open test
-console.log('\n--- 2. CAPTURING ACT III MODAL ---');
-await setScroll(0.45);
+// Photo-First Gallery Lightbox Modal Capture
+console.log('\n--- 2. CAPTURING PHOTO-FIRST GALLERY LIGHTBOX MODAL ---');
+await setScroll(0.46);
 await send('Runtime.evaluate', {
   expression: `(() => {
-    const btn = Array.from(document.querySelectorAll('button')).find(b => b.textContent && b.textContent.includes('Examine Architecture'));
+    const btn = Array.from(document.querySelectorAll('button')).find(b => b.textContent && b.textContent.includes('Explore Gallery'));
+    if (btn) btn.click();
+  })()`,
+});
+await setTimeout(800);
+await capture('act3-gallery-modal-opened.png');
+// Close lightbox modal
+await send('Runtime.evaluate', {
+  expression: `(() => {
+    const closeBtn = document.querySelector('button[aria-label="Close project gallery"]');
+    if (closeBtn) closeBtn.click();
+  })()`,
+});
+await setTimeout(500);
+
+// Architecture Deep Breakdown Modal Capture
+console.log('\n--- 3. CAPTURING ARCHITECTURE DETAILS MODAL ---');
+await send('Runtime.evaluate', {
+  expression: `(() => {
+    const btn = Array.from(document.querySelectorAll('button')).find(b => b.textContent && b.textContent.includes('Architecture Details'));
     if (btn) btn.click();
   })()`,
 });
 await setTimeout(800);
 await capture('act3-project-modal-opened.png');
-// Close modal
+// Close detail modal
 await send('Runtime.evaluate', {
   expression: `(() => {
     const closeBtn = document.querySelector('button[aria-label="Close project modal"]');
     if (closeBtn) closeBtn.click();
   })()`,
 });
-await setTimeout(400);
+await setTimeout(500);
 
-// Responsive captures
-console.log('\n--- 3. CAPTURING RESPONSIVE VIEWPORTS ---');
+// Responsive viewports
+console.log('\n--- 4. CAPTURING RESPONSIVE VIEWPORTS ---');
 const responsiveConfigs = [
   { file: 'responsive-mobile-iphone14-390x844.png', w: 390, h: 844, p: 0.05, mobile: true },
-  { file: 'responsive-mobile-iphone16promax-430x932.png', w: 430, h: 932, p: 0.45, mobile: true },
+  { file: 'responsive-mobile-iphone16promax-430x932.png', w: 430, h: 932, p: 0.46, mobile: true },
   { file: 'responsive-tablet-ipad-768x1024.png', w: 768, h: 1024, p: 0.70, mobile: false },
   { file: 'responsive-desktop-compact-1440x900.png', w: 1440, h: 900, p: 1.00, mobile: false },
 ];
@@ -169,11 +187,11 @@ for (const cfg of responsiveConfigs) {
 await send('Emulation.clearDeviceMetricsOverride');
 
 // Reduced motion test
-console.log('\n--- 4. CAPTURING PREFERS-REDUCED-MOTION VIEW ---');
+console.log('\n--- 5. CAPTURING PREFERS-REDUCED-MOTION VIEW ---');
 await send('Emulation.setEmulatedMedia', {
   features: [{ name: 'prefers-reduced-motion', value: 'reduce' }],
 });
-await setTimeout(800);
+await setTimeout(1000);
 await capture('reduced-motion-static-view.png');
 
 console.log('\nAll comprehensive screenshots captured successfully!');

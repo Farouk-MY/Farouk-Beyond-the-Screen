@@ -13,78 +13,66 @@ export function JourneyOverlay({ opacity }: JourneyOverlayProps) {
 
   return (
     <section
-      id="act-2-journey"
-      aria-label="Act II — The Threshold"
-      className={`absolute inset-0 flex flex-col justify-center p-6 sm:p-14 lg:p-20 pointer-events-none transition-opacity duration-200 ease-out ${
+      id="scene-journey"
+      aria-label="Journey: Architectural Promenade"
+      className={`absolute inset-0 flex flex-col justify-center p-4 sm:p-10 lg:p-16 pt-20 pointer-events-none transition-opacity duration-200 ease-out ${
         isVisible ? 'visible' : 'invisible'
       }`}
       style={{ opacity }}
     >
-      {/* Left-aligned editorial container over the serene limestone facade */}
-      <div className="max-w-xl lg:max-w-2xl mr-auto pointer-events-auto">
-        {/* Chapter Badging */}
-        <div className="flex items-center gap-2.5 mb-4">
-          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-mono tracking-wider border border-[#D97706]/30 bg-[#D97706]/10 text-[#F59E0B]">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#D97706]" />
-            ACT II — THE THRESHOLD
+      {/* Refined editorial narrative positioned over left limestone facade, keeping scenery dominant */}
+      <div className="w-full max-w-md sm:max-w-lg lg:max-w-xl mr-auto pointer-events-auto">
+        {/* Section Label */}
+        <div className="flex items-center gap-2 mb-2.5 sm:mb-3">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-mono tracking-wider border border-[#D4AF37]/30 bg-[#D4AF37]/10 text-[#D4AF37]">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37]" />
+            JOURNEY
           </span>
-          <span className="text-[11px] font-mono tracking-widest text-[#B5A99B] uppercase">
+          <span className="text-[10px] sm:text-[11px] font-mono tracking-widest text-[#D4C9BC] uppercase">
             Architectural Promenade
           </span>
         </div>
 
         {/* Narrative Title */}
-        <h2 className="text-3xl sm:text-5xl font-heading font-bold tracking-tight text-[#FAF8F5] mb-4">
-          Beyond the Studio Threshold
+        <h2 className="text-2xl sm:text-4xl lg:text-5xl font-heading font-bold tracking-tight text-[#FAF8F5] mb-2 sm:mb-3">
+          Beyond the Threshold
         </h2>
 
-        <p className="text-sm sm:text-base text-[#D6CEC2] font-body leading-relaxed mb-6">
+        <p className="text-xs sm:text-sm text-[#D6CEC2] font-body leading-relaxed mb-6 max-w-md">
           Stepping from the quiet workspace onto the sunlit stone terrace — moving from isolated explorations into scalable, interconnected web &amp; mobile architectures.
         </p>
 
-        {/* Story Milestones in Subtle Editorial Cards */}
-        <div className="flex flex-col gap-3">
+        {/* Refined Minimalist Narrative Progression (Replaced heavy stacked cards with elegant typographic timeline) */}
+        <div className="space-y-4 pl-4 border-l border-[#D4AF37]/30">
           {/* Milestone 1 */}
-          <div className="p-4 sm:p-5 rounded-2xl border border-[#E8E2D8]/15 bg-[#1C1613]/70 backdrop-blur-md shadow-sm transition-all hover:border-[#D97706]/40 group">
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="text-xs font-mono font-bold tracking-wider text-[#F59E0B]">
-                {journeyNarrative.part1Title}
-              </span>
-              <span className="text-[10px] font-mono text-[#A89D8F] uppercase tracking-wider">
-                Foundations
-              </span>
-            </div>
-            <p className="text-xs sm:text-sm text-[#D6CEC2] font-body leading-relaxed group-hover:text-[#FAF8F5] transition-colors">
+          <div className="relative group">
+            <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-[#15100E] border-2 border-[#D4AF37]" />
+            <h3 className="text-xs font-mono font-bold tracking-wider text-[#D4AF37] uppercase mb-0.5">
+              {journeyNarrative.part1Title}
+            </h3>
+            <p className="text-xs sm:text-[13px] text-[#D6CEC2] font-body leading-relaxed max-w-md">
               {journeyNarrative.part1Body}
             </p>
           </div>
 
           {/* Milestone 2 */}
-          <div className="p-4 sm:p-5 rounded-2xl border border-[#E8E2D8]/15 bg-[#1C1613]/70 backdrop-blur-md shadow-sm transition-all hover:border-[#D97706]/40 group">
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="text-xs font-mono font-bold tracking-wider text-[#F59E0B]">
-                {journeyNarrative.part2Title}
-              </span>
-              <span className="text-[10px] font-mono text-[#A89D8F] uppercase tracking-wider">
-                Architecture
-              </span>
-            </div>
-            <p className="text-xs sm:text-sm text-[#D6CEC2] font-body leading-relaxed group-hover:text-[#FAF8F5] transition-colors">
+          <div className="relative group">
+            <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-[#15100E] border-2 border-[#BA5227]" />
+            <h3 className="text-xs font-mono font-bold tracking-wider text-[#BA5227] uppercase mb-0.5">
+              {journeyNarrative.part2Title}
+            </h3>
+            <p className="text-xs sm:text-[13px] text-[#D6CEC2] font-body leading-relaxed max-w-md">
               {journeyNarrative.part2Body}
             </p>
           </div>
 
           {/* Milestone 3 */}
-          <div className="p-4 sm:p-5 rounded-2xl border border-[#E8E2D8]/15 bg-[#1C1613]/70 backdrop-blur-md shadow-sm transition-all hover:border-[#D97706]/40 group">
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="text-xs font-mono font-bold tracking-wider text-[#F59E0B]">
-                {journeyNarrative.part3Title}
-              </span>
-              <span className="text-[10px] font-mono text-[#A89D8F] uppercase tracking-wider">
-                Production
-              </span>
-            </div>
-            <p className="text-xs sm:text-sm text-[#D6CEC2] font-body leading-relaxed group-hover:text-[#FAF8F5] transition-colors">
+          <div className="relative group">
+            <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-[#15100E] border-2 border-[#FAF8F5]" />
+            <h3 className="text-xs font-mono font-bold tracking-wider text-[#FAF8F5] uppercase mb-0.5">
+              {journeyNarrative.part3Title}
+            </h3>
+            <p className="text-xs sm:text-[13px] text-[#D6CEC2] font-body leading-relaxed max-w-md">
               {journeyNarrative.part3Body}
             </p>
           </div>

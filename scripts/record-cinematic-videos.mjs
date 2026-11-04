@@ -77,99 +77,106 @@ async function recordTabScenario(filename, totalDurationMs, scenarioFn) {
         method: 'Page.screencastFrameAck',
         params: { sessionId }
       }));
-    }
-    if (msg.id && pending.has(msg.id)) {
+    } else if (msg.id && pending.has(msg.id)) {
       pending.get(msg.id).resolve(msg.result);
       pending.delete(msg.id);
     }
   };
 
-  await send('Runtime.enable');
   await send('Page.enable');
+  await send('Runtime.enable');
 
-  // Wait for initial render and idle loop start
-  await setTimeout(3500);
-
-  // Helper inside scenario
+  // Helper to seek timeline
   const setScroll = async (p) => {
     await send('Runtime.evaluate', {
       expression: `if (window.__FAROUK_SET_SCROLL_PROGRESS) window.__FAROUK_SET_SCROLL_PROGRESS(${p});`,
     });
   };
 
-  // Start dedicated screencast session
+  // Wait 3.5s for initial video stream decoding and DOM hydration
+  await setTimeout(3500);
+
+  // Start Screencast at 24 FPS
+  console.log('Starting 24 FPS CDP Screencast stream...');
+  const streamStart = performance.now();
   await send('Page.startScreencast', {
     format: 'jpeg',
     quality: 85,
     maxWidth: 1280,
     maxHeight: 720,
-    everyNthFrame: 1
+    everyNthFrame: 1,
   });
 
-  const startTime = Date.now();
+  // Execute test scenario actions
   try {
     await scenarioFn({ send, setScroll });
   } catch (err) {
-    console.error(`Error in scenario ${filename}:`, err);
+    console.error('Scenario error:', err);
   }
 
-  const elapsed = Date.now() - startTime;
-  if (elapsed < totalDurationMs) {
-    await setTimeout(totalDurationMs - elapsed);
-  }
-
+  // Stop Screencast
   await send('Page.stopScreencast');
-  await setTimeout(400);
+  const streamEnd = performance.now();
+  const durationSec = (streamEnd - streamStart) / 1000;
+  console.log(`Captured ${frames.length} raw frames over ${durationSec.toFixed(2)}s`);
 
-  ws.close();
+  // Close tab
   try {
+    ws.close();
     await fetch(`http://127.0.0.1:${edgePort}/json/close/${tab.id}`);
   } catch {}
 
-  console.log(`Captured ${frames.length} frames for ${filename}. Assembling with FFmpeg...`);
-
-  if (frames.length > 0) {
-    const concatLines = [];
-    for (let i = 0; i < frames.length; i++) {
-      const framePath = path.join(segDir, `f_${String(i).padStart(5, '0')}.jpg`);
-      fs.writeFileSync(framePath, frames[i].data);
-
-      let dur = 0.0416; // default 1/24s
-      if (i < frames.length - 1) {
-        const deltaMs = frames[i + 1].recvTime - frames[i].recvTime;
-        dur = Math.max(0.016, Math.min(0.25, deltaMs / 1000));
-      }
-      concatLines.push(`file '${framePath.replace(/\\/g, '/')}'`);
-      concatLines.push(`duration ${dur.toFixed(4)}`);
-    }
-
-    const lastFramePath = path.join(segDir, `f_${String(frames.length - 1).padStart(5, '0')}.jpg`);
-    concatLines.push(`file '${lastFramePath.replace(/\\/g, '/')}'`);
-
-    const concatFile = path.join(segDir, 'frames.txt');
-    fs.writeFileSync(concatFile, concatLines.join('\n'));
-
-    await new Promise((resolve, reject) => {
-      const ffmpeg = spawn(ffmpegPath, [
-        '-y',
-        '-f', 'concat',
-        '-safe', '0',
-        '-i', concatFile,
-        '-vf', 'scale=trunc(iw/2)*2:trunc(ih/2)*2',
-        '-c:v', 'libx264',
-        '-preset', 'fast',
-        '-crf', '20',
-        '-pix_fmt', 'yuv420p',
-        outputPath
-      ]);
-      ffmpeg.on('close', (code) => {
-        if (code === 0) resolve();
-        else reject(new Error(`FFmpeg exited with code ${code}`));
-      });
-    });
-
-    fs.rmSync(segDir, { recursive: true, force: true });
+  if (frames.length === 0) {
+    console.error(`ERROR: No frames captured for ${filename}`);
+    return;
   }
+
+  // Write frames to temporary segment directory with duration-matched concat file
+  console.log(`Writing frames and synthesizing timestamp-accurate video via FFmpeg...`);
+  const concatLines = [];
+
+  for (let i = 0; i < frames.length; i++) {
+    const fPath = path.join(segDir, `frame_${String(i).padStart(5, '0')}.jpg`);
+    fs.writeFileSync(fPath, frames[i].data);
+
+    let frameDuration = 0.0416; // default 24 FPS
+    if (i < frames.length - 1) {
+      frameDuration = (frames[i + 1].recvTime - frames[i].recvTime) / 1000;
+      // Clamp reasonable bounds (0.016s -> 0.3s)
+      frameDuration = Math.max(0.016, Math.min(0.3, frameDuration));
+    }
+    concatLines.push(`file '${fPath.replace(/\\/g, '/')}'`);
+    concatLines.push(`duration ${frameDuration.toFixed(4)}`);
+  }
+  // Repeat last frame for concat parser
+  if (frames.length > 0) {
+    const lastFPath = path.join(segDir, `frame_${String(frames.length - 1).padStart(5, '0')}.jpg`);
+    concatLines.push(`file '${lastFPath.replace(/\\/g, '/')}'`);
+  }
+
+  const concatFile = path.join(segDir, 'concat.txt');
+  fs.writeFileSync(concatFile, concatLines.join('\n'));
+
+  await new Promise((resolve, reject) => {
+    const ffmpeg = spawn(ffmpegPath, [
+      '-y',
+      '-f', 'concat',
+      '-safe', '0',
+      '-i', concatFile,
+      '-vf', 'scale=trunc(iw/2)*2:trunc(ih/2)*2',
+      '-c:v', 'libx264',
+      '-preset', 'fast',
+      '-crf', '20',
+      '-pix_fmt', 'yuv420p',
+      outputPath
+    ]);
+    ffmpeg.on('close', (code) => {
+      if (code === 0) resolve();
+      else reject(new Error(`FFmpeg exited with code ${code}`));
+    });
+  });
+
+  fs.rmSync(segDir, { recursive: true, force: true });
 
   const stat = fs.statSync(outputPath);
   console.log(`Successfully generated ${filename}: ${(stat.size / (1024 * 1024)).toFixed(2)} MB`);
@@ -182,19 +189,19 @@ async function recordTabScenario(filename, totalDurationMs, scenarioFn) {
 await recordTabScenario('idle-to-scroll-handoff.mp4', 7000, async ({ setScroll }) => {
   // 1.5s idle typing loop
   await setTimeout(1500);
-  // Initiate forward scroll through Act I
+  // Initiate forward scroll through Studio
   const steps = 30;
   for (let i = 1; i <= steps; i++) {
     const p = (i / steps) * 0.18;
     await setScroll(p);
     await setTimeout(90);
   }
-  // Hold at Act I doorway threshold
+  // Hold at Studio doorway threshold
   await setTimeout(1500);
 });
 
 // ----------------------------------------------------
-// SCENARIO 2: SLOW SCROLL THROUGH ALL FIVE ACTS
+// SCENARIO 2: SLOW SCROLL THROUGH ALL FIVE SCENES
 // ----------------------------------------------------
 await recordTabScenario('slow-scroll-five-acts.mp4', 24000, async ({ setScroll }) => {
   await setTimeout(1000);
@@ -228,11 +235,11 @@ await recordTabScenario('fast-scroll-and-reverse.mp4', 16000, async ({ setScroll
 });
 
 // ----------------------------------------------------
-// SCENARIO 4: ACT III PROJECT SWITCHING
+// SCENARIO 4: SELECTED WORK PROJECT SWITCHING & GALLERY LIGHTBOX
 // ----------------------------------------------------
-await recordTabScenario('act3-project-switching.mp4', 15000, async ({ send, setScroll }) => {
-  // Navigate to Act III
-  await setScroll(0.42);
+await recordTabScenario('act3-project-switching.mp4', 16000, async ({ send, setScroll }) => {
+  // Navigate to Selected Work
+  await setScroll(0.46);
   await setTimeout(1500);
 
   // Click project tabs sequentially
@@ -243,22 +250,31 @@ await recordTabScenario('act3-project-switching.mp4', 15000, async ({ send, setS
         if (tabs[${idx}]) tabs[${idx}].click();
       })()`,
     });
-    await setTimeout(2200);
+    await setTimeout(1800);
   }
 
-  // Open Project Modal
+  // Open Gallery Lightbox Modal
   await send('Runtime.evaluate', {
     expression: `(() => {
-      const btn = Array.from(document.querySelectorAll('button')).find(b => b.textContent && b.textContent.includes('Examine Architecture'));
+      const btn = Array.from(document.querySelectorAll('button')).find(b => b.textContent && b.textContent.includes('Explore Gallery'));
       if (btn) btn.click();
     })()`,
   });
-  await setTimeout(2500);
+  await setTimeout(2000);
 
-  // Close modal
+  // Navigate next photo in lightbox
   await send('Runtime.evaluate', {
     expression: `(() => {
-      const closeBtn = document.querySelector('button[aria-label="Close project modal"]');
+      const nextBtn = document.querySelector('button[aria-label="Next image"]');
+      if (nextBtn) nextBtn.click();
+    })()`,
+  });
+  await setTimeout(1500);
+
+  // Close gallery lightbox modal
+  await send('Runtime.evaluate', {
+    expression: `(() => {
+      const closeBtn = document.querySelector('button[aria-label="Close project gallery"]');
       if (closeBtn) closeBtn.click();
     })()`,
   });
@@ -271,17 +287,17 @@ await recordTabScenario('act3-project-switching.mp4', 15000, async ({ send, setS
 await recordTabScenario('complete-experience-continuous.mp4', 36000, async ({ send, setScroll }) => {
   // 3s idle typing
   await setTimeout(3000);
-  // Smooth scroll through all acts
+  // Smooth scroll through all scenes
   const steps = 90;
   for (let i = 1; i <= steps; i++) {
     const p = i / steps;
     await setScroll(p);
     await setTimeout(180);
   }
-  // At Contact Act: copy email test
+  // At Contact scene: copy email test
   await send('Runtime.evaluate', {
     expression: `(() => {
-      const copyBtn = Array.from(document.querySelectorAll('button')).find(b => b.textContent && b.textContent.includes('Copy Address'));
+      const copyBtn = document.querySelector('button[aria-label="Copy direct email address"]');
       if (copyBtn) copyBtn.click();
     })()`,
   });

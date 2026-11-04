@@ -125,7 +125,7 @@ export function CinematicVideoLayer({ scrollProgressRef }: CinematicVideoLayerPr
     };
   }, []);
 
-  // Master scrubbing and handoff RAF loop
+  // Master scrubbing and frame-confirmed idle handoff RAF loop
   useEffect(() => {
     if (prefersReducedMotion) return;
 
@@ -135,23 +135,43 @@ export function CinematicVideoLayer({ scrollProgressRef }: CinematicVideoLayerPr
       const scroll = Math.max(0, Math.min(1, scrollProgressRef.current));
       const isAtOrigin = scroll <= 0.002;
 
-      // --- IDLE TO SCRUB HANDOFF ---
+      // --- FRAME-CONFIRMED IDLE TO SCRUB HANDOFF ---
       if (isAtOrigin) {
-        // Returning to origin: if stationary for 400ms, restore forward typing loop
+        // Returning to origin: if stationary at top for 280ms, smoothly restore forward typing loop
         if (!idleTimeoutRef.current && !isIdleActiveRef.current) {
           idleTimeoutRef.current = setTimeout(() => {
             const idle = idleVideoRef.current;
             const act1 = videoRefs.current[0];
             if (idle && act1) {
-              // Sync idle loop time to current Act 1 scrub position
+              // Map Act 1 scrub position to matching idle loop frame
               const act1Time = act1.currentTime || 0;
-              const mappedIdleTime = Math.max(0, (act1Time - 0.4) % IDLE_LOOP_CONFIG.duration);
+              const mappedIdleTime = IDLE_LOOP_CONFIG.mapSourceTimeToIdleTime(act1Time);
               idle.currentTime = mappedIdleTime;
-              idle.play().catch(() => {});
+
+              const playPromise = idle.play();
+              if (playPromise !== undefined) {
+                playPromise.catch(() => {});
+              }
+
+              // Confirm presentation of target frame before setting isIdleActive to true
+              const onFrameReady = () => {
+                setIsIdleActive(true);
+                idleHandedOffRef.current = false;
+              };
+
+              if ('requestVideoFrameCallback' in idle) {
+                const idleRvfc = idle as HTMLVideoElement & {
+                  requestVideoFrameCallback: (cb: () => void) => number;
+                };
+                idleRvfc.requestVideoFrameCallback(onFrameReady);
+              } else {
+                setTimeout(onFrameReady, 50);
+              }
+            } else {
+              setIsIdleActive(true);
+              idleHandedOffRef.current = false;
             }
-            setIsIdleActive(true);
-            idleHandedOffRef.current = false;
-          }, 400);
+          }, 280);
         }
       } else {
         // Scrolling active: cancel return timeout
@@ -169,14 +189,28 @@ export function CinematicVideoLayer({ scrollProgressRef }: CinematicVideoLayerPr
           if (idle && act1) {
             const idleTime = idle.currentTime || 0;
             const sourceTime = IDLE_LOOP_CONFIG.mapIdleTimeToSourceTime(idleTime);
+
             // Seek Act 1 to the exact frame where Farouk was typing
             requestFrameSeek(0, sourceTime);
 
-            // Crossfade after short transition
-            setTimeout(() => {
+            // Wait for Act 1 to confirm seek or decode frame before hiding idle
+            let handedOff = false;
+            const finalizeHandoff = () => {
+              if (handedOff) return;
+              handedOff = true;
               setIsIdleActive(false);
               idle.pause();
-            }, 120);
+            };
+
+            const onSeeked = () => {
+              act1.removeEventListener('seeked', onSeeked);
+              finalizeHandoff();
+            };
+
+            act1.addEventListener('seeked', onSeeked, { once: true });
+
+            // Safety timeout to guarantee handoff never stalls if seeked fired immediately
+            setTimeout(finalizeHandoff, 140);
           } else {
             setIsIdleActive(false);
           }

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" fill="none" width="100%" height="100%">
+  <rect width="800" height="500" rx="16" fill="#15100E"/>
+  <rect x="1" y="1" width="798" height="498" rx="15" stroke="#E8E2D8" stroke-opacity="0.12"/>
+  <g transform="translate(48, 48)">
+    <text x="0" y="20" font-family="'IBM Plex Mono', monospace" font-size="11" letter-spacing="0.2em" fill="#E59368">MEDICONNECT // 01.2 WEBRTC SESSION PROTOCOL</text>
+    <text x="0" y="52" font-family="'Space Grotesk', sans-serif" font-size="24" font-weight="600" fill="#FAF8F5">P2P Encrypted Session Lifecycle</text>
+  </g>
+  <g transform="translate(80, 160)">
+    <rect x="0" y="0" width="640" height="240" rx="12" fill="#1C1512" stroke="#E8E2D8" stroke-opacity="0.2"/>
+    <text x="32" y="44" font-family="'IBM Plex Mono', monospace" font-size="12" fill="#BA5227">01. Signaling Handshake</text>
+    <text x="32" y="66" font-family="'Manrope', sans-serif" font-size="13" fill="#D6CEC2">WebSocket exchange of SDP offers, answers, and candidate ICE pairs.</text>
+
+    <text x="32" y="114" font-family="'IBM Plex Mono', monospace" font-size="12" fill="#D4AF37">02. Direct Media Stream</text>
+    <text x="32" y="136" font-family="'Manrope', sans-serif" font-size="13" fill="#D6CEC2">SRTP audio/video connection negotiated peer-to-peer with zero intermediate recording.</text>
+
+    <text x="32" y="184" font-family="'IBM Plex Mono', monospace" font-size="12" fill="#FAF8F5">03. Session Teardown &amp; Summary</text>
+    <text x="32" y="206" font-family="'Manrope', sans-serif" font-size="13" fill="#D6CEC2">Cryptographic token expiration and patient encounter record commit to Supabase.</text>
+  </g>
+</svg>
+

@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" fill="none" width="100%" height="100%">
+  <!-- Background Container -->
+  <rect width="800" height="500" rx="16" fill="#15100E"/>
+  <rect x="1" y="1" width="798" height="498" rx="15" stroke="#E8E2D8" stroke-opacity="0.12"/>
+
+  <!-- Architectural Background Grid -->
+  <defs>
+    <pattern id="grid-mc" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#FAF8F5" stroke-opacity="0.03" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="800" height="500" rx="16" fill="url(#grid-mc)"/>
+
+  <!-- Header Section -->
+  <g transform="translate(48, 48)">
+    <rect width="44" height="22" rx="4" fill="#BA5227" fill-opacity="0.2"/>
+    <text x="22" y="15" font-family="'IBM Plex Mono', monospace" font-size="10" font-weight="600" fill="#E59368" text-anchor="middle">01</text>
+    <text x="56" y="15" font-family="'IBM Plex Mono', monospace" font-size="11" letter-spacing="0.2em" fill="#FAF8F5" fill-opacity="0.5">MOBILE &amp; WEBRTC TELEMEDICINE</text>
+    
+    <text x="0" y="52" font-family="'Space Grotesk', sans-serif" font-size="28" font-weight="600" letter-spacing="0.04em" fill="#FAF8F5">MediConnect</text>
+    <text x="0" y="74" font-family="'Manrope', sans-serif" font-size="13" fill="#D6CEC2" fill-opacity="0.8">Clinical Coordination &amp; Real-Time Consultation Platform</text>
+  </g>
+
+  <!-- Architectural Mobile Wireframe & Topology Representation -->
+  <g transform="translate(180, 160)">
+    <!-- Phone Mockup Frame 1 -->
+    <rect x="0" y="0" width="180" height="260" rx="20" fill="#1C1512" stroke="#E8E2D8" stroke-opacity="0.2" stroke-width="1.5"/>
+    <!-- Phone Notch -->
+    <rect x="55" y="8" width="70" height="12" rx="6" fill="#0E0C0A"/>
+    <!-- Screen Header -->
+    <rect x="18" y="32" width="80" height="10" rx="3" fill="#FAF8F5" fill-opacity="0.7"/>
+    <rect x="18" y="48" width="50" height="6" rx="2" fill="#BA5227"/>
+    <!-- Video Stream Window Mockup -->
+    <rect x="18" y="66" width="144" height="88" rx="8" fill="#BA5227" fill-opacity="0.12" stroke="#BA5227" stroke-opacity="0.3"/>
+    <circle cx="90" cy="110" r="16" fill="#BA5227" fill-opacity="0.3"/>
+    <text x="90" y="114" font-family="'IBM Plex Mono', monospace" font-size="9" fill="#FAF8F5" text-anchor="middle">WebRTC</text>
+    <!-- Card items -->
+    <rect x="18" y="166" width="144" height="34" rx="6" fill="#FAF8F5" fill-opacity="0.05"/>
+    <rect x="18" y="208" width="144" height="34" rx="6" fill="#FAF8F5" fill-opacity="0.05"/>
+
+    <!-- Central Signal Connector -->
+    <path d="M195 130 H245" stroke="#BA5227" stroke-width="2" stroke-dasharray="4 4"/>
+    <circle cx="220" cy="130" r="10" fill="#1C1512" stroke="#BA5227"/>
+    <text x="220" y="133" font-family="'IBM Plex Mono', monospace" font-size="8" fill="#E59368" text-anchor="middle">WS</text>
+
+    <!-- Phone Mockup Frame 2 (Practitioner Triage) -->
+    <rect x="260" y="0" width="180" height="260" rx="20" fill="#1C1512" stroke="#E8E2D8" stroke-opacity="0.2" stroke-width="1.5"/>
+    <rect x="315" y="8" width="70" height="12" rx="6" fill="#0E0C0A"/>
+    <rect x="278" y="32" width="90" height="10" rx="3" fill="#FAF8F5" fill-opacity="0.7"/>
+    <rect x="278" y="48" width="60" height="6" rx="2" fill="#D4AF37"/>
+    <!-- QR Code Scan Mockup -->
+    <rect x="278" y="66" width="144" height="88" rx="8" fill="#FAF8F5" fill-opacity="0.03" stroke="#FAF8F5" stroke-opacity="0.15"/>
+    <rect x="325" y="86" width="50" height="48" rx="4" fill="#E8E2D8" fill-opacity="0.15"/>
+    <text x="350" y="114" font-family="'IBM Plex Mono', monospace" font-size="8" fill="#D4AF37" text-anchor="middle">QR VERIFY</text>
+    <rect x="278" y="166" width="144" height="76" rx="6" fill="#FAF8F5" fill-opacity="0.05"/>
+  </g>
+
+  <!-- Bottom Metadata Strip -->
+  <g transform="translate(48, 442)">
+    <text x="0" y="12" font-family="'IBM Plex Mono', monospace" font-size="9" letter-spacing="0.16em" fill="#BA5227">ARCHITECTURE PREVIEW</text>
+    <text x="170" y="12" font-family="'IBM Plex Mono', monospace" font-size="9" fill="#B5A99B">• REACT NATIVE • FASTAPI • PYTHON • WEBRTC • SUPABASE</text>
+  </g>
+</svg>
+

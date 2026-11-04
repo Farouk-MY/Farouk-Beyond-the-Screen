@@ -42,7 +42,7 @@ const ibmPlexMono = localFont({
 });
 
 export const viewport: Viewport = {
-  themeColor: '#0E0C0A',
+  themeColor: '#1C1512',
   colorScheme: 'dark',
   width: 'device-width',
   initialScale: 1,
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     template: '%s | Farouk Messai',
   },
   description:
-    'Cinematic five-act video portfolio of Farouk Messai, featuring production systems in Next.js, React Native, and Flutter across modern web and cross-platform architectures.',
+    'Cinematic digital portfolio of Farouk Messai, featuring production systems in Next.js, React Native, and Flutter across modern web and cross-platform architectures.',
   keywords: [
     'Farouk Messai',
     'Software Developer',
@@ -74,21 +74,29 @@ export const metadata: Metadata = {
     locale: 'en_US',
     title: 'Farouk Messai — Software Developer | Mobile & Web Development',
     description:
-      'Explore the continuous five-act cinematic video portfolio of Farouk Messai, featuring production systems in Next.js, React Native, and Flutter.',
+      'Explore the continuous cinematic portfolio film of Farouk Messai, featuring production systems in Next.js, React Native, and Flutter.',
     siteName: 'Farouk Messai — Portfolio',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Farouk Messai — Software Developer | Mobile & Web Development',
     description:
-      'Explore the continuous five-act cinematic video portfolio of Farouk Messai, featuring production systems in Next.js, React Native, and Flutter.',
+      'Explore the continuous cinematic portfolio film of Farouk Messai, featuring production systems in Next.js, React Native, and Flutter.',
   },
   robots: {
     index: true,
     follow: true,
   },
   icons: {
-    icon: '/favicon.ico',
+    icon: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/favicon-48x48.png', sizes: '48x48', type: 'image/png' },
+      { url: '/favicon.ico', sizes: 'any' },
+    ],
+    apple: [
+      { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
   },
 };
 
