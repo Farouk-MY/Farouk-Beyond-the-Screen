@@ -8,6 +8,12 @@ export interface SkillItem {
   featured?: boolean;
 }
 
+export interface ProjectVisualAnchor {
+  sceneKey: 'mobile-display' | 'dashboard-display' | '3d-configurator' | string;
+  timeSeconds: number; // local time in Act III video (0 - 10s)
+  label: string;
+}
+
 export interface ProjectItem {
   id: string;
   name: string;
@@ -24,6 +30,7 @@ export interface ProjectItem {
     live: string | null;
   };
   metrics?: { label: string; value: string }[];
+  visualAnchor?: ProjectVisualAnchor;
 }
 
 export interface DeveloperProfile {
@@ -58,4 +65,41 @@ export interface ActDefinition {
   accentColor: string;
 }
 
+export type ActId = 'origin' | 'journey' | 'work' | 'craft' | 'beyond';
 
+export interface ActSafeArea {
+  x: number; // normalized 0..1
+  y: number; // normalized 0..1
+  w: number; // normalized 0..1
+  h: number; // normalized 0..1
+  maxWidthPx?: number;
+  textColor?: string;
+  backgroundTreatment?: 'glass' | 'subtle-contrast' | 'none';
+  visibilityWindow: [number, number]; // [startLocalProgress, endLocalProgress]
+  description?: string;
+}
+
+export interface CinematicTransitionConfig {
+  boundaryProgress: number; // global scroll progress of the boundary (0.2, 0.4, 0.6, 0.8)
+  overlapSpan: number; // scroll progress span where both videos are transitioning
+  strategy: 'short-crossfade' | 'architectural-cut' | 'corridor-dissolve' | 'balcony-dissolve';
+  description: string;
+}
+
+export interface CinematicClipConfig {
+  id: ActId;
+  actNumber: string;
+  name: string;
+  subtitle: string;
+  src: string;
+  poster: string;
+  duration: number; // 10.0 seconds
+  sourceFps: number; // 24
+  totalFrames: number; // 240
+  scrollRange: [number, number]; // [start, end]
+  safeArea: ActSafeArea;
+  objectPosition: {
+    desktop: string; // e.g. "50% 50%"
+    mobile: string; // e.g. "65% 50%" to keep focal point visible in portrait
+  };
+}

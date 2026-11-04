@@ -1,63 +1,16 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
+import {
+  CINEMATIC_CLIPS,
+  IDLE_LOOP_CONFIG,
+  computeActOpacitiesAndTimes,
+} from '@/config/cinematicTimeline';
 
 interface CinematicVideoLayerProps {
   scrollProgressRef: React.MutableRefObject<number>;
 }
-
-interface ActVideoConfig {
-  id: string;
-  name: string;
-  src: string;
-  poster: string;
-  range: [number, number]; // [startProgress, endProgress]
-  duration: number; // seconds
-}
-
-const ACT_VIDEOS: ActVideoConfig[] = [
-  {
-    id: 'act-01',
-    name: 'The Studio',
-    src: '/videos/act-01-scrub.mp4',
-    poster: '/posters/act-01-poster.jpg',
-    range: [0.0, 0.2],
-    duration: 10.026667,
-  },
-  {
-    id: 'act-02',
-    name: 'The Threshold',
-    src: '/videos/act-02-scrub.mp4',
-    poster: '/posters/act-02-poster.jpg',
-    range: [0.2, 0.4],
-    duration: 10.026667,
-  },
-  {
-    id: 'act-03',
-    name: 'The Work',
-    src: '/videos/act-03-scrub.mp4',
-    poster: '/posters/act-03-poster.jpg',
-    range: [0.4, 0.6],
-    duration: 10.026667,
-  },
-  {
-    id: 'act-04',
-    name: 'The Craft',
-    src: '/videos/act-04-scrub.mp4',
-    poster: '/posters/act-04-poster.jpg',
-    range: [0.6, 0.8],
-    duration: 10.026667,
-  },
-  {
-    id: 'act-05',
-    name: 'The Horizon',
-    src: '/videos/act-05-scrub.mp4',
-    poster: '/posters/act-05-poster.jpg',
-    range: [0.8, 1.0],
-    duration: 10.026667,
-  },
-];
 
 export function CinematicVideoLayer({ scrollProgressRef }: CinematicVideoLayerProps) {
   const prefersReducedMotion = usePrefersReducedMotion();
@@ -67,92 +20,215 @@ export function CinematicVideoLayer({ scrollProgressRef }: CinematicVideoLayerPr
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Idle state
-  const [isIdleActive, setIsIdleActive] = useState<boolean>(true);
-  const idleTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const lastScrollProgressRef = useRef<number>(0);
+  // Playback & seeking state trackers per act (indices 0..4)
+  const isSeekingRef = useRef<boolean[]>([false, false, false, false, false]);
+  const pendingFrameRef = useRef<(number | null)[]>([null, null, null, null, null]);
+  const lastSoughtFrameRef = useRef<number[]>([-1, -1, -1, -1, -1]);
+  const hasPresentedFrameRef = useRef<boolean[]>([false, false, false, false, false]);
 
-  // Initialize and drive frame-by-frame scrubbing
+  // Idle loop handoff state
+  const [isIdleActive, setIsIdleActive] = useState<boolean>(true);
+  const isIdleActiveRef = useRef<boolean>(true);
+  const idleHandedOffRef = useRef<boolean>(false);
+  const idleTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Synchronize ref with state
+  useEffect(() => {
+    isIdleActiveRef.current = isIdleActive;
+  }, [isIdleActive]);
+
+  // Safe seek helper with frame coalescing and 24fps alignment
+  const requestFrameSeek = useCallback((actIdx: number, targetTimeSeconds: number) => {
+    const video = videoRefs.current[actIdx];
+    if (!video || !video.duration) return;
+
+    // Align strictly to 24 FPS source frames
+    const targetFrame = Math.round(targetTimeSeconds * 24);
+    const clampedFrame = Math.max(0, Math.min(239, targetFrame));
+
+    // Redundant seek elimination
+    if (lastSoughtFrameRef.current[actIdx] === clampedFrame) {
+      return;
+    }
+
+    if (isSeekingRef.current[actIdx]) {
+      // Coalesce: store newest target frame while current seek is in flight
+      pendingFrameRef.current[actIdx] = clampedFrame;
+      return;
+    }
+
+    // Initiate new seek
+    isSeekingRef.current[actIdx] = true;
+    lastSoughtFrameRef.current[actIdx] = clampedFrame;
+    const targetSeconds = clampedFrame / 24;
+
+    try {
+      video.currentTime = targetSeconds;
+    } catch {
+      isSeekingRef.current[actIdx] = false;
+    }
+  }, []);
+
+  // Set up seek event listeners and presented-frame confirmation for each video
+  useEffect(() => {
+    const cleanups: (() => void)[] = [];
+
+    videoRefs.current.forEach((video, idx) => {
+      if (!video) return;
+
+      const handleSeeked = () => {
+        isSeekingRef.current[idx] = false;
+        hasPresentedFrameRef.current[idx] = true;
+
+        // Drain pending coalesced frame if newer target arrived
+        const pending = pendingFrameRef.current[idx];
+        if (pending !== null) {
+          pendingFrameRef.current[idx] = null;
+          if (pending !== lastSoughtFrameRef.current[idx]) {
+            isSeekingRef.current[idx] = true;
+            lastSoughtFrameRef.current[idx] = pending;
+            try {
+              video.currentTime = pending / 24;
+            } catch {
+              isSeekingRef.current[idx] = false;
+            }
+          }
+        }
+      };
+
+      video.addEventListener('seeked', handleSeeked);
+      cleanups.push(() => video.removeEventListener('seeked', handleSeeked));
+
+      // Instrument requestVideoFrameCallback if available for telemetry & zero-stale presentation
+      if ('requestVideoFrameCallback' in HTMLVideoElement.prototype) {
+        let rvfcHandle: number;
+        const videoWithRvfc = video as HTMLVideoElement & {
+          requestVideoFrameCallback: (callback: (now: DOMHighResTimeStamp, metadata: unknown) => void) => number;
+          cancelVideoFrameCallback: (handle: number) => void;
+        };
+
+        const onRvfc = () => {
+          hasPresentedFrameRef.current[idx] = true;
+          rvfcHandle = videoWithRvfc.requestVideoFrameCallback(onRvfc);
+        };
+        rvfcHandle = videoWithRvfc.requestVideoFrameCallback(onRvfc);
+        cleanups.push(() => {
+          if ('cancelVideoFrameCallback' in videoWithRvfc) {
+            videoWithRvfc.cancelVideoFrameCallback(rvfcHandle);
+          }
+        });
+      }
+    });
+
+    return () => {
+      cleanups.forEach((fn) => fn());
+    };
+  }, []);
+
+  // Master scrubbing and handoff RAF loop
   useEffect(() => {
     if (prefersReducedMotion) return;
 
     let rafId: number;
-    const OVERLAP = 0.035; // 3.5% scroll overlap window for crossfade
 
-    const updateFrames = () => {
+    const tick = () => {
       const scroll = Math.max(0, Math.min(1, scrollProgressRef.current));
-      const isStationaryAtOrigin = scroll <= 0.003;
+      const isAtOrigin = scroll <= 0.002;
 
-      // Handle idle loop handoff
-      if (isStationaryAtOrigin) {
-        if (!idleTimeoutRef.current && !isIdleActive) {
+      // --- IDLE TO SCRUB HANDOFF ---
+      if (isAtOrigin) {
+        // Returning to origin: if stationary for 400ms, restore forward typing loop
+        if (!idleTimeoutRef.current && !isIdleActiveRef.current) {
           idleTimeoutRef.current = setTimeout(() => {
-            setIsIdleActive(true);
-            if (idleVideoRef.current && idleVideoRef.current.paused) {
-              idleVideoRef.current.play().catch(() => {});
+            const idle = idleVideoRef.current;
+            const act1 = videoRefs.current[0];
+            if (idle && act1) {
+              // Sync idle loop time to current Act 1 scrub position
+              const act1Time = act1.currentTime || 0;
+              const mappedIdleTime = Math.max(0, (act1Time - 0.4) % IDLE_LOOP_CONFIG.duration);
+              idle.currentTime = mappedIdleTime;
+              idle.play().catch(() => {});
             }
-          }, 1200);
+            setIsIdleActive(true);
+            idleHandedOffRef.current = false;
+          }, 400);
         }
       } else {
+        // Scrolling active: cancel return timeout
         if (idleTimeoutRef.current) {
           clearTimeout(idleTimeoutRef.current);
           idleTimeoutRef.current = null;
         }
-        if (isIdleActive) {
-          setIsIdleActive(false);
+
+        // Exact frame handoff when initiating scroll from idle
+        if (isIdleActiveRef.current && !idleHandedOffRef.current) {
+          idleHandedOffRef.current = true;
+          const idle = idleVideoRef.current;
+          const act1 = videoRefs.current[0];
+
+          if (idle && act1) {
+            const idleTime = idle.currentTime || 0;
+            const sourceTime = IDLE_LOOP_CONFIG.mapIdleTimeToSourceTime(idleTime);
+            // Seek Act 1 to the exact frame where Farouk was typing
+            requestFrameSeek(0, sourceTime);
+
+            // Crossfade after short transition
+            setTimeout(() => {
+              setIsIdleActive(false);
+              idle.pause();
+            }, 120);
+          } else {
+            setIsIdleActive(false);
+          }
         }
       }
 
-      // Update each act's video currentTime and opacity
-      ACT_VIDEOS.forEach((config, idx) => {
+      // --- MASTER VIDEO TIMELINE EVALUATION ---
+      const { opacities, visibleActs, localTimes } = computeActOpacitiesAndTimes(scroll);
+
+      CINEMATIC_CLIPS.forEach((clip, idx) => {
         const video = videoRefs.current[idx];
         if (!video) return;
 
-        const [start, end] = config.range;
-        const visibleStart = Math.max(0, start - OVERLAP);
-        const visibleEnd = Math.min(1, end + OVERLAP);
+        const isVisible = visibleActs[idx];
+        let targetOpacity = opacities[idx];
 
-        const isVisible = scroll >= visibleStart && scroll <= visibleEnd;
+        // While idle is active at origin, Act 1 scrub video is hidden
+        if (idx === 0 && isIdleActiveRef.current) {
+          targetOpacity = 0;
+        }
 
         if (isVisible) {
-          // Calculate opacity with smooth crossfading in overlap zones
-          let opacity = 1.0;
-          if (scroll < start) {
-            // Fading in
-            opacity = (scroll - visibleStart) / OVERLAP;
-          } else if (scroll > end) {
-            // Fading out
-            opacity = (visibleEnd - scroll) / OVERLAP;
-          }
-          opacity = Math.max(0, Math.min(1, opacity));
+          // Apply frame seek to active / transitioning videos
+          requestFrameSeek(idx, localTimes[idx]);
 
-          // If idle is active and this is act 1, fade out act 1 scrub video
-          if (idx === 0 && isIdleActive) {
-            opacity = 0;
-          }
+          video.style.opacity = targetOpacity.toFixed(3);
+          video.style.visibility = targetOpacity > 0 ? 'visible' : 'hidden';
 
-          video.style.opacity = opacity.toFixed(3);
-          video.style.visibility = opacity > 0 ? 'visible' : 'hidden';
-
-          // Calculate target timestamp
-          const localProgress = Math.max(0, Math.min(1, (scroll - start) / (end - start)));
-          const targetTime = localProgress * config.duration;
-
-          // Only seek if difference exceeds half a frame (~0.02s) to prevent unnecessary seek calls
-          if (Math.abs(video.currentTime - targetTime) > 0.02) {
-            video.currentTime = targetTime;
+          // Ensure preloading for visible clips
+          if (video.preload !== 'auto') {
+            video.preload = 'auto';
           }
         } else {
+          // Non-visible clips: hide and keep idle to conserve decoder resources
           video.style.opacity = '0';
           video.style.visibility = 'hidden';
+
+          // Progressive preloading: preload adjacent clips only
+          const activeAct = CINEMATIC_CLIPS.findIndex(
+            (c) => scroll >= c.scrollRange[0] && scroll <= c.scrollRange[1]
+          );
+          const isAdjacent = Math.abs(idx - activeAct) <= 1;
+          if (isAdjacent && video.preload !== 'auto') {
+            video.preload = 'auto';
+          }
         }
       });
 
-      lastScrollProgressRef.current = scroll;
-      rafId = requestAnimationFrame(updateFrames);
+      rafId = requestAnimationFrame(tick);
     };
 
-    rafId = requestAnimationFrame(updateFrames);
+    rafId = requestAnimationFrame(tick);
 
     return () => {
       cancelAnimationFrame(rafId);
@@ -160,17 +236,17 @@ export function CinematicVideoLayer({ scrollProgressRef }: CinematicVideoLayerPr
         clearTimeout(idleTimeoutRef.current);
       }
     };
-  }, [prefersReducedMotion, isIdleActive, scrollProgressRef]);
+  }, [prefersReducedMotion, requestFrameSeek, scrollProgressRef]);
 
-  // Reduced motion fallback view
+  // Accessibility: Reduced Motion View
   if (prefersReducedMotion) {
     return (
-      <div className="fixed inset-0 w-full h-full pointer-events-none overflow-hidden z-0 bg-[#07080B]">
+      <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden z-0 bg-[#0E0C0A]">
         <div
-          className="w-full h-full bg-cover bg-center transition-all duration-700"
-          style={{ backgroundImage: `url(${ACT_VIDEOS[0].poster})` }}
+          className="w-full h-full bg-cover bg-center"
+          style={{ backgroundImage: `url(${CINEMATIC_CLIPS[0].poster})` }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#07080B] via-transparent to-[#07080B]/60" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0E0C0A] via-transparent to-[#0E0C0A]/60" />
       </div>
     );
   }
@@ -178,44 +254,46 @@ export function CinematicVideoLayer({ scrollProgressRef }: CinematicVideoLayerPr
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-full pointer-events-none overflow-hidden z-0 bg-[#07080B]"
+      className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden z-0 bg-[#0E0C0A]"
       aria-hidden="true"
     >
-      {/* 1. Act I Continuous Typing Idle Loop (Forward-only, zero reverse motion) */}
+      {/* 1. Act I Continuous Forward Typing Idle Loop */}
       <video
         ref={idleVideoRef}
-        src="/videos/act-01-idle-forward.mp4"
+        src={IDLE_LOOP_CONFIG.src}
         loop
         muted
         playsInline
         autoPlay
-        poster="/posters/act-01-poster.jpg"
+        poster={CINEMATIC_CLIPS[0].poster}
         preload="auto"
-        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ease-out ${
+        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ease-out ${
           isIdleActive ? 'opacity-100 visible' : 'opacity-0 invisible'
         }`}
         style={{
+          objectPosition: '55% 50%',
           transform: 'translate3d(0, 0, 0)',
           backfaceVisibility: 'hidden',
         }}
       />
 
-      {/* 2. Scroll-Scrubbed Main Timeline Video Layers for Acts I - V */}
-      {ACT_VIDEOS.map((act, idx) => (
+      {/* 2. Scroll-Scrubbed Master Timeline Video Layers (Acts I - V) */}
+      {CINEMATIC_CLIPS.map((clip, idx) => (
         <video
-          key={act.id}
+          key={clip.id}
           ref={(el) => {
             videoRefs.current[idx] = el;
           }}
-          src={act.src}
-          poster={act.poster}
+          src={clip.src}
+          poster={clip.poster}
           muted
           playsInline
-          preload="auto"
-          className="absolute inset-0 w-full h-full object-cover"
+          preload={idx <= 1 ? 'auto' : 'metadata'}
+          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-150 ease-out"
           style={{
             opacity: idx === 0 && !isIdleActive ? 1 : 0,
             visibility: idx === 0 && !isIdleActive ? 'visible' : 'hidden',
+            objectPosition: clip.objectPosition.desktop,
             transform: 'translate3d(0, 0, 0)',
             backfaceVisibility: 'hidden',
             willChange: 'opacity',
@@ -223,9 +301,9 @@ export function CinematicVideoLayer({ scrollProgressRef }: CinematicVideoLayerPr
         />
       ))}
 
-      {/* 3. Subtle Cinematic Vignette & Ambient Vignette (Keeps DOM text ultra-crisp while preserving cinematic grade) */}
-      <div className="absolute inset-0 bg-radial-vignette pointer-events-none" />
-      <div className="absolute inset-0 bg-gradient-to-r from-black/45 via-transparent to-black/25 pointer-events-none" />
+      {/* 3. Mediterranean Editorial Vignette (Gentle warm limestone edge gradient) */}
+      <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/30 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 pointer-events-none" />
     </div>
   );
 }

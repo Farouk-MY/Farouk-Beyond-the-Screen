@@ -3,9 +3,10 @@ import type { DeveloperProfile, SkillItem, ProjectItem } from '@/types/portfolio
 export const DEVELOPER_PROFILE: DeveloperProfile = {
   name: 'Farouk Messai',
   title: 'Software Developer | Mobile & Web Development',
-  tagline: 'Engineering responsive web applications, interactive 3D platforms, and cross-platform mobile systems with clean architecture and modern user interfaces.',
+  tagline:
+    'Engineering responsive web applications, cross-platform mobile systems, and creative digital interfaces with clean architecture and modern design principles.',
   bioIntroduction:
-    'Software developer specializing in modern web ecosystems, 3D WebGL interfaces, and cross-platform mobile applications. Focused on translating complex system requirements into performant, intuitive, and architecturally resilient software solutions.',
+    'Software developer focused on building robust web ecosystems and cross-platform mobile applications. Committed to clean code, component-driven design systems, and thoughtful user experiences.',
   journeyNarrative: {
     part1Title: '01 / The Local Sanctuary',
     part1Body:
@@ -19,48 +20,139 @@ export const DEVELOPER_PROFILE: DeveloperProfile = {
   },
   contact: {
     email: 'farouk.messai.dev@gmail.com',
-    github: 'https://github.com/faroukmessai',
+    github: 'https://github.com/Farouk-MY',
     linkedin: 'https://linkedin.com/in/faroukmessai',
     location: 'Algeria (Available for Remote Worldwide)',
     availability: 'Open to Software Developer Roles & Collaborative Projects',
   },
 };
 
+export const ENGINEERING_DOMAINS = [
+  {
+    id: 'web',
+    title: 'Web Development',
+    description: 'Component-driven, server-rendered and responsive web architectures with modern TypeScript and React.',
+    technologies: ['Next.js (App Router)', 'React 19', 'TypeScript', 'Tailwind CSS', 'Three.js / WebGL'],
+  },
+  {
+    id: 'mobile',
+    title: 'Mobile Development',
+    description: 'High-performance cross-platform iOS & Android applications with native feel and reactive state.',
+    technologies: ['Flutter / Dart', 'React Native (Expo SDK)', 'Riverpod', 'Zustand', 'Platform Channels'],
+  },
+  {
+    id: 'backend',
+    title: 'Backend & Data',
+    description: 'Scalable RESTful services, real-time database schemas, authentication, and relational data modeling.',
+    technologies: ['Node.js & Express', 'FastAPI (Python)', 'PostgreSQL', 'Supabase', 'Prisma ORM'],
+  },
+  {
+    id: 'ai-systems',
+    title: 'AI & Intelligent Systems',
+    description: 'Pragmatic AI integrations, vector embeddings with pgvector, and Retrieval-Augmented Generation workflows.',
+    technologies: ['RAG Architectures', 'pgvector / ChromaDB', 'LLM Tool Calling', 'WebSocket Signaling', 'Git / CI/CD'],
+  },
+];
+
 export const SKILLS_DATA: SkillItem[] = [
   // Web Development
-  { id: 'nextjs', name: 'Next.js (App Router)', category: 'web', role: 'Full-stack React framework for SSR and static generation', featured: true },
+  { id: 'nextjs', name: 'Next.js (App Router)', category: 'web', role: 'Full-stack React framework with SSR and streaming', featured: true },
   { id: 'react', name: 'React', category: 'web', role: 'Component-based reactive UI architecture', featured: true },
-  { id: 'typescript', name: 'TypeScript', category: 'web', role: 'Strict static type safety and scalable interface contracts', featured: true },
-  { id: 'threejs', name: 'Three.js / React Three Fiber', category: 'web', role: 'Interactive 3D canvas rendering, scene graphs, and shaders', featured: true },
-  { id: 'tailwind', name: 'Tailwind CSS', category: 'web', role: 'Utility-first modern responsive design system', featured: true },
+  { id: 'typescript', name: 'TypeScript', category: 'web', role: 'Strict static type safety and contract-driven interfaces', featured: true },
+  { id: 'threejs', name: 'Three.js', category: 'web', role: 'Interactive 3D canvas rendering and shaders', featured: true },
+  { id: 'tailwind', name: 'Tailwind CSS', category: 'web', role: 'Utility-first responsive design systems', featured: true },
   { id: 'javascript', name: 'JavaScript (ES6+)', category: 'web', role: 'Modern language primitives and asynchronous patterns' },
-  { id: 'html_css', name: 'HTML5 & Semantic Web', category: 'web', role: 'Accessible DOM structuring and modern web standards' },
+  { id: 'html_css', name: 'HTML5 & Semantic Web', category: 'web', role: 'Accessible DOM structuring and web standards' },
 
   // Mobile Development
-  { id: 'flutter', name: 'Flutter', category: 'mobile', role: 'Declarative high-performance cross-platform mobile UI', featured: true },
-  { id: 'dart', name: 'Dart', category: 'mobile', role: 'Strongly-typed language powering Flutter ecosystems', featured: true },
-  { id: 'react_native', name: 'React Native (Expo SDK)', category: 'mobile', role: 'Cross-platform native iOS & Android applications', featured: true },
-  { id: 'mobile_ux', name: 'Mobile UI/UX Design', category: 'mobile', role: 'Platform-native guidelines (Material Design & Cupertino)' },
-  { id: 'state_mgmt', name: 'State Management', category: 'mobile', role: 'Predictable client state with Riverpod and Zustand' },
+  { id: 'flutter', name: 'Flutter', category: 'mobile', role: 'Declarative cross-platform mobile UI engineering', featured: true },
+  { id: 'dart', name: 'Dart', category: 'mobile', role: 'Strongly-typed language powering Flutter apps', featured: true },
+  { id: 'react_native', name: 'React Native (Expo)', category: 'mobile', role: 'Cross-platform iOS & Android mobile systems', featured: true },
+  { id: 'mobile_ux', name: 'Mobile UI/UX', category: 'mobile', role: 'Platform-native Material Design and iOS patterns' },
+  { id: 'state_mgmt', name: 'State Management', category: 'mobile', role: 'Predictable reactive state with Riverpod & Zustand' },
 
   // Backend & Databases
-  { id: 'nodejs', name: 'Node.js', category: 'backend', role: 'Asynchronous event-driven runtime environment', featured: true },
+  { id: 'nodejs', name: 'Node.js', category: 'backend', role: 'Asynchronous event-driven server runtime', featured: true },
   { id: 'express', name: 'Express.js', category: 'backend', role: 'RESTful API routing and middleware pipelines' },
-  { id: 'fastapi', name: 'FastAPI (Python)', category: 'backend', role: 'High-performance asynchronous Python REST APIs and WebSocket handling', featured: true },
-  { id: 'postgresql', name: 'PostgreSQL', category: 'backend', role: 'Relational data modeling, indexing, and complex queries', featured: true },
-  { id: 'supabase', name: 'Supabase', category: 'backend', role: 'Postgres cloud backend with real-time subscriptions, storage, and auth', featured: true },
-  { id: 'prisma', name: 'Prisma ORM', category: 'backend', role: 'Type-safe database ORM and migration workflow' },
-  { id: 'rest_apis', name: 'RESTful API Design', category: 'backend', role: 'Resource-oriented API schemas and HTTP status protocols' },
+  { id: 'fastapi', name: 'FastAPI (Python)', category: 'backend', role: 'High-performance asynchronous Python REST APIs', featured: true },
+  { id: 'postgresql', name: 'PostgreSQL', category: 'backend', role: 'Relational data modeling, indexing, and pgvector', featured: true },
+  { id: 'supabase', name: 'Supabase', category: 'backend', role: 'Postgres cloud backend with auth, storage, and real-time', featured: true },
+  { id: 'prisma', name: 'Prisma ORM', category: 'backend', role: 'Type-safe database ORM and migrations' },
 
   // Tools & Technologies
-  { id: 'git', name: 'Git & GitHub', category: 'tools', role: 'Version control, branch workflows, and PR code reviews', featured: true },
+  { id: 'git', name: 'Git & GitHub', category: 'tools', role: 'Version control, branch workflows, and code review', featured: true },
   { id: 'turbopack', name: 'Turbopack / Vite', category: 'tools', role: 'Rapid development bundling and build pipelines' },
   { id: 'docker', name: 'Docker Containers', category: 'tools', role: 'Consistent containerized environments for service isolation' },
-  { id: 'postman', name: 'Postman', category: 'tools', role: 'API testing, request collection debugging, and documentation' },
   { id: 'linux', name: 'Linux / Bash', category: 'tools', role: 'Server administration, script automation, and CLI workflows' },
 ];
 
 export const PROJECTS_DATA: ProjectItem[] = [
+  {
+    id: 'mediconnect',
+    name: 'MediConnect',
+    tagline: 'Cross-Platform Telemedicine & Clinical Coordination System',
+    category: 'mobile',
+    categoryLabel: 'Mobile & Cloud System',
+    description:
+      'A comprehensive healthcare coordination system facilitating practitioner appointments, WebRTC video consultations, encrypted patient QR identification, and AI pre-consultation questionnaires.',
+    technologies: ['React Native', 'Expo SDK 54', 'TypeScript', 'FastAPI', 'Python', 'WebRTC', 'Supabase / PostgreSQL', 'Zustand'],
+    keyFeatures: [
+      'Appointment booking with real-time practitioner schedule conflict resolution',
+      'Native peer-to-peer WebRTC video consultations with WebSocket session signaling',
+      'Encrypted patient QR code for rapid check-in at physical medical clinics',
+      'Multilingual AI pre-consultation symptom questionnaire with structured triage flow',
+    ],
+    architectureOverview:
+      'Engineered with React Native (Expo) on the mobile client communicating via WebSocket and REST to an asynchronous Python / FastAPI backend, supported by Supabase PostgreSQL.',
+    status: 'Architecture Prototype',
+    links: {
+      github: 'https://github.com/Farouk-MY',
+      live: null,
+    },
+    metrics: [
+      { label: 'Mobile Client', value: 'Expo SDK 54 / RN' },
+      { label: 'Backend API', value: 'FastAPI (Python)' },
+      { label: 'Real-Time', value: 'WebRTC & WS' },
+    ],
+    visualAnchor: {
+      sceneKey: 'mobile-display',
+      timeSeconds: 3.5,
+      label: 'Smartphone / Mobile Display',
+    },
+  },
+  {
+    id: 'smart-class',
+    name: 'Smart Class',
+    tagline: 'Intelligent Collaborative Virtual Learning & Pedagogical Platform',
+    category: 'mobile',
+    categoryLabel: 'Cross-Platform & Cloud',
+    description:
+      'A virtual classroom ecosystem combining multi-surface Flutter client applications with local AI-assisted course creation, intelligent lecture video navigation, and self-hosted pedagogical tutoring.',
+    technologies: ['Flutter', 'Dart', 'Riverpod', 'Node.js', 'Express', 'TypeScript', 'PostgreSQL 17', 'pgvector', 'Prisma ORM'],
+    keyFeatures: [
+      'AI Course Creator & Pedagogical Studio with structured prompt templates',
+      'Conversational AI Tutor using pgvector for Retrieval-Augmented Generation (RAG)',
+      'Interactive Course Reader with chalkboard video player and clickable timestamp markers',
+      'Study tool suite including automated lecture summaries and animated flip-card memory decks',
+    ],
+    architectureOverview:
+      'Built with Flutter across web, tablet, and mobile utilizing Riverpod for reactive state, supported by a Node.js / Express backend with Prisma ORM and PostgreSQL with pgvector.',
+    status: 'Completed Application',
+    links: {
+      github: 'https://github.com/Farouk-MY',
+      live: null,
+    },
+    metrics: [
+      { label: 'UI Client', value: 'Flutter / Riverpod' },
+      { label: 'Backend API', value: 'Node.js / Express' },
+      { label: 'Vector Store', value: 'PostgreSQL pgvector' },
+    ],
+    visualAnchor: {
+      sceneKey: 'dashboard-display',
+      timeSeconds: 6.0,
+      label: 'Dashboard / Learning Platform Display',
+    },
+  },
   {
     id: 'nexform',
     name: 'NEXFORM',
@@ -73,14 +165,14 @@ export const PROJECTS_DATA: ProjectItem[] = [
     keyFeatures: [
       'Browser-based 3D Setup Studio for assembling desks, monitors, and peripherals in a dimensional room editor',
       'Real-time 3D product customization with material switches, dimension inspection, and clearance validation',
-      'PC Lab compatibility engine validating physical clearances, form factors, and component specifications',
-      'Connected design-to-purchase cart system linking 3D scene elements directly to catalog checkouts',
+      'PC Lab compatibility engine validating physical clearances and component form factors',
+      'Connected design-to-purchase cart system linking 3D scene elements directly to checkout',
     ],
     architectureOverview:
-      'Constructed with Next.js App Router and React Three Fiber / Three.js for real-time WebGL rendering, backed by Supabase PostgreSQL for catalog models and Zustand for reactive 3D scene state management.',
+      'Constructed with Next.js App Router and React Three Fiber / Three.js for real-time WebGL rendering, backed by Supabase PostgreSQL and Zustand for scene state management.',
     status: 'Production Prototype',
     links: {
-      github: null,
+      github: 'https://github.com/Farouk-MY',
       live: null,
     },
     metrics: [
@@ -88,62 +180,11 @@ export const PROJECTS_DATA: ProjectItem[] = [
       { label: 'Scene State', value: 'Zustand Graph' },
       { label: 'Framework', value: 'Next.js App Router' },
     ],
-  },
-  {
-    id: 'mediconnect',
-    name: 'MediConnect',
-    tagline: 'Cross-Platform Telemedicine & Clinical Management System',
-    category: 'mobile',
-    categoryLabel: 'Mobile & Cloud System',
-    description:
-      'A comprehensive healthcare coordination system facilitating secure practitioner appointments, native WebRTC video consultations, encrypted patient QR identification, and multilingual AI pre-consultation questionnaires.',
-    technologies: ['React Native', 'Expo SDK 54', 'TypeScript', 'FastAPI', 'Python', 'WebRTC', 'Supabase / PostgreSQL', 'Zustand', 'Groq & Gemini AI'],
-    keyFeatures: [
-      'Automated appointment booking with real-time practitioner schedule and availability conflict resolution',
-      'Native peer-to-peer WebRTC video consultations with WebSocket session signaling',
-      'Encrypted patient QR code for rapid check-in and identification at physical medical clinics',
-      'Multilingual AI pre-consultation symptom questionnaire powered by Groq (Llama 3.3) and Google Gemini with medical RAG',
-    ],
-    architectureOverview:
-      'Built with React Native (Expo Router) on the frontend communicating via WebSocket and REST to an asynchronous Python / FastAPI backend, backed by PostgreSQL (Supabase) with JWT authentication and ChromaDB vector search.',
-    status: 'Architecture Prototype',
-    links: {
-      github: null,
-      live: null,
+    visualAnchor: {
+      sceneKey: '3d-configurator',
+      timeSeconds: 8.5,
+      label: '3D Controller Configurator',
     },
-    metrics: [
-      { label: 'Mobile Client', value: 'Expo SDK 54 / RN' },
-      { label: 'Backend API', value: 'FastAPI (Python)' },
-      { label: 'AI Engine', value: 'Groq & Gemini' },
-    ],
-  },
-  {
-    id: 'smart-class',
-    name: 'Smart Class',
-    tagline: 'Intelligent Collaborative Virtual Learning & Pedagogical Platform',
-    category: 'mobile',
-    categoryLabel: 'Cross-Platform & Cloud',
-    description:
-      'A privacy-first virtual classroom ecosystem combining multi-surface Flutter client applications with local AI-assisted course creation, intelligent lecture video navigation, and self-hosted pedagogical tutoring.',
-    technologies: ['Flutter', 'Dart', 'Riverpod', 'Node.js', 'Express', 'TypeScript', 'PostgreSQL 17', 'pgvector', 'Prisma ORM'],
-    keyFeatures: [
-      'AI Course Creator & Pedagogical Studio with structured prompt chips and academic curriculum templates',
-      'Conversational AI Tutor powered by self-hosted LLMs using pgvector for Retrieval-Augmented Generation (RAG)',
-      'Interactive Course Reader featuring chalkboard video player with clickable AI timestamp markers',
-      'Interactive study tools including AI lecture summaries and animated flip-card memory decks (Fiches Mémo)',
-    ],
-    architectureOverview:
-      'Engineered with Flutter (Web, Tablet, Mobile) utilizing Riverpod for predictable reactive state, supported by a Node.js / Express backend with Prisma ORM and PostgreSQL with pgvector for local vector similarity embeddings.',
-    status: 'Completed Application',
-    links: {
-      github: null,
-      live: null,
-    },
-    metrics: [
-      { label: 'UI Client', value: 'Flutter / Riverpod' },
-      { label: 'Backend API', value: 'Node.js 24 / Express' },
-      { label: 'Vector Store', value: 'PostgreSQL pgvector' },
-    ],
   },
   {
     id: 'linguamate',
@@ -164,13 +205,18 @@ export const PROJECTS_DATA: ProjectItem[] = [
       'Constructed natively in Flutter and Dart with Riverpod for state management, Dio for network communications, Supabase for cloud data persistence and authentication, and native audio/speech plugins.',
     status: 'Production Prototype',
     links: {
-      github: null,
+      github: 'https://github.com/Farouk-MY',
       live: null,
     },
     metrics: [
       { label: 'Framework', value: 'Flutter (Dart)' },
-      { label: 'State Mgmt', value: 'Riverpod 2.6' },
+      { label: 'State Mgmt', value: 'Riverpod' },
       { label: 'Backend', value: 'Supabase Cloud' },
     ],
+    visualAnchor: {
+      sceneKey: 'mobile-display',
+      timeSeconds: 3.5,
+      label: 'Smartphone / Mobile Display',
+    },
   },
 ];

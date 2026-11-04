@@ -6,7 +6,7 @@
     --font-body: var(--font-manrope), sans-serif;
     --font-mono: var(--font-ibm-plex-mono), monospace;
 
-    /* DAY THEME (Warm Plaster, Natural Walnut & Linen) */
+    /* DAY THEME (Warm Mediterranean Plaster, Natural Walnut & Linen) */
     --theme-bg: #F7F5F0;
     --theme-surface: rgba(255, 255, 255, 0.88);
     --theme-surface-glass: rgba(255, 255, 255, 0.75);
@@ -41,18 +41,18 @@
 
   [data-theme="night"] {
     /* NIGHT THEME (Obsidian Studio, Warm Incandescent & Brushed Brass) */
-    --theme-bg: #090B0E;
-    --theme-surface: rgba(14, 17, 23, 0.88);
-    --theme-surface-glass: rgba(10, 13, 18, 0.75);
-    --theme-border: rgba(255, 255, 255, 0.08);
-    --theme-border-subtle: rgba(255, 255, 255, 0.04);
-    --theme-fg: #F4F0E8;
-    --theme-fg-muted: #8E95A5;
+    --theme-bg: #0E0C0A;
+    --theme-surface: rgba(22, 18, 15, 0.88);
+    --theme-surface-glass: rgba(18, 14, 12, 0.75);
+    --theme-border: rgba(255, 255, 255, 0.10);
+    --theme-border-subtle: rgba(255, 255, 255, 0.05);
+    --theme-fg: #FAF8F5;
+    --theme-fg-muted: #A89D8F;
     --theme-accent: #D4AF37;
     --theme-accent-hover: #E5C358;
     --theme-pill: rgba(255, 255, 255, 0.06);
     --theme-pill-active: #D4AF37;
-    --theme-pill-active-fg: #090B0E;
+    --theme-pill-active-fg: #0E0C0A;
     --theme-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
   }
 }
@@ -78,4 +78,13 @@ h1, h2, h3, h4, .font-heading {
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--theme-border);
   box-shadow: var(--theme-shadow);
+}
+
+/* Scrollbar utilities */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

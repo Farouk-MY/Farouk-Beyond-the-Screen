@@ -5,72 +5,97 @@ import { PROJECTS_DATA } from '@/config/portfolioData';
 import type { ProjectItem } from '@/types/portfolio';
 import { ProjectDetailModal } from './ProjectDetailModal';
 
-export function ProjectsOverlay() {
-  const [selectedProjectId, setSelectedProjectId] = useState<string>(PROJECTS_DATA[0].id);
+interface ProjectsOverlayProps {
+  opacity: number;
+  selectedProjectId: string;
+  onSelectProject: (projectId: string) => void;
+}
+
+export function ProjectsOverlay({
+  opacity,
+  selectedProjectId,
+  onSelectProject,
+}: ProjectsOverlayProps) {
   const [modalProject, setModalProject] = useState<ProjectItem | null>(null);
+  const [projectsList, setProjectsList] = useState<ProjectItem[]>(PROJECTS_DATA);
+
+  // Expose test automation hooks for dynamic project scalability testing
+  React.useEffect(() => {
+    if (typeof window === 'undefined') return;
+    (window as unknown as { __FAROUK_INJECT_PROJECT?: (p: ProjectItem) => void }).__FAROUK_INJECT_PROJECT = (newProj: ProjectItem) => {
+      setProjectsList((prev) => [...prev, newProj]);
+    };
+    (window as unknown as { __FAROUK_RESET_PROJECTS?: () => void }).__FAROUK_RESET_PROJECTS = () => {
+      setProjectsList(PROJECTS_DATA);
+    };
+  }, []);
 
   const activeProject =
-    PROJECTS_DATA.find((p) => p.id === selectedProjectId) || PROJECTS_DATA[0];
+    projectsList.find((p) => p.id === selectedProjectId) || projectsList[0];
+
+  const isVisible = opacity > 0.01;
 
   return (
     <>
       <section
         id="act-3-work"
         aria-label="Act III — The Work: Digital Project Gallery"
-        className="relative min-h-[175vh] flex flex-col justify-center p-6 sm:p-12 lg:p-16 pointer-events-none"
+        className={`absolute inset-0 flex flex-col justify-center p-6 sm:p-12 lg:p-16 pt-20 sm:pt-24 pointer-events-none transition-opacity duration-200 ease-out ${
+          isVisible ? 'visible' : 'invisible'
+        }`}
+        style={{ opacity }}
       >
-        {/* Left-aligned container allowing the exhibition screen & Farouk to remain visible on the right */}
-        <div className="max-w-2xl lg:max-w-3xl mr-auto pointer-events-auto">
-          {/* Act Badging */}
-          <div className="flex items-center gap-2.5 mb-4 justify-start">
-            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-mono border border-[#FF9F43]/30 bg-[#FF9F43]/10 text-[#FF9F43] shadow-[0_0_12px_#FF9F4320]">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#FF9F43]" />
+        {/* Left-aligned editorial container allowing exhibition display wall & Farouk to remain visible on right */}
+        <div className="max-w-xl lg:max-w-2xl mr-auto pointer-events-auto">
+          {/* Chapter Badging */}
+          <div className="flex items-center gap-2.5 mb-3">
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-mono tracking-wider border border-[#BA5227]/30 bg-[#BA5227]/10 text-[#E59368]">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#BA5227]" />
               ACT III — THE WORK
             </span>
-            <span className="text-[11px] font-mono tracking-widest text-[#8E9CAE] uppercase">
+            <span className="text-[11px] font-mono tracking-widest text-[#B5A99B] uppercase">
               Digital Project Gallery
             </span>
           </div>
 
-          {/* Title & Description */}
-          <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-[#F3F6FA] text-left mb-3">
+          {/* Heading */}
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold tracking-tight text-[#FAF8F5] mb-2">
             Selected Works
           </h2>
-          <p className="text-sm sm:text-base text-[#8E9CAE] leading-relaxed text-left mb-6 max-w-xl mr-auto">
-            Production implementations and software architectures spanning dynamic web platforms, healthcare systems,
-            and cross-platform mobile apps.
+          <p className="text-xs sm:text-sm text-[#D6CEC2] font-body leading-relaxed mb-4 max-w-lg">
+            Production implementations and architectures spanning cross-platform mobile systems, responsive web platforms, and interactive 3D commerce.
           </p>
 
-          {/* Project Selector Tabs */}
+          {/* Compact Project Selector Tabs (Scrollable & Keyboard Navigable) */}
           <div
             role="tablist"
-            aria-label="Exhibition Pedestal Selector"
-            className="flex flex-wrap items-center justify-start gap-1.5 p-1 rounded-xl border border-[#1C222D] bg-[#11141A]/90 backdrop-blur-md mb-6 mr-auto w-fit max-w-full"
+            aria-label="Project Exhibition Selector"
+            className="flex items-center gap-1.5 p-1 rounded-xl border border-[#E8E2D8]/15 bg-[#1C1512]/75 backdrop-blur-md mb-4 max-w-full overflow-x-auto scrollbar-none"
             onKeyDown={(e) => {
-              const currentIndex = PROJECTS_DATA.findIndex((p) => p.id === selectedProjectId);
+              const currentIndex = projectsList.findIndex((p) => p.id === selectedProjectId);
               if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
                 e.preventDefault();
-                const nextIndex = (currentIndex + 1) % PROJECTS_DATA.length;
-                setSelectedProjectId(PROJECTS_DATA[nextIndex].id);
+                const nextIndex = (currentIndex + 1) % projectsList.length;
+                onSelectProject(projectsList[nextIndex].id);
               } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
                 e.preventDefault();
-                const prevIndex = (currentIndex - 1 + PROJECTS_DATA.length) % PROJECTS_DATA.length;
-                setSelectedProjectId(PROJECTS_DATA[prevIndex].id);
+                const prevIndex = (currentIndex - 1 + projectsList.length) % projectsList.length;
+                onSelectProject(projectsList[prevIndex].id);
               }
             }}
           >
-            {PROJECTS_DATA.map((proj, idx) => {
+            {projectsList.map((proj, idx) => {
               const isActive = proj.id === selectedProjectId;
               return (
                 <button
                   key={proj.id}
                   role="tab"
                   aria-selected={isActive}
-                  onClick={() => setSelectedProjectId(proj.id)}
-                  className={`px-3 sm:px-4 py-1.5 rounded-lg text-xs font-mono font-medium transition-all cursor-pointer ${
+                  onClick={() => onSelectProject(proj.id)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-mono font-medium whitespace-nowrap transition-all cursor-pointer ${
                     isActive
-                      ? 'bg-[#FF9F43]/15 text-[#FF9F43] border border-[#FF9F43]/40 shadow-[0_0_12px_#FF9F4322]'
-                      : 'text-[#8E9CAE] hover:text-[#F3F6FA] border border-transparent'
+                      ? 'bg-[#BA5227] text-[#FAF8F5] shadow-sm font-bold'
+                      : 'text-[#B5A99B] hover:text-[#FAF8F5] hover:bg-white/5'
                   }`}
                 >
                   0{idx + 1} / {proj.name}
@@ -80,57 +105,40 @@ export function ProjectsOverlay() {
           </div>
 
           {/* Active Project Exhibition Card */}
-          <div className="p-6 sm:p-8 rounded-2xl border border-[#1C222D] bg-[#0E1117]/90 backdrop-blur-md shadow-2xl transition-all">
-            {/* Card Header */}
-            <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full uppercase border border-[#00F2FE]/40 bg-[#00F2FE]/10 text-[#00F2FE]">
-                  {activeProject.categoryLabel}
-                </span>
-                <span className="text-[10px] font-mono text-[#8E9CAE]">
-                  Status: {activeProject.status}
-                </span>
-              </div>
-              <span className="text-xs font-mono text-[#FF9F43] font-bold">
-                Pedestal 0{PROJECTS_DATA.findIndex((p) => p.id === activeProject.id) + 1}
+          <div className="p-5 sm:p-6 rounded-2xl border border-[#E8E2D8]/15 bg-[#1C1512]/80 backdrop-blur-md shadow-xl transition-all">
+            {/* Card Header & Visual Sync Badge */}
+            <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+              <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full uppercase border border-[#BA5227]/30 bg-[#BA5227]/10 text-[#E59368]">
+                {activeProject.categoryLabel}
               </span>
+
+              {activeProject.visualAnchor && (
+                <span className="text-[10px] font-mono text-[#D4AF37] flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-pulse" />
+                  <span>Display: {activeProject.visualAnchor.label}</span>
+                </span>
+              )}
             </div>
 
-            {/* Project Name & Tagline */}
-            <h3 className="text-2xl sm:text-3xl font-extrabold text-[#F3F6FA] mb-1">
+            {/* Title & Tagline */}
+            <h3 className="text-xl sm:text-2xl font-heading font-bold text-[#FAF8F5] mb-1">
               {activeProject.name}
             </h3>
-            <p className="text-xs sm:text-sm font-mono text-[#00F2FE] mb-4">
+            <p className="text-xs font-mono text-[#E59368] mb-3">
               {activeProject.tagline}
             </p>
 
             {/* Description */}
-            <p className="text-xs sm:text-sm text-[#8E9CAE] leading-relaxed mb-6">
+            <p className="text-xs sm:text-sm text-[#D6CEC2] font-body leading-relaxed mb-4">
               {activeProject.description}
             </p>
 
-            {/* Architecture Metrics Grid */}
-            {activeProject.metrics && (
-              <div className="grid grid-cols-3 gap-2 p-3 rounded-xl border border-[#1C222D] bg-[#11141A]/70 mb-6 text-center">
-                {activeProject.metrics.map((m, idx) => (
-                  <div key={idx}>
-                    <span className="block text-[10px] font-mono text-[#8E9CAE] uppercase">
-                      {m.label}
-                    </span>
-                    <span className="block text-xs font-mono font-bold text-[#F3F6FA] mt-0.5">
-                      {m.value}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {/* Tech Stack Pills */}
-            <div className="flex flex-wrap gap-1.5 mb-6">
-              {activeProject.technologies.map((tech) => (
+            {/* Tech Stack Chips */}
+            <div className="flex flex-wrap gap-1.5 mb-4">
+              {activeProject.technologies.slice(0, 5).map((tech) => (
                 <span
                   key={tech}
-                  className="px-2.5 py-1 rounded-md text-[11px] font-mono border border-[#1C222D] bg-[#11141A] text-[#D1D9E6]"
+                  className="px-2 py-0.5 rounded-md text-[10px] font-mono border border-[#E8E2D8]/10 bg-[#2A201A]/60 text-[#FAF8F5]"
                 >
                   {tech}
                 </span>
@@ -138,10 +146,10 @@ export function ProjectsOverlay() {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-[#1C222D]">
+            <div className="flex items-center gap-3 pt-3 border-t border-[#E8E2D8]/10">
               <button
                 onClick={() => setModalProject(activeProject)}
-                className="px-4 py-2 rounded-lg text-xs font-mono font-semibold tracking-wider bg-[#FF9F43] text-[#07080B] hover:bg-[#FFB76B] transition-all cursor-pointer inline-flex items-center gap-1.5"
+                className="px-4 py-2 rounded-lg text-xs font-mono font-medium bg-[#BA5227] text-[#FAF8F5] hover:bg-[#CF6234] transition-all cursor-pointer inline-flex items-center gap-1.5"
               >
                 <span>Inspect Architecture</span>
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -154,7 +162,7 @@ export function ProjectsOverlay() {
                   href={activeProject.links.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-3.5 py-2 rounded-lg text-xs font-mono border border-[#1C222D] bg-[#11141A] text-[#8E9CAE] hover:text-[#00F2FE] hover:border-[#00F2FE]/40 transition-colors inline-flex items-center gap-1.5"
+                  className="px-3.5 py-2 rounded-lg text-xs font-mono border border-[#E8E2D8]/20 bg-[#2A201A]/40 text-[#D6CEC2] hover:text-[#FAF8F5] hover:border-[#BA5227]/40 transition-colors inline-flex items-center gap-1.5"
                 >
                   <span>Repository</span>
                   <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -176,4 +184,3 @@ export function ProjectsOverlay() {
     </>
   );
 }
-

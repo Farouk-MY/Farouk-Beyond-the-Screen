@@ -42,7 +42,7 @@ const ibmPlexMono = localFont({
 });
 
 export const viewport: Viewport = {
-  themeColor: '#07080B',
+  themeColor: '#0E0C0A',
   colorScheme: 'dark',
   width: 'device-width',
   initialScale: 1,
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     template: '%s | Farouk Messai',
   },
   description:
-    'Interactive 3D developer portfolio and continuous digital journey showcasing modern web architectures, cross-platform mobile systems, and creative engineering.',
+    'Cinematic five-act video portfolio of Farouk Messai, featuring production systems in Next.js, React Native, and Flutter across modern web and cross-platform architectures.',
   keywords: [
     'Farouk Messai',
     'Software Developer',
@@ -64,7 +64,6 @@ export const metadata: Metadata = {
     'Next.js',
     'React Native',
     'TypeScript',
-    'Three.js',
     'FastAPI',
     'Portfolio',
   ],
@@ -75,14 +74,14 @@ export const metadata: Metadata = {
     locale: 'en_US',
     title: 'Farouk Messai — Software Developer | Mobile & Web Development',
     description:
-      'Explore the continuous five-act 3D cinematic journey of Farouk Messai, featuring production systems in Next.js, React Native, and Flutter.',
+      'Explore the continuous five-act cinematic video portfolio of Farouk Messai, featuring production systems in Next.js, React Native, and Flutter.',
     siteName: 'Farouk Messai — Portfolio',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Farouk Messai — Software Developer | Mobile & Web Development',
     description:
-      'Explore the continuous five-act 3D cinematic journey of Farouk Messai, featuring production systems in Next.js, React Native, and Flutter.',
+      'Explore the continuous five-act cinematic video portfolio of Farouk Messai, featuring production systems in Next.js, React Native, and Flutter.',
   },
   robots: {
     index: true,
@@ -104,7 +103,9 @@ export default function RootLayout({
       className={`${spaceGrotesk.variable} ${manrope.variable} ${ibmPlexMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col font-sans transition-colors duration-500">{children}</body>
+      <body className="min-h-full flex flex-col font-sans transition-colors duration-500 bg-[#0E0C0A] text-[#FAF8F5]">
+        {children}
+      </body>
     </html>
   );
 }
