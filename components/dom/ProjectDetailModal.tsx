@@ -83,14 +83,19 @@ export function ProjectDetailModal({
   }, [isOpen, onClose, getLenis]);
 
   const projectId = project?.id;
+  const projectName = project?.name;
+  const projectCategory = project?.categoryLabel;
 
   useEffect(() => {
-    if (!isOpen || !projectId) return;
+    if (!isOpen || projectId == null) return;
 
     sendGTMEvent({
       event: "project_detail_open",
+      project_id: String(projectId),
+      project_name: projectName,
+      project_category: projectCategory,
     });
-  }, [isOpen, projectId]);
+  }, [isOpen, projectId, projectName, projectCategory]);
 
   if (!isOpen || !project) return null;
 
