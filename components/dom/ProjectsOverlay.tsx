@@ -5,6 +5,7 @@ import { PROJECTS_DATA } from '@/config/portfolioData';
 import type { ProjectItem } from '@/types/portfolio';
 import { ProjectDetailModal } from './ProjectDetailModal';
 import { ProjectGalleryModal } from './ProjectGalleryModal';
+import { ProjectShowcaseGraphic } from './ProjectShowcaseGraphic';
 import { getWorkPresentationState } from '@/config/cinematicTimeline';
 
 interface ProjectsOverlayProps {
@@ -63,7 +64,7 @@ export function ProjectsOverlay({
       <section
         id="scene-work"
         aria-label="Interactive Architectural Exhibition: Selected Work"
-        className={`fixed inset-0 z-20 flex flex-col justify-start items-start p-4 sm:p-8 lg:p-12 xl:p-16 pt-24 sm:pt-28 pb-6 pointer-events-none transition-opacity duration-300 ease-out select-none ${
+        className={`fixed inset-0 z-20 flex flex-col justify-center items-start p-4 sm:p-8 lg:p-12 xl:p-16 pt-20 sm:pt-24 pb-6 pointer-events-none transition-opacity duration-300 ease-out select-none ${
           isVisible ? 'visible' : 'invisible'
         }`}
         style={{
@@ -72,26 +73,26 @@ export function ProjectsOverlay({
           transition: 'transform 0.25s ease-out, opacity 0.25s ease-out',
         }}
       >
-        {/* --- LEFT-SIDE EDITORIAL EXHIBITION COLUMN (Keeps Farouk on the right completely visible!) --- */}
+        {/* --- UNIFIED ARCHITECTURAL EXHIBITION CONSOLE (Preserves Farouk and Wall Display on Right) --- */}
         <div
-          className="w-full max-w-lg lg:max-w-xl xl:max-w-[580px] flex flex-col gap-3 sm:gap-4 pointer-events-auto"
+          className="w-full max-w-[480px] lg:max-w-[520px] xl:max-w-[550px] rounded-3xl bg-[#0D0A08]/85 backdrop-blur-2xl border border-[#D4AF37]/30 shadow-[0_30px_70px_-15px_rgba(0,0,0,0.9)] p-4 sm:p-5 flex flex-col gap-3.5 pointer-events-auto transition-all duration-300"
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
         >
-          {/* 1. Header Bar: Section Pill, Subtitle & Project Step Counter */}
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2 sm:gap-2.5">
-              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] sm:text-[11px] font-mono tracking-widest border border-[#D4AF37]/40 bg-[#15100E]/80 backdrop-blur-md text-[#E59368] shadow-sm">
+          {/* 1. Header Bar: Section Pill, Category & Project Step Counter */}
+          <div className="flex items-center justify-between gap-2 pb-2.5 border-b border-[#E8E2D8]/10">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-mono tracking-widest border border-[#D4AF37]/40 bg-[#1A1411]/80 text-[#E59368]">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#BA5227] animate-pulse" />
-                03 / SELECTED WORK
+                03 / WORK
               </span>
-              <span className="hidden sm:inline-block text-[11px] font-mono tracking-wider text-[#D4C9BC] uppercase">
-                Architectural Exhibition
+              <span className="text-[10px] sm:text-[11px] font-mono text-[#D4AF37] uppercase tracking-wider font-semibold truncate">
+                {activeProject.categoryLabel}
               </span>
             </div>
 
             {/* Step Counter Capsule */}
-            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#15100E]/80 border border-[#E8E2D8]/15 backdrop-blur-md text-[11px] font-mono text-[#FAF8F5] shadow-sm">
+            <div className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-black/60 border border-[#E8E2D8]/15 text-[11px] font-mono shadow-sm shrink-0">
               <span className="text-[#D4AF37] font-bold">
                 {String(activeIndex + 1).padStart(2, '0')}
               </span>
@@ -102,13 +103,9 @@ export function ProjectsOverlay({
             </div>
           </div>
 
-          {/* 2. Left-Side 3D Architectural Project Screen Frame */}
+          {/* 2. Interactive High-Craft UI Showcase Viewport */}
           <div
-            className="relative w-full aspect-[16/10] rounded-2xl cursor-pointer overflow-hidden transition-all duration-300 shadow-[0_20px_50px_-10px_rgba(0,0,0,0.85)] group"
-            style={{
-              perspective: '1000px',
-              transformStyle: 'preserve-3d',
-            }}
+            className="relative w-full aspect-[16/9] rounded-2xl cursor-pointer overflow-hidden bg-gradient-to-br from-[#1A1310] via-[#0D0A08] to-[#0A0706] border border-[#D4AF37]/35 shadow-inner group transition-transform duration-300 hover:scale-[1.01]"
             onClick={() => setGalleryModalProject(activeProject)}
             role="button"
             tabIndex={0}
@@ -120,69 +117,42 @@ export function ProjectsOverlay({
               }
             }}
           >
-            {/* Physical Walnut Bezel + Bronze Trim Frame */}
-            <div className="relative w-full h-full rounded-2xl bg-[#120D0B] border border-[#D4AF37]/35 p-2 sm:p-2.5 shadow-inner flex flex-col justify-between transition-transform duration-300 group-hover:scale-[1.01]">
-              {/* Inner Obsidian Display Bed */}
-              <div className="relative w-full h-full rounded-xl overflow-hidden bg-[#0A0706] border border-[#E8E2D8]/10 flex items-center justify-center">
-                {/* Active Project Cover Image (Object Contain ensures zero UI clipping) */}
-                {activeProject.coverImage && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    key={activeProject.id}
-                    src={activeProject.coverImage.src}
-                    alt={activeProject.coverImage.alt}
-                    className="w-full h-full object-contain select-none transition-opacity duration-300"
-                  />
-                )}
+            {/* Real Project Interface Graphic Component */}
+            <ProjectShowcaseGraphic projectId={activeProject.id} />
 
-                {/* Anti-reflective Glass Gloss Layer */}
-                <div className="absolute inset-0 bg-gradient-to-tr from-white/[0.04] via-transparent to-white/[0.06] pointer-events-none" />
+            {/* Anti-reflective Glass Gloss & Vignette Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-tr from-white/[0.03] via-transparent to-white/[0.05] pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 pointer-events-none" />
 
-                {/* Subtle Inner Glass Vignette */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 pointer-events-none" />
+            {/* Floating Explore Gallery Pill */}
+            <div className="absolute bottom-2.5 right-2.5 px-3 py-1 rounded-full bg-[#18120F]/90 border border-[#D4AF37]/50 text-[10px] font-mono font-semibold text-[#FAF8F5] backdrop-blur-md flex items-center gap-1.5 shadow-lg group-hover:bg-[#BA5227] group-hover:border-white transition-all">
+              <span>View Gallery</span>
+              <span className="text-[#D4AF37] group-hover:text-white transition-colors">↗</span>
+            </div>
 
-                {/* Architecture Spec Badge */}
-                {activeProject.coverImage?.isPlaceholder && (
-                  <div className="absolute top-2.5 left-2.5 px-2 py-0.5 rounded text-[9px] font-mono tracking-wider bg-black/75 text-[#D4AF37] border border-[#D4AF37]/40 backdrop-blur-sm shadow-sm">
-                    ARCHITECTURAL SPEC
-                  </div>
-                )}
-
-                {/* Interactive Explore Gallery Pill */}
-                <div className="absolute bottom-2.5 right-2.5 px-3 py-1 rounded-full bg-[#1C1512]/90 border border-[#D4AF37]/50 text-[10px] font-mono font-semibold text-[#FAF8F5] backdrop-blur-md flex items-center gap-1.5 shadow-lg group-hover:bg-[#BA5227] group-hover:border-[#FAF8F5] transition-all">
-                  <span>Explore Gallery</span>
-                  <span className="text-[#D4AF37] group-hover:text-white transition-colors">↗</span>
-                </div>
-              </div>
+            {/* Status Chip */}
+            <div className="absolute top-2.5 left-2.5 px-2 py-0.5 rounded text-[9px] font-mono tracking-wider bg-black/75 text-[#D4AF37] border border-[#D4AF37]/30 backdrop-blur-sm">
+              {activeProject.status}
             </div>
           </div>
 
-          {/* 3. Refined Project Metadata & Spec Pedestal Card */}
-          <div className="w-full rounded-2xl border border-[#D4AF37]/25 bg-[#140F0C]/90 backdrop-blur-xl p-3.5 sm:p-4.5 shadow-2xl">
-            {/* Header: Category, Status, Title, Tagline & Action Buttons */}
-            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2.5 mb-2">
+          {/* 3. Refined Project Metadata & Architectural Details */}
+          <div className="flex flex-col gap-2">
+            <div className="flex items-start justify-between gap-3">
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded uppercase border border-[#BA5227]/40 bg-[#BA5227]/10 text-[#E59368] font-bold">
-                    {activeProject.categoryLabel}
-                  </span>
-                  <span className="text-[10px] font-mono text-[#D4AF37]">
-                    {activeProject.status}
-                  </span>
-                </div>
-                <h3 className="text-lg sm:text-xl font-heading font-bold text-[#FAF8F5] leading-tight truncate">
+                <h3 className="text-xl sm:text-2xl font-heading font-extrabold text-[#FAF8F5] leading-tight truncate">
                   {activeProject.name}
                 </h3>
-                <p className="text-xs font-mono text-[#E59368] mt-0.5 truncate">
+                <p className="text-xs font-mono text-[#E59368] mt-0.5 truncate font-medium">
                   {activeProject.tagline}
                 </p>
               </div>
 
               {/* Action Buttons: Gallery & Architecture Specs */}
-              <div className="flex items-center gap-2 self-start sm:self-center flex-shrink-0">
+              <div className="flex items-center gap-2 shrink-0">
                 <button
                   onClick={() => setGalleryModalProject(activeProject)}
-                  className="px-3.5 py-1.5 rounded-lg text-xs font-mono font-semibold bg-[#BA5227] text-[#FAF8F5] hover:bg-[#CF6234] transition-all cursor-pointer inline-flex items-center gap-1.5 shadow-sm active:scale-95"
+                  className="px-3.5 py-1.5 rounded-xl text-xs font-mono font-semibold bg-[#BA5227] text-[#FAF8F5] hover:bg-[#CF6234] transition-all cursor-pointer inline-flex items-center gap-1 shadow-sm active:scale-95"
                 >
                   <span>Gallery</span>
                   <span className="text-[10px]">↗</span>
@@ -190,36 +160,36 @@ export function ProjectsOverlay({
 
                 <button
                   onClick={() => setDetailModalProject(activeProject)}
-                  className="px-3 py-1.5 rounded-lg text-xs font-mono border border-[#E8E2D8]/20 bg-[#1C1512] text-[#D6CEC2] hover:text-[#FAF8F5] hover:border-[#D4AF37]/60 transition-colors inline-flex items-center gap-1.5 cursor-pointer active:scale-95"
+                  className="px-3 py-1.5 rounded-xl text-xs font-mono border border-[#E8E2D8]/20 bg-[#1A1411] text-[#D6CEC2] hover:text-[#FAF8F5] hover:border-[#D4AF37]/60 transition-colors inline-flex items-center gap-1 cursor-pointer active:scale-95"
                 >
-                  <span>Architecture</span>
+                  <span>Specs</span>
                   <span className="text-[10px]">&rarr;</span>
                 </button>
               </div>
             </div>
 
-            {/* Concise Description */}
-            <p className="text-xs text-[#D6CEC2] font-body leading-relaxed mb-2.5 line-clamp-2">
+            {/* Concise Engineering Description */}
+            <p className="text-xs text-[#D6CEC2] font-body leading-relaxed line-clamp-2">
               {activeProject.description}
             </p>
 
-            {/* Technology Badges & Interactive Step Dot Rail */}
+            {/* Technology Badges & Interactive Project Step Navigation */}
             <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-[#E8E2D8]/10">
               <div className="flex flex-wrap gap-1.5">
-                {activeProject.technologies.slice(0, 5).map((t) => (
+                {activeProject.technologies.slice(0, 4).map((t) => (
                   <span
                     key={t}
-                    className="px-2 py-0.5 rounded text-[10px] font-mono border border-[#E8E2D8]/10 bg-[#1C1512] text-[#FAF8F5]"
+                    className="px-2 py-0.5 rounded-md text-[10px] font-mono border border-[#E8E2D8]/15 bg-black/40 text-[#FAF8F5]"
                   >
                     {t}
                   </span>
                 ))}
               </div>
 
-              {/* Interactive Step Dot Rail (Clicking jumps smoothly to project) */}
+              {/* Step Navigation Pill Rail */}
               {projectCount > 1 && (
                 <div
-                  className="flex items-center gap-1.5"
+                  className="flex items-center gap-1.5 p-1 rounded-full bg-black/50 border border-[#E8E2D8]/10"
                   role="tablist"
                   aria-label="Select Project Step"
                 >
@@ -232,7 +202,7 @@ export function ProjectsOverlay({
                         aria-selected={isCurrent}
                         onClick={() => onSelectProject(p.id)}
                         aria-label={`Jump to ${p.name}`}
-                        className={`h-1.5 rounded-full transition-all cursor-pointer ${
+                        className={`h-2 rounded-full transition-all cursor-pointer ${
                           isCurrent
                             ? 'w-6 bg-[#D4AF37]'
                             : 'w-2 bg-[#E8E2D8]/20 hover:bg-[#E8E2D8]/50'

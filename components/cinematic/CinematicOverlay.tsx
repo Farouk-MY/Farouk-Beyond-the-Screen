@@ -161,17 +161,17 @@ export function CinematicOverlay({ scrollProgressRef, runwayRef }: CinematicOver
       ref={containerRef}
       className="absolute inset-0 w-full h-full text-[#FAF8F5] pointer-events-none z-10"
     >
-      {/* --- REFINED MINIMAL EDITORIAL HEADER --- */}
-      <header className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-4 sm:px-8 lg:px-12 py-3 sm:py-3.5 pointer-events-none backdrop-blur-md bg-[#0E0C0A]/40 border-b border-[#E8E2D8]/10 text-[#FAF8F5] transition-all duration-300">
+      {/* --- CREATIVE FLOATING ARCHITECTURAL HEADER --- */}
+      <header className="fixed top-3 sm:top-5 left-3 sm:left-6 right-3 sm:right-6 z-40 flex items-center justify-between px-3 sm:px-6 py-2 sm:py-2.5 rounded-full bg-[#0D0A08]/75 backdrop-blur-2xl border border-[#D4AF37]/25 shadow-[0_16px_40px_rgba(0,0,0,0.55)] transition-all duration-300 pointer-events-auto">
         {/* Left: Custom FM Monogram & Wordmark */}
-        <div className="flex items-center gap-3 pointer-events-auto">
+        <div className="flex items-center gap-3">
           <button
             onClick={() => handleJumpToSection(0)}
             className="flex items-center gap-2.5 cursor-pointer group text-left"
             aria-label="Farouk Messai — Home"
           >
             {/* Custom FM Monogram Vector Icon */}
-            <div className="w-8 h-8 rounded-lg bg-[#15100E] border border-[#D4AF37]/30 flex items-center justify-center p-1.5 shadow-sm group-hover:border-[#D4AF37] transition-colors">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-[#1E1612] to-[#0A0706] border border-[#D4AF37]/40 flex items-center justify-center p-1.5 shadow-sm group-hover:border-[#D4AF37] transition-all">
               <svg viewBox="0 0 64 64" fill="none" className="w-full h-full">
                 <rect x="12" y="12" width="7" height="40" rx="1.5" fill="#FAF8F5" />
                 <path d="M12 13.5C12 12.6716 12.6716 12 13.5 12H50.5C51.3284 12 52 12.6716 52 13.5V18.5C52 19.3284 51.3284 20 50.5 20H13.5C12.6716 20 12 19.3284 12 18.5V13.5Z" fill="#FAF8F5" />
@@ -183,19 +183,19 @@ export function CinematicOverlay({ scrollProgressRef, runwayRef }: CinematicOver
             </div>
 
             <div className="flex flex-col">
-              <span className="text-xs sm:text-sm font-heading font-bold tracking-[0.16em] uppercase text-[#FAF8F5] group-hover:text-[#BA5227] transition-colors">
+              <span className="text-xs sm:text-sm font-heading font-extrabold tracking-[0.18em] uppercase text-[#FAF8F5] group-hover:text-[#E59368] transition-colors leading-tight">
                 FAROUK
               </span>
-              <span className="text-[9px] font-mono tracking-[0.2em] uppercase text-[#D4AF37]">
-                DIGITAL PORTFOLIO
+              <span className="text-[8px] sm:text-[9px] font-mono tracking-[0.22em] uppercase text-[#D4AF37]">
+                SOFTWARE DEVELOPER
               </span>
             </div>
           </button>
         </div>
 
-        {/* Center: Discreet Editorial Navigation Links (Studio, Journey, Work, Engineering, Contact) */}
+        {/* Center: Creative Floating Editorial Navigation Dock */}
         <nav
-          className="hidden md:flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-[#E8E2D8]/10 bg-[#140F0C]/80 backdrop-blur-md pointer-events-auto shadow-sm"
+          className="hidden md:flex items-center gap-1 px-1.5 py-1 rounded-full bg-black/40 border border-[#E8E2D8]/10 backdrop-blur-sm"
           aria-label="Portfolio Navigation"
         >
           {navSections.map((sec) => {
@@ -204,33 +204,36 @@ export function CinematicOverlay({ scrollProgressRef, runwayRef }: CinematicOver
               <button
                 key={sec.id}
                 onClick={() => handleJumpToSection(sec.progress)}
-                className={`relative px-3.5 py-1 text-xs font-mono tracking-wider transition-all cursor-pointer rounded-full ${
+                className={`relative px-3 sm:px-3.5 py-1 text-xs font-mono tracking-wider transition-all cursor-pointer rounded-full flex items-center gap-1.5 ${
                   isActive
-                    ? 'text-[#FAF8F5] font-semibold bg-[#BA5227]'
-                    : 'text-[#D4C9BC] hover:text-[#FAF8F5] hover:bg-white/5'
+                    ? 'text-[#FAF8F5] font-semibold bg-[#BA5227] shadow-[0_2px_12px_rgba(186,82,39,0.35)]'
+                    : 'text-[#D4C9BC] hover:text-[#FAF8F5] hover:bg-white/[0.06]'
                 }`}
               >
+                {isActive && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                )}
                 <span>{sec.label}</span>
               </button>
             );
           })}
         </nav>
 
-        {/* Right: Refined Let's Talk CTA */}
-        <div className="flex items-center gap-3 pointer-events-auto">
+        {/* Right: Refined Creative Action CTA & Mobile Trigger */}
+        <div className="flex items-center gap-2 sm:gap-3">
           <button
             onClick={() => handleJumpToSection(navSections[4]?.progress || 0.85)}
-            className="px-4 py-1.5 rounded-full text-xs font-mono font-semibold bg-[#FAF8F5] text-[#15100E] hover:bg-[#BA5227] hover:text-[#FAF8F5] transition-all duration-200 shadow-sm cursor-pointer inline-flex items-center gap-1"
+            className="px-3.5 sm:px-4 py-1.5 rounded-full text-xs font-mono font-semibold border border-[#D4AF37]/40 bg-[#1A1310] text-[#FAF8F5] hover:border-[#FAF8F5] hover:bg-[#BA5227] hover:text-[#FAF8F5] transition-all duration-300 shadow-sm cursor-pointer inline-flex items-center gap-1.5 group active:scale-95"
           >
             <span>Let&apos;s Talk</span>
-            <span className="text-xs">↗</span>
+            <span className="text-xs group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">↗</span>
           </button>
 
           {/* Mobile Menu Toggle Button */}
           <button
             onClick={() => setMobileMenuOpen((prev) => !prev)}
             aria-label="Toggle navigation menu"
-            className="md:hidden p-2 rounded-lg border border-[#E8E2D8]/15 bg-[#15100E]/80 text-[#FAF8F5] cursor-pointer"
+            className="md:hidden p-1.5 rounded-full border border-[#E8E2D8]/15 bg-[#15100E]/80 text-[#FAF8F5] cursor-pointer"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               {mobileMenuOpen ? (
@@ -242,19 +245,19 @@ export function CinematicOverlay({ scrollProgressRef, runwayRef }: CinematicOver
           </button>
         </div>
 
-        {/* Real-time 1px Thin Bronze Progress Indicator Line */}
-        <div className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-[#E8E2D8]/10">
+        {/* Real-time Integrated Bronze Progress Hairline */}
+        <div className="absolute -bottom-[1px] inset-x-8 h-[1.5px] rounded-full overflow-hidden bg-[#E8E2D8]/10 pointer-events-none">
           <div
             ref={progressBarRef}
-            className="h-full w-full origin-left bg-[#D4AF37] transition-transform duration-75"
+            className="h-full w-full origin-left bg-gradient-to-r from-[#BA5227] via-[#D4AF37] to-[#E59368] transition-transform duration-75"
             style={{ transform: 'scaleX(0)' }}
           />
         </div>
       </header>
 
-      {/* Mobile Drawer Menu */}
+      {/* Floating Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="fixed inset-x-0 top-[53px] z-30 p-4 bg-[#140F0C]/95 backdrop-blur-2xl border-b border-[#E8E2D8]/15 flex flex-col gap-2 md:hidden pointer-events-auto animate-in slide-in-from-top-2 duration-200">
+        <div className="fixed inset-x-3 top-16 sm:top-20 z-40 p-4 rounded-2xl bg-[#140F0C]/95 backdrop-blur-2xl border border-[#D4AF37]/30 shadow-2xl flex flex-col gap-2 md:hidden pointer-events-auto animate-in slide-in-from-top-2 duration-200">
           {navSections.map((sec) => (
             <button
               key={sec.id}

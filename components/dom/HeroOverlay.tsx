@@ -62,7 +62,7 @@ export function HeroOverlay({ opacity, onExploreWork, onContactClick }: HeroOver
             className="px-6 py-2.5 rounded-full text-xs font-mono font-medium tracking-wider transition-all duration-200 cursor-pointer border border-[#E8E2D8]/20 bg-[#15100E]/80 text-[#FAF8F5] hover:bg-[#1C1512] hover:border-[#D4AF37]/50 backdrop-blur-md active:scale-95 shadow-sm"
           >
             <span>Get In Touch</span>
-            <span className="text-[10px]">&nearr;</span>
+            <span className="text-xs">↗</span>
           </button>
         </div>
 

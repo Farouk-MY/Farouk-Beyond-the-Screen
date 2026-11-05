@@ -35,7 +35,7 @@ export function ContactOverlay({ opacity, onBackToTop }: ContactOverlayProps) {
     <section
       id="scene-contact"
       aria-label="Contact: The Horizon & Collaboration"
-      className={`absolute inset-0 flex flex-col justify-between p-4 sm:p-10 lg:p-16 pt-24 sm:pt-28 pb-6 sm:pb-8 pointer-events-none transition-opacity duration-200 ease-out ${
+      className={`absolute inset-0 flex flex-col justify-between p-4 sm:p-10 lg:p-16 pt-24 sm:pt-28 pb-6 sm:pb-8 pointer-events-none transition-opacity duration-200 ease-out select-none ${
         isVisible ? 'visible' : 'invisible'
       }`}
       style={{ opacity }}
@@ -43,101 +43,108 @@ export function ContactOverlay({ opacity, onBackToTop }: ContactOverlayProps) {
       {/* Left/Center editorial contact layout over the sunset horizon and open sea */}
       <div className="w-full max-w-lg lg:max-w-xl mr-auto pointer-events-auto">
         {/* Section Label */}
-        <div className="flex items-center gap-2 mb-2.5 sm:mb-3">
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-mono tracking-wider border border-[#BA5227]/30 bg-[#BA5227]/10 text-[#E59368]">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#BA5227]" />
-            CONTACT
+        <div className="flex items-center gap-2 mb-2 sm:mb-2.5">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-mono tracking-widest border border-[#D4AF37]/40 bg-[#1A1411]/80 text-[#E59368]">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#BA5227] animate-pulse" />
+            05 / CONTACT
           </span>
           <span className="text-[10px] sm:text-[11px] font-mono tracking-widest text-[#D4C9BC] uppercase">
             Sunset Balcony Overlook
           </span>
         </div>
 
-        {/* Headline */}
-        <h2 className="text-2xl sm:text-4xl lg:text-5xl font-heading font-bold tracking-tight text-[#FAF8F5] mb-2 sm:mb-3">
-          Have something interesting in mind?
+        {/* Cinematic Headline */}
+        <h2 className="text-3xl sm:text-5xl lg:text-6xl font-heading font-extrabold tracking-tight text-[#FAF8F5] leading-[1.06] mb-2 sm:mb-3 drop-shadow-sm">
+          Let&apos;s build something <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E59368] via-[#D4AF37] to-[#FAF8F5]">extraordinary.</span>
         </h2>
 
-        <p className="text-xs sm:text-sm text-[#D6CEC2] font-body leading-relaxed mb-5 max-w-lg">
-          The continuous cinematic journey concludes at the Mediterranean sunset horizon. Let&apos;s create something meaningful together across mobile, web, and distributed systems.
+        <p className="text-xs sm:text-sm text-[#D6CEC2] font-body leading-relaxed mb-4 sm:mb-5 max-w-lg drop-shadow-sm">
+          The continuous cinematic journey concludes at the Mediterranean horizon. Open to software developer roles, collaborative projects, and engineering high-craft digital platforms across web &amp; mobile surfaces.
         </p>
 
-        {/* Direct Contact Card with Real Mailto & Confirmed Copy */}
-        <div className="p-4 sm:p-5 rounded-2xl border border-[#E8E2D8]/15 bg-[#15100E]/85 backdrop-blur-xl shadow-xl mb-4">
-          <div className="flex items-center justify-between mb-2.5">
-            <span className="text-[10px] font-mono uppercase text-[#A89D8F] tracking-wider">
-              Direct Communication
-            </span>
-            <span className="inline-flex items-center gap-1.5 text-[10px] font-mono text-[#D4AF37]">
+        {/* Sculpted Glass Dispatch Console */}
+        <div className="w-full rounded-3xl border border-[#D4AF37]/30 bg-[#0D0A08]/85 backdrop-blur-2xl shadow-[0_30px_70px_-15px_rgba(0,0,0,0.85)] p-4 sm:p-5 flex flex-col gap-3.5 mb-3 sm:mb-4">
+          {/* Live Availability Badge */}
+          <div className="flex items-center justify-between pb-2.5 border-b border-[#E8E2D8]/10 text-[10px] sm:text-[11px] font-mono">
+            <span className="text-[#A89D8F] uppercase tracking-wider">Direct Dispatch</span>
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border border-[#D4AF37]/40 bg-[#D4AF37]/10 text-[#D4AF37]">
               <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-pulse" />
-              <span>{contact.availability}</span>
+              <span>Open to Roles &amp; Projects</span>
             </span>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 p-3 rounded-xl border border-[#E8E2D8]/10 bg-[#1C1512]/70">
-            <a
-              href={`mailto:${contact.email}`}
-              className="text-xs sm:text-sm font-mono font-medium text-[#FAF8F5] hover:text-[#E59368] transition-colors truncate"
-              title="Compose email"
-            >
-              {contact.email}
-            </a>
+          {/* Email Dispatch Tile */}
+          <div className="p-3 sm:p-3.5 rounded-2xl bg-gradient-to-r from-[#18110E] to-[#120D0B] border border-[#E8E2D8]/15 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 shadow-inner">
+            <div className="flex-1 min-w-0">
+              <span className="text-[9px] font-mono uppercase text-[#A89D8F] tracking-widest block mb-0.5">Primary Inbox</span>
+              <a
+                href={`mailto:${contact.email}`}
+                className="text-xs sm:text-sm font-mono font-bold text-[#FAF8F5] hover:text-[#E59368] transition-colors truncate block"
+                title="Compose email"
+              >
+                {contact.email}
+              </a>
+            </div>
 
             <div className="flex items-center gap-2 shrink-0">
               <a
                 href={`mailto:${contact.email}`}
-                className="px-3 py-1.5 rounded-lg text-xs font-mono font-semibold bg-[#BA5227] text-[#FAF8F5] hover:bg-[#CF6234] transition-all text-center inline-flex items-center gap-1.5 shadow-sm"
+                className="px-3 py-1.5 rounded-xl text-xs font-mono font-semibold bg-[#BA5227] text-[#FAF8F5] hover:bg-[#CF6234] transition-all inline-flex items-center gap-1 shadow-sm active:scale-95"
               >
                 <span>Compose Mail</span>
-                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
+                <span className="text-xs">↗</span>
               </a>
               <button
                 onClick={handleCopyEmail}
-                className="px-2.5 py-1.5 rounded-lg text-xs font-mono border border-[#E8E2D8]/20 bg-[#1C1512] text-[#D6CEC2] hover:text-[#FAF8F5] hover:border-[#BA5227]/40 transition-colors cursor-pointer"
+                className="px-2.5 py-1.5 rounded-xl text-xs font-mono border border-[#E8E2D8]/20 bg-[#1A1411] text-[#D6CEC2] hover:text-[#FAF8F5] hover:border-[#D4AF37]/60 transition-colors cursor-pointer inline-flex items-center gap-1 active:scale-95"
                 aria-label="Copy email address"
               >
-                {copied ? 'Copied ✓' : copyError ? 'Manual Copy' : 'Copy'}
+                {copied ? 'Copied ✓' : copyError ? 'Manual Copy' : 'Copy ⎘'}
               </button>
             </div>
           </div>
 
-          <div className="mt-2.5 flex items-center justify-between text-[10px] sm:text-[11px] font-mono text-[#A89D8F]">
-            <span>Location: {contact.location}</span>
-            <span>Response within 24–48 hours</span>
-          </div>
-        </div>
+          {/* Verified Channels Grid: GitHub & LinkedIn */}
+          <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
+            <a
+              href={contact.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2.5 sm:p-3 rounded-2xl border border-[#E8E2D8]/15 bg-black/40 hover:bg-[#1C1512] hover:border-[#D4AF37]/50 transition-all flex flex-col justify-between group"
+            >
+              <div className="flex items-center justify-between text-[9px] sm:text-[10px] font-mono text-[#A89D8F] mb-0.5">
+                <span>GITHUB</span>
+                <span className="text-[#D4AF37] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">↗</span>
+              </div>
+              <div className="text-xs sm:text-sm font-mono font-bold text-[#FAF8F5] truncate">@Farouk-MY</div>
+              <span className="text-[8px] sm:text-[9px] font-mono text-[#E59368] mt-0.5">Source &amp; Repositories</span>
+            </a>
 
-        {/* Verified Professional Profiles */}
-        <div className="flex flex-wrap items-center gap-2.5">
-          <a
-            href={contact.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-3.5 py-2 rounded-xl text-xs font-mono border border-[#E8E2D8]/15 bg-[#15100E]/80 text-[#FAF8F5] hover:border-[#BA5227]/50 hover:text-[#E59368] transition-colors inline-flex items-center gap-2 backdrop-blur-md"
-          >
-            <span>GitHub Profile</span>
-            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-            </svg>
-          </a>
-          <a
-            href={contact.linkedin}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-3.5 py-2 rounded-xl text-xs font-mono border border-[#E8E2D8]/15 bg-[#15100E]/80 text-[#FAF8F5] hover:border-[#BA5227]/50 hover:text-[#E59368] transition-colors inline-flex items-center gap-2 backdrop-blur-md"
-          >
-            <span>LinkedIn Profile</span>
-            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-            </svg>
-          </a>
+            <a
+              href={contact.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2.5 sm:p-3 rounded-2xl border border-[#E8E2D8]/15 bg-black/40 hover:bg-[#1C1512] hover:border-[#D4AF37]/50 transition-all flex flex-col justify-between group"
+            >
+              <div className="flex items-center justify-between text-[9px] sm:text-[10px] font-mono text-[#A89D8F] mb-0.5">
+                <span>LINKEDIN</span>
+                <span className="text-[#D4AF37] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">↗</span>
+              </div>
+              <div className="text-xs sm:text-sm font-mono font-bold text-[#FAF8F5] truncate">Farouk Messai</div>
+              <span className="text-[8px] sm:text-[9px] font-mono text-[#E59368] mt-0.5">Professional Network</span>
+            </a>
+          </div>
+
+          {/* Location & Response SLA */}
+          <div className="flex items-center justify-between text-[9px] sm:text-[10px] font-mono text-[#A89D8F] pt-2 border-t border-[#E8E2D8]/10">
+            <span>Location: <strong className="text-[#FAF8F5]">Algeria (Remote Worldwide)</strong></span>
+            <span className="text-[#34D399]">Avg Response: &lt; 24h</span>
+          </div>
         </div>
       </div>
 
-      {/* New Editorial Footer (Phase 5: Minimal, warm, typographic, no ACT labels or fake metrics) */}
-      <footer className="border-t border-[#E8E2D8]/10 pt-3 mt-4 flex flex-wrap items-center justify-between gap-3 text-xs font-mono text-[#A89D8F] pointer-events-auto">
+      {/* Refined Minimal Horizon Footer */}
+      <footer className="border-t border-[#E8E2D8]/10 pt-3 flex flex-wrap items-center justify-between gap-3 text-xs font-mono text-[#A89D8F] pointer-events-auto">
         <div className="flex items-center gap-2">
           <span className="w-1.5 h-1.5 rounded-full bg-[#BA5227]" />
           <span className="text-[11px] sm:text-xs">
@@ -151,7 +158,7 @@ export function ContactOverlay({ opacity, onBackToTop }: ContactOverlayProps) {
               onClick={onBackToTop}
               className="text-[#D4AF37] hover:text-[#FAF8F5] transition-colors cursor-pointer inline-flex items-center gap-1"
             >
-              <span>Back to Top</span>
+              <span>Back to Origin</span>
               <span>↑</span>
             </button>
           )}
