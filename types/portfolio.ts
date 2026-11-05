@@ -18,6 +18,8 @@ export interface ProjectMedia {
   src: string;
   alt: string;
   caption?: string;
+  width?: number;
+  height?: number;
   isPlaceholder?: boolean;
 }
 
@@ -112,4 +114,18 @@ export interface CinematicClipConfig {
     desktop: string; // e.g. "50% 50%"
     mobile: string; // e.g. "65% 50%" to keep focal point visible in portrait
   };
+}
+
+export type WorkPresentationPhase = 'intro' | 'projects' | 'outro' | 'inactive';
+
+export interface WorkPresentationState {
+  isInWork: boolean;
+  workLocalProgress: number; // 0..1 inside Work
+  phase: WorkPresentationPhase;
+  projectFractionalIndex: number; // continuous 0..N-1
+  activeProjectIndex: number; // integer 0..N-1
+  introProgress: number; // 0..1 during intro
+  outroProgress: number; // 0..1 during outro
+  carouselOpacity: number; // 0..1
+  carouselScale: number; // e.g. 0.85 -> 1.0 -> 0.9
 }

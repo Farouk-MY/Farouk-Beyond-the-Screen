@@ -89,10 +89,6 @@ export function StaticAccessiblePortfolio() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <div className="hidden sm:inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#D4AF37]/25 bg-[#2A201A]/60 text-[11px] font-mono text-[#FAF8F5]">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-pulse" />
-            <span className="text-[#A89D8F]">Available Remote</span>
-          </div>
           <a
             href={`mailto:${DEVELOPER_PROFILE.contact.email}`}
             className="px-4 py-2 rounded-full text-xs font-mono font-medium border border-[#D4AF37]/50 bg-[#BA5227] text-[#FAF8F5] hover:bg-[#CF6234] transition-all shadow-sm"
@@ -452,3 +448,4 @@ export function StaticAccessiblePortfolio() {
     </div>
   );
 }
+

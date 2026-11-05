@@ -35,7 +35,7 @@ export function ContactOverlay({ opacity, onBackToTop }: ContactOverlayProps) {
     <section
       id="scene-contact"
       aria-label="Contact: The Horizon & Collaboration"
-      className={`absolute inset-0 flex flex-col justify-between p-4 sm:p-10 lg:p-16 pt-16 sm:pt-20 pb-6 sm:pb-8 pointer-events-none transition-opacity duration-200 ease-out ${
+      className={`absolute inset-0 flex flex-col justify-between p-4 sm:p-10 lg:p-16 pt-24 sm:pt-28 pb-6 sm:pb-8 pointer-events-none transition-opacity duration-200 ease-out ${
         isVisible ? 'visible' : 'invisible'
       }`}
       style={{ opacity }}

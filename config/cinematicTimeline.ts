@@ -1,6 +1,7 @@
 import type {
   CinematicClipConfig,
   CinematicTransitionConfig,
+  WorkPresentationState,
   ProjectItem,
 } from '@/types/portfolio';
 
@@ -8,234 +9,411 @@ export const MASTER_FPS = 24;
 export const ACT_CLIP_DURATION = 10.0; // seconds
 export const ACT_TOTAL_FRAMES = 240; // 0..239
 
-// Total scroll runway: 600svh provides 500svh of actual travel inside a 100svh sticky viewport.
-// Each of the 5 scenes corresponds to exactly 100svh of travel (20% of scroll span).
-export const RUNWAY_HEIGHT_SVH = 600;
+// Base scroll runway: 600svh provides 500svh of travel.
+// Dynamic timeline scales total scroll depth based on project count.
+export const RUNWAY_HEIGHT_SVH = 650;
 
-export const CINEMATIC_CLIPS: CinematicClipConfig[] = [
-  {
-    id: 'origin',
-    actNumber: '01',
-    name: 'Studio',
-    subtitle: 'Architectural Workspace & Origin',
-    src: '/videos/act-01-scrub.mp4',
-    poster: '/posters/act-01-poster.jpg',
-    duration: ACT_CLIP_DURATION,
-    sourceFps: MASTER_FPS,
-    totalFrames: ACT_TOTAL_FRAMES,
-    scrollRange: [0.0, 0.20],
-    safeArea: {
-      x: 0.06,
-      y: 0.10,
-      w: 0.40,
-      h: 0.50,
-      maxWidthPx: 560,
-      visibilityWindow: [0.0, 0.70], // Fades gracefully as Farouk stands up and walks to door
-      description: 'Clean upper-left wall area above monitors and desk',
-    },
-    objectPosition: {
-      desktop: '50% 50%',
-      mobile: '58% 50%', // Keeps Farouk seated and workstation framed in portrait
-    },
-  },
-  {
-    id: 'journey',
-    actNumber: '02',
-    name: 'Journey',
-    subtitle: 'Exterior Terrace & Natural Landscape',
-    src: '/videos/act-02-scrub.mp4',
-    poster: '/posters/act-02-poster.jpg',
-    duration: ACT_CLIP_DURATION,
-    sourceFps: MASTER_FPS,
-    totalFrames: ACT_TOTAL_FRAMES,
-    scrollRange: [0.20, 0.40],
-    safeArea: {
-      x: 0.08,
-      y: 0.16,
-      w: 0.42,
-      h: 0.65,
-      maxWidthPx: 580,
-      visibilityWindow: [0.05, 0.95],
-      description: 'Sunlit limestone facade on the left with olive tree shadows',
-    },
-    objectPosition: {
-      desktop: '50% 50%',
-      mobile: '50% 50%',
-    },
-  },
-  {
-    id: 'work',
-    actNumber: '03',
-    name: 'Selected Work',
-    subtitle: 'Digital Project Exhibition',
-    src: '/videos/act-03-scrub.mp4',
-    poster: '/posters/act-03-poster.jpg',
-    duration: ACT_CLIP_DURATION,
-    sourceFps: MASTER_FPS,
-    totalFrames: ACT_TOTAL_FRAMES,
-    scrollRange: [0.40, 0.60],
-    safeArea: {
-      x: 0.06,
-      y: 0.12,
-      w: 0.40,
-      h: 0.82,
-      maxWidthPx: 580,
-      visibilityWindow: [0.08, 0.98], // Reveals once Farouk settles at the exhibition display wall
-      description: 'Left architectural corridor; leaves center display and Farouk visible on right',
-    },
-    objectPosition: {
-      desktop: '50% 50%',
-      mobile: '65% 50%', // Ensures physical exhibition wall & character stay framed
-    },
-  },
-  {
-    id: 'craft',
-    actNumber: '04',
-    name: 'Engineering',
-    subtitle: 'Systems Lab & Engineering Domains',
-    src: '/videos/act-04-scrub.mp4',
-    poster: '/posters/act-04-poster.jpg',
-    duration: ACT_CLIP_DURATION,
-    sourceFps: MASTER_FPS,
-    totalFrames: ACT_TOTAL_FRAMES,
-    scrollRange: [0.60, 0.80],
-    safeArea: {
-      x: 0.06,
-      y: 0.14,
-      w: 0.42,
-      h: 0.70,
-      maxWidthPx: 600,
-      visibilityWindow: [0.22, 0.74],
-      description: 'Travertine wall opposite holographic pedestal; fades before character crosses to exit',
-    },
-    objectPosition: {
-      desktop: '50% 50%',
-      mobile: '60% 50%',
-    },
-  },
-  {
-    id: 'beyond',
-    actNumber: '05',
-    name: 'Contact',
-    subtitle: 'Sunset Balcony & Contact Terminal',
-    src: '/videos/act-05-scrub.mp4',
-    poster: '/posters/act-05-poster.jpg',
-    duration: ACT_CLIP_DURATION,
-    sourceFps: MASTER_FPS,
-    totalFrames: ACT_TOTAL_FRAMES,
-    scrollRange: [0.80, 1.00],
-    safeArea: {
-      x: 0.08,
-      y: 0.14,
-      w: 0.44,
-      h: 0.72,
-      maxWidthPx: 580,
-      visibilityWindow: [0.15, 1.00], // Fades in as Farouk moves to railing on right
-      description: 'Serene sunset sky & sea horizon on the left; Farouk stands at railing on right',
-    },
-    objectPosition: {
-      desktop: '50% 50%',
-      mobile: '70% 50%', // Frames Farouk at the railing overlooking the sea
-    },
-  },
-];
+// Relative timeline weight units (determines runway allocation per section)
+export const WEIGHT_STUDIO = 1.0;
+export const WEIGHT_JOURNEY = 1.0;
+export const WEIGHT_WORK_INTRO = 0.35; // Farouk walks into gallery
+export const WEIGHT_PROJECT_STEP = 0.50; // Per project presentation stop
+export const WEIGHT_WORK_OUTRO = 0.35; // Farouk walks from exhibition to lab
+export const WEIGHT_ENGINEERING = 1.0;
+export const WEIGHT_CONTACT = 1.0;
 
-// Per-boundary transition configurations
-export const CINEMATIC_TRANSITIONS: CinematicTransitionConfig[] = [
-  {
-    boundaryProgress: 0.20,
-    overlapSpan: 0.024,
-    strategy: 'short-crossfade',
-    description: 'Studio reaching door handle -> Journey opening door onto terrace',
-  },
-  {
-    boundaryProgress: 0.40,
-    overlapSpan: 0.020,
-    strategy: 'architectural-cut',
-    description: 'Terrace promenade threshold -> Gallery interior cut',
-  },
-  {
-    boundaryProgress: 0.60,
-    overlapSpan: 0.024,
-    strategy: 'corridor-dissolve',
-    description: 'Gallery exit -> Systems lab entrance',
-  },
-  {
-    boundaryProgress: 0.80,
-    overlapSpan: 0.024,
-    strategy: 'balcony-dissolve',
-    description: 'Lab window walk -> Open sunset balcony',
-  },
-];
+export interface TimelineBounds {
+  totalWeight: number;
+  sectionRanges: [number, number][]; // 5 sections [start, end]
+  workWeight: number;
+  workIntroFraction: number; // fraction of Work section for intro
+  workProjectsFraction: number; // fraction of Work section for projects
+  workOutroFraction: number; // fraction of Work section for outro
+}
 
-// Act I Idle Typing Loop Configuration (Long natural forward typing: 0.208s -> 3.708s with 0.25s boundary crossfade)
+/**
+ * Computes calibrated global scroll boundaries based on variable project count
+ */
+export function computeTimelineBounds(projectCount: number = 4): TimelineBounds {
+  const count = Math.max(1, projectCount);
+  const workWeight = WEIGHT_WORK_INTRO + count * WEIGHT_PROJECT_STEP + WEIGHT_WORK_OUTRO;
+  const totalWeight =
+    WEIGHT_STUDIO + WEIGHT_JOURNEY + workWeight + WEIGHT_ENGINEERING + WEIGHT_CONTACT;
+
+  const weights = [WEIGHT_STUDIO, WEIGHT_JOURNEY, workWeight, WEIGHT_ENGINEERING, WEIGHT_CONTACT];
+  const sectionRanges: [number, number][] = [];
+
+  let accumulated = 0;
+  for (let i = 0; i < weights.length; i++) {
+    const start = accumulated / totalWeight;
+    accumulated += weights[i];
+    const end = accumulated / totalWeight;
+    sectionRanges.push([start, end]);
+  }
+  // Ensure final boundary strictly clamps to 1.0
+  sectionRanges[4][1] = 1.0;
+
+  return {
+    totalWeight,
+    sectionRanges,
+    workWeight,
+    workIntroFraction: WEIGHT_WORK_INTRO / workWeight,
+    workProjectsFraction: (count * WEIGHT_PROJECT_STEP) / workWeight,
+    workOutroFraction: WEIGHT_WORK_OUTRO / workWeight,
+  };
+}
+
+/**
+ * Generates the 5 cinematic clip configurations dynamically calibrated to project count
+ */
+export function getCinematicClips(projectCount: number = 4): CinematicClipConfig[] {
+  const bounds = computeTimelineBounds(projectCount);
+
+  return [
+    {
+      id: 'origin',
+      actNumber: '01',
+      name: 'Studio',
+      subtitle: 'Architectural Workspace & Origin',
+      src: '/videos/act-01-scrub.mp4',
+      poster: '/posters/act-01-poster.jpg',
+      duration: ACT_CLIP_DURATION,
+      sourceFps: MASTER_FPS,
+      totalFrames: ACT_TOTAL_FRAMES,
+      scrollRange: bounds.sectionRanges[0],
+      safeArea: {
+        x: 0.06,
+        y: 0.10,
+        w: 0.40,
+        h: 0.50,
+        maxWidthPx: 560,
+        visibilityWindow: [0.0, 0.72],
+        description: 'Clean upper-left wall area above monitors and desk',
+      },
+      objectPosition: {
+        desktop: '50% 50%',
+        mobile: '58% 50%',
+      },
+    },
+    {
+      id: 'journey',
+      actNumber: '02',
+      name: 'Journey',
+      subtitle: 'Exterior Terrace & Natural Landscape',
+      src: '/videos/act-02-scrub.mp4',
+      poster: '/posters/act-02-poster.jpg',
+      duration: ACT_CLIP_DURATION,
+      sourceFps: MASTER_FPS,
+      totalFrames: ACT_TOTAL_FRAMES,
+      scrollRange: bounds.sectionRanges[1],
+      safeArea: {
+        x: 0.08,
+        y: 0.16,
+        w: 0.42,
+        h: 0.65,
+        maxWidthPx: 580,
+        visibilityWindow: [0.05, 0.95],
+        description: 'Sunlit limestone facade on the left with olive tree shadows',
+      },
+      objectPosition: {
+        desktop: '50% 50%',
+        mobile: '50% 50%',
+      },
+    },
+    {
+      id: 'work',
+      actNumber: '03',
+      name: 'Selected Work',
+      subtitle: '3D Curved Exhibition & Project Showcase',
+      src: '/videos/act-03-scrub.mp4',
+      poster: '/posters/act-03-poster.jpg',
+      duration: ACT_CLIP_DURATION,
+      sourceFps: MASTER_FPS,
+      totalFrames: ACT_TOTAL_FRAMES,
+      scrollRange: bounds.sectionRanges[2],
+      safeArea: {
+        x: 0.05,
+        y: 0.08,
+        w: 0.90,
+        h: 0.84,
+        maxWidthPx: 1200,
+        visibilityWindow: [0.04, 0.98],
+        description: 'Full width 3D curved exhibition wall with clear view of character on right',
+      },
+      objectPosition: {
+        desktop: '50% 50%',
+        mobile: '65% 50%',
+      },
+    },
+    {
+      id: 'craft',
+      actNumber: '04',
+      name: 'Engineering',
+      subtitle: 'Systems Lab & Engineering Domains',
+      src: '/videos/act-04-scrub.mp4',
+      poster: '/posters/act-04-poster.jpg',
+      duration: ACT_CLIP_DURATION,
+      sourceFps: MASTER_FPS,
+      totalFrames: ACT_TOTAL_FRAMES,
+      scrollRange: bounds.sectionRanges[3],
+      safeArea: {
+        x: 0.06,
+        y: 0.14,
+        w: 0.44,
+        h: 0.70,
+        maxWidthPx: 600,
+        visibilityWindow: [0.15, 0.85],
+        description: 'Travertine wall opposite holographic pedestal',
+      },
+      objectPosition: {
+        desktop: '50% 50%',
+        mobile: '60% 50%',
+      },
+    },
+    {
+      id: 'beyond',
+      actNumber: '05',
+      name: 'Contact',
+      subtitle: 'Sunset Balcony & Contact Terminal',
+      src: '/videos/act-05-scrub.mp4',
+      poster: '/posters/act-05-poster.jpg',
+      duration: ACT_CLIP_DURATION,
+      sourceFps: MASTER_FPS,
+      totalFrames: ACT_TOTAL_FRAMES,
+      scrollRange: bounds.sectionRanges[4],
+      safeArea: {
+        x: 0.08,
+        y: 0.14,
+        w: 0.44,
+        h: 0.72,
+        maxWidthPx: 580,
+        visibilityWindow: [0.15, 1.00],
+        description: 'Serene sunset sky & sea horizon; Farouk at railing on right',
+      },
+      objectPosition: {
+        desktop: '50% 50%',
+        mobile: '70% 50%',
+      },
+    },
+  ];
+}
+
+// Default export for initial client hydration (4 projects)
+export const CINEMATIC_CLIPS = getCinematicClips(4);
+
+/**
+ * Returns dynamic transition boundaries between the 5 scenes
+ */
+export function getCinematicTransitions(projectCount: number = 4): CinematicTransitionConfig[] {
+  const bounds = computeTimelineBounds(projectCount);
+  return [
+    {
+      boundaryProgress: bounds.sectionRanges[0][1],
+      overlapSpan: 0.008,
+      strategy: 'architectural-cut',
+      description: 'Studio door handle -> Journey terrace opening',
+    },
+    {
+      boundaryProgress: bounds.sectionRanges[1][1],
+      overlapSpan: 0.020,
+      strategy: 'architectural-cut',
+      description: 'Terrace threshold -> Exhibition gallery interior',
+    },
+    {
+      boundaryProgress: bounds.sectionRanges[2][1],
+      overlapSpan: 0.024,
+      strategy: 'corridor-dissolve',
+      description: 'Exhibition exit -> Systems lab entrance',
+    },
+    {
+      boundaryProgress: bounds.sectionRanges[3][1],
+      overlapSpan: 0.024,
+      strategy: 'balcony-dissolve',
+      description: 'Lab window walk -> Open sunset balcony',
+    },
+  ];
+}
+
+export const CINEMATIC_TRANSITIONS = getCinematicTransitions(4);
+
+// Act I Idle Typing Loop Configuration
 export const IDLE_LOOP_CONFIG = {
   src: '/videos/act-01-idle-forward.mp4',
-  duration: 3.250,
+  duration: 3.000,
   sourceFps: 24,
-  totalFrames: 78,
+  totalFrames: 72,
   mapIdleTimeToSourceTime: (tIdle: number): number => {
-    const wrapped = ((tIdle % 3.250) + 3.250) % 3.250;
-    return Math.min(3.6, 0.208 + wrapped);
+    return ((tIdle % 3.000) + 3.000) % 3.000;
   },
   mapSourceTimeToIdleTime: (tSource: number): number => {
-    const rel = Math.max(0, tSource - 0.208);
-    return Math.min(3.20, rel % 3.250);
+    return ((tSource % 3.000) + 3.000) % 3.000;
   },
 };
 
 /**
- * Returns the active scene definition for a given scroll progress [0..1]
+ * Navigation section definitions with dynamically derived anchor scroll progress
  */
-export function getActiveCinematicAct(progress: number): CinematicClipConfig {
-  const clamped = Math.max(0, Math.min(1, progress));
-  for (let i = CINEMATIC_CLIPS.length - 1; i >= 0; i--) {
-    if (clamped >= CINEMATIC_CLIPS[i].scrollRange[0]) {
-      return CINEMATIC_CLIPS[i];
-    }
+export function getNavSections(projectCount: number = 4): { id: string; label: string; progress: number }[] {
+  const bounds = computeTimelineBounds(projectCount);
+  return [
+    { id: 'origin', label: 'Studio', progress: 0.0 },
+    { id: 'journey', label: 'Journey', progress: bounds.sectionRanges[1][0] },
+    { id: 'work', label: 'Work', progress: bounds.sectionRanges[2][0] },
+    { id: 'craft', label: 'Engineering', progress: bounds.sectionRanges[3][0] },
+    { id: 'beyond', label: 'Contact', progress: bounds.sectionRanges[4][0] },
+  ];
+}
+
+/**
+ * Calculates the exact global scroll progress where a project step is centered in 3D
+ */
+export function getProjectScrollProgress(projectIndex: number, projectCount: number = 4): number {
+  const bounds = computeTimelineBounds(projectCount);
+  const [workStart, workEnd] = bounds.sectionRanges[2];
+  const workSpan = workEnd - workStart;
+
+  const count = Math.max(1, projectCount);
+  const clampedIdx = Math.max(0, Math.min(count - 1, projectIndex));
+
+  // Position within the projects portion of Work
+  let localStepFraction = 0.5;
+  if (count > 1) {
+    localStepFraction = clampedIdx / (count - 1);
   }
-  return CINEMATIC_CLIPS[0];
+
+  const localWorkProgress =
+    bounds.workIntroFraction + localStepFraction * bounds.workProjectsFraction;
+
+  return workStart + localWorkProgress * workSpan;
 }
 
 /**
- * Calculates local progress [0..1] within a scene's scroll range
+ * Evaluates the precise 3D presentation state for Selected Work from global scroll progress
  */
-export function getActLocalProgress(progress: number, actIndex: number): number {
-  const clip = CINEMATIC_CLIPS[actIndex];
-  if (!clip) return 0;
-  const [start, end] = clip.scrollRange;
-  return Math.max(0, Math.min(1, (progress - start) / (end - start)));
-}
+export function getWorkPresentationState(
+  globalProgress: number,
+  projectCount: number = 4
+): WorkPresentationState {
+  const bounds = computeTimelineBounds(projectCount);
+  const [workStart, workEnd] = bounds.sectionRanges[2];
+  const count = Math.max(1, projectCount);
 
-/**
- * Calculates local video media time [0..10.0s] for an act
- */
-export function getActLocalTime(progress: number, actIndex: number): number {
-  const localProg = getActLocalProgress(progress, actIndex);
-  return localProg * CINEMATIC_CLIPS[actIndex].duration;
+  let workLocalProgress = 0;
+  if (globalProgress <= workStart) {
+    workLocalProgress = 0;
+  } else if (globalProgress >= workEnd) {
+    workLocalProgress = 1;
+  } else {
+    workLocalProgress = (globalProgress - workStart) / (workEnd - workStart);
+  }
+
+  const introEnd = bounds.workIntroFraction;
+  const outroStart = 1.0 - bounds.workOutroFraction;
+
+  // 1. Inactive before or after Work
+  if (globalProgress < workStart - 0.02 || globalProgress > workEnd + 0.02) {
+    return {
+      isInWork: false,
+      workLocalProgress,
+      phase: 'inactive',
+      projectFractionalIndex: 0,
+      activeProjectIndex: 0,
+      introProgress: 0,
+      outroProgress: 0,
+      carouselOpacity: 0,
+      carouselScale: 0.85,
+    };
+  }
+
+  // 2. Intro phase: entering gallery, carousel emerges
+  if (workLocalProgress < introEnd) {
+    const introProgress = Math.max(0, Math.min(1, workLocalProgress / introEnd));
+    const carouselOpacity = Math.max(0, Math.min(1, (introProgress - 0.15) / 0.85));
+    const carouselScale = 0.85 + introProgress * 0.15;
+
+    return {
+      isInWork: true,
+      workLocalProgress,
+      phase: 'intro',
+      projectFractionalIndex: 0,
+      activeProjectIndex: 0,
+      introProgress,
+      outroProgress: 0,
+      carouselOpacity,
+      carouselScale,
+    };
+  }
+
+  // 3. Outro phase: exiting gallery, carousel gracefully recedes
+  if (workLocalProgress > outroStart) {
+    const outroProgress = Math.max(0, Math.min(1, (workLocalProgress - outroStart) / bounds.workOutroFraction));
+    const carouselOpacity = Math.max(0, Math.min(1, 1.0 - outroProgress * 1.4));
+    const carouselScale = 1.0 - outroProgress * 0.12;
+
+    return {
+      isInWork: true,
+      workLocalProgress,
+      phase: 'outro',
+      projectFractionalIndex: count - 1,
+      activeProjectIndex: count - 1,
+      introProgress: 1,
+      outroProgress,
+      carouselOpacity,
+      carouselScale,
+    };
+  }
+
+  // 4. Projects presentation phase: finite 3D carousel active
+  const projectsLocalSpan = outroStart - introEnd;
+  const normalizedProg = Math.max(0, Math.min(1, (workLocalProgress - introEnd) / projectsLocalSpan));
+
+  let projectFractionalIndex = 0;
+  if (count > 1) {
+    projectFractionalIndex = normalizedProg * (count - 1);
+  }
+  const activeProjectIndex = Math.max(0, Math.min(count - 1, Math.round(projectFractionalIndex)));
+
+  return {
+    isInWork: true,
+    workLocalProgress,
+    phase: 'projects',
+    projectFractionalIndex,
+    activeProjectIndex,
+    introProgress: 1,
+    outroProgress: 0,
+    carouselOpacity: 1.0,
+    carouselScale: 1.0,
+  };
 }
 
 /**
  * Computes video opacity and playback window for each act with seamless progressive transitions.
- * Both outgoing and incoming clips advance smoothly during transition overlaps.
+ * Integrates Act III stable video hold at 3.75s during the 3D project carousel!
  */
-export function computeActOpacitiesAndTimes(progress: number): {
+export function computeActOpacitiesAndTimes(
+  progress: number,
+  projectCount: number = 4
+): {
   opacities: number[];
   visibleActs: boolean[];
   localTimes: number[];
 } {
+  const clips = getCinematicClips(projectCount);
+  const transitions = getCinematicTransitions(projectCount);
+  const bounds = computeTimelineBounds(projectCount);
+
   const opacities = [0, 0, 0, 0, 0];
   const visibleActs = [false, false, false, false, false];
   const localTimes = [0, 0, 0, 0, 0];
 
   const p = Math.max(0, Math.min(1, progress));
 
-  CINEMATIC_CLIPS.forEach((clip, idx) => {
+  clips.forEach((clip, idx) => {
     const [start, end] = clip.scrollRange;
 
     // Transition overlap boundaries
-    const prevTransition = idx > 0 ? CINEMATIC_TRANSITIONS[idx - 1] : null;
-    const nextTransition = idx < CINEMATIC_CLIPS.length - 1 ? CINEMATIC_TRANSITIONS[idx] : null;
+    const prevTransition = idx > 0 ? transitions[idx - 1] : null;
+    const nextTransition = idx < clips.length - 1 ? transitions[idx] : null;
 
     const leadIn = prevTransition ? prevTransition.overlapSpan / 2 : 0;
     const leadOut = nextTransition ? nextTransition.overlapSpan / 2 : 0;
@@ -246,17 +424,38 @@ export function computeActOpacitiesAndTimes(progress: number): {
     const isVisible = p >= visibleStart && p <= visibleEnd;
     visibleActs[idx] = isVisible;
 
-    // Calculate local time: maps from start to end
+    // Calculate local time
     const localProgress = Math.max(0, Math.min(1, (p - start) / (end - start)));
-    localTimes[idx] = localProgress * clip.duration;
+
+    if (idx === 2) {
+      // Act III: Selected Work video integration
+      // 0.0s -> 3.2s during intro (Farouk enters gallery and approaches display)
+      // 3.2s -> 9.2s during project presentation (Farouk interacts with wall display across all projects)
+      // 9.2s -> 9.65s during outro (Farouk completes interaction safely before EOF buffer)
+      const introEnd = bounds.workIntroFraction;
+      const outroStart = 1.0 - bounds.workOutroFraction;
+
+      if (localProgress < introEnd) {
+        const introRatio = localProgress / introEnd;
+        localTimes[2] = introRatio * 3.2;
+      } else if (localProgress > outroStart) {
+        const outroRatio = (localProgress - outroStart) / bounds.workOutroFraction;
+        localTimes[2] = 9.2 + outroRatio * (9.65 - 9.2);
+      } else {
+        // Continuous interactive playback: background video smoothly advances as projects change
+        const projectsSpan = outroStart - introEnd;
+        const normalizedProg = Math.max(0, Math.min(1, (localProgress - introEnd) / projectsSpan));
+        localTimes[2] = 3.2 + normalizedProg * (9.2 - 3.2);
+      }
+    } else {
+      localTimes[idx] = localProgress * Math.min(clip.duration - 0.25, 9.65);
+    }
 
     if (isVisible) {
       let opacity = 1.0;
       if (prevTransition && p < start) {
-        // Fading in from previous act
         opacity = (p - visibleStart) / (start - visibleStart);
       } else if (nextTransition && p > end) {
-        // Fading out into next act
         opacity = (visibleEnd - p) / (visibleEnd - end);
       }
       opacities[idx] = Math.max(0, Math.min(1, opacity));
@@ -271,8 +470,13 @@ export function computeActOpacitiesAndTimes(progress: number): {
 /**
  * Calculates overlay opacity for an act based on its calibrated safe-area visibility window
  */
-export function computeOverlayOpacity(progress: number, actIndex: number): number {
-  const clip = CINEMATIC_CLIPS[actIndex];
+export function computeOverlayOpacity(
+  progress: number,
+  actIndex: number,
+  projectCount: number = 4
+): number {
+  const clips = getCinematicClips(projectCount);
+  const clip = clips[actIndex];
   if (!clip) return 0;
 
   const [start, end] = clip.scrollRange;
@@ -281,7 +485,7 @@ export function computeOverlayOpacity(progress: number, actIndex: number): numbe
   const localProgress = (progress - start) / (end - start);
   const [visStart, visEnd] = clip.safeArea.visibilityWindow;
 
-  const FADE_SPAN = 0.08; // 8% local progress fade duration
+  const FADE_SPAN = 0.08;
 
   if (localProgress < visStart - FADE_SPAN || localProgress > visEnd + FADE_SPAN) {
     return 0;
@@ -292,59 +496,53 @@ export function computeOverlayOpacity(progress: number, actIndex: number): numbe
   }
 
   if (localProgress > visEnd) {
-    return Math.max(0, ((visEnd + FADE_SPAN) - localProgress) / FADE_SPAN);
+    return Math.max(0, (visEnd + FADE_SPAN - localProgress) / FADE_SPAN);
   }
 
   return 1.0;
 }
 
 /**
- * Maps an Act III local time (e.g. 3.5s, 6.0s, 8.5s) to global scroll progress
+ * Resolves active project index from global scroll progress
  */
-export function getProjectAnchorScrollProgress(timeSeconds: number): number {
-  const act3 = CINEMATIC_CLIPS[2]; // Act III: scrollRange [0.40, 0.60]
+export function resolveActiveProjectForProgress(
+  progress: number,
+  projects: ProjectItem[]
+): number {
+  const count = projects.length;
+  if (count === 0) return 0;
+  const state = getWorkPresentationState(progress, count);
+  return state.activeProjectIndex;
+}
+
+/**
+ * Maps an Act III local time to global scroll progress (backward compatibility)
+ */
+export function getProjectAnchorScrollProgress(
+  timeSeconds: number,
+  projectCount: number = 4
+): number {
+  const clips = getCinematicClips(projectCount);
+  const act3 = clips[2];
   const localProg = Math.max(0, Math.min(1, timeSeconds / act3.duration));
   const [start, end] = act3.scrollRange;
   return start + localProg * (end - start);
 }
 
 /**
- * Resolves active project from scroll progress without state feedback loops.
- * Maps visual scenes in Act III video to projects.
+ * Resolves the active cinematic act clip configuration for any scroll progress
  */
-export function resolveActiveProjectForProgress(
+export function getActiveCinematicAct(
   progress: number,
-  projects: ProjectItem[],
-  currentSelectedId: string
-): string {
-  const act3 = CINEMATIC_CLIPS[2];
-  const [start, end] = act3.scrollRange;
-
-  if (progress < start || progress > end) {
-    return currentSelectedId;
+  projectCount: number = 4
+): CinematicClipConfig {
+  const clips = getCinematicClips(projectCount);
+  const clamped = Math.max(0, Math.min(1, progress));
+  for (let i = clips.length - 1; i >= 0; i--) {
+    if (clamped >= clips[i].scrollRange[0]) {
+      return clips[i];
+    }
   }
-
-  const localTime = ((progress - start) / (end - start)) * act3.duration;
-
-  // Scene 1: Smartphone / Mobile Display (approx 2.5s - 4.9s)
-  // Scene 2: Web Dashboard / Analytics Display (approx 4.9s - 7.3s)
-  // Scene 3: 3D Controller Configurator (approx 7.3s - 10.0s)
-  let targetScene: string;
-  if (localTime < 4.9) {
-    targetScene = 'mobile-display';
-  } else if (localTime < 7.3) {
-    targetScene = 'dashboard-display';
-  } else {
-    targetScene = '3d-configurator';
-  }
-
-  // Find if current selected project already matches this scene
-  const currentProject = projects.find((p) => p.id === currentSelectedId);
-  if (currentProject?.visualAnchor?.sceneKey === targetScene) {
-    return currentSelectedId;
-  }
-
-  // Otherwise, select the first project matching this scene
-  const matchingProject = projects.find((p) => p.visualAnchor?.sceneKey === targetScene);
-  return matchingProject ? matchingProject.id : currentSelectedId;
+  return clips[0];
 }
+

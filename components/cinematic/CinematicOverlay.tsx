@@ -1,13 +1,14 @@
 'use client';
 
-import React, { useRef, useState, useCallback } from 'react';
+import React, { useRef, useState, useCallback, useMemo } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import {
   computeOverlayOpacity,
-  getProjectAnchorScrollProgress,
-  resolveActiveProjectForProgress,
+  getNavSections,
+  getProjectScrollProgress,
+  getWorkPresentationState,
 } from '@/config/cinematicTimeline';
 import { PROJECTS_DATA } from '@/config/portfolioData';
 import { useSmoothScroll } from '@/components/providers/SmoothScrollProvider';
@@ -22,19 +23,11 @@ interface CinematicOverlayProps {
   runwayRef: React.RefObject<HTMLDivElement | null>;
 }
 
-// Clean navigation items without "Act" labels
-const NAV_SECTIONS = [
-  { id: 'origin', label: 'Studio', progress: 0.0 },
-  { id: 'journey', label: 'Journey', progress: 0.20 },
-  { id: 'work', label: 'Work', progress: 0.40 },
-  { id: 'craft', label: 'Craft', progress: 0.60 },
-  { id: 'beyond', label: 'Contact', progress: 0.80 },
-];
-
 export function CinematicOverlay({ scrollProgressRef, runwayRef }: CinematicOverlayProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
 
+  const [currentProgress, setCurrentProgress] = useState<number>(0);
   const [activeSectionId, setActiveSectionId] = useState<string>('origin');
   const [selectedProjectId, setSelectedProjectId] = useState<string>(PROJECTS_DATA[0].id);
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
@@ -43,6 +36,11 @@ export function CinematicOverlay({ scrollProgressRef, runwayRef }: CinematicOver
   const [overlayOpacities, setOverlayOpacities] = useState<number[]>([1, 0, 0, 0, 0]);
 
   const { getLenis } = useSmoothScroll();
+
+  // Dynamic navigation sections calculated from project count
+  const navSections = useMemo(() => {
+    return getNavSections(PROJECTS_DATA.length);
+  }, []);
 
   // Jump to specific scene using Lenis smooth scroll
   const handleJumpToSection = useCallback(
@@ -65,26 +63,27 @@ export function CinematicOverlay({ scrollProgressRef, runwayRef }: CinematicOver
     [getLenis, runwayRef]
   );
 
-  // Synchronized project selection: smoothly scrolls to project anchor in Selected Work video
+  // Synchronized project selection: smoothly scrolls to project anchor in 3D carousel
   const handleSelectProject = useCallback(
     (projectId: string) => {
       setSelectedProjectId(projectId);
-      const project = PROJECTS_DATA.find((p) => p.id === projectId);
-      if (!project || !project.visualAnchor) return;
-
-      const targetProgress = getProjectAnchorScrollProgress(project.visualAnchor.timeSeconds);
-      handleJumpToSection(targetProgress);
+      const idx = PROJECTS_DATA.findIndex((p) => p.id === projectId);
+      if (idx !== -1) {
+        const targetProgress = getProjectScrollProgress(idx, PROJECTS_DATA.length);
+        handleJumpToSection(targetProgress);
+      }
     },
     [handleJumpToSection]
   );
 
-  // Always expose test automation helper globally
+  // Expose test automation helper globally for testing suite
   React.useEffect(() => {
     if (typeof window === 'undefined') return;
 
     (window as unknown as { __FAROUK_SET_SCROLL_PROGRESS?: (p: number) => void }).__FAROUK_SET_SCROLL_PROGRESS = (p: number) => {
       const clamped = Math.max(0, Math.min(1, p));
       scrollProgressRef.current = clamped;
+      setCurrentProgress(clamped);
       const runway = runwayRef.current || document.getElementById('cinematic-runway');
       if (runway) {
         const targetY = (runway.offsetHeight - window.innerHeight) * clamped;
@@ -105,7 +104,7 @@ export function CinematicOverlay({ scrollProgressRef, runwayRef }: CinematicOver
       const runway = runwayRef.current || document.getElementById('cinematic-runway');
       if (!runway) return;
 
-      // Master Authoritative ScrollTrigger bound to the 600svh runway
+      // Master Authoritative ScrollTrigger bound to the runway
       ScrollTrigger.create({
         trigger: runway,
         start: 'top top',
@@ -116,6 +115,7 @@ export function CinematicOverlay({ scrollProgressRef, runwayRef }: CinematicOver
 
           // Direct sync with shared mutable ref for video seek RAF
           scrollProgressRef.current = progress;
+          setCurrentProgress(progress);
 
           // Update header 1px progress bar
           if (progressBarRef.current) {
@@ -123,35 +123,37 @@ export function CinematicOverlay({ scrollProgressRef, runwayRef }: CinematicOver
           }
 
           // Active section determination
-          let currentSec = NAV_SECTIONS[0].id;
-          for (let i = NAV_SECTIONS.length - 1; i >= 0; i--) {
-            if (progress >= NAV_SECTIONS[i].progress - 0.03) {
-              currentSec = NAV_SECTIONS[i].id;
+          let currentSec = navSections[0].id;
+          for (let i = navSections.length - 1; i >= 0; i--) {
+            if (progress >= navSections[i].progress - 0.03) {
+              currentSec = navSections[i].id;
               break;
             }
           }
           setActiveSectionId((prev) => (prev !== currentSec ? currentSec : prev));
 
-          // Compute overlay opacities based on safe-area windows
+          // Compute overlay opacities based on calibrated safe-area windows
           const opacities = [
-            computeOverlayOpacity(progress, 0),
-            computeOverlayOpacity(progress, 1),
-            computeOverlayOpacity(progress, 2),
-            computeOverlayOpacity(progress, 3),
-            computeOverlayOpacity(progress, 4),
+            computeOverlayOpacity(progress, 0, PROJECTS_DATA.length),
+            computeOverlayOpacity(progress, 1, PROJECTS_DATA.length),
+            computeOverlayOpacity(progress, 2, PROJECTS_DATA.length),
+            computeOverlayOpacity(progress, 3, PROJECTS_DATA.length),
+            computeOverlayOpacity(progress, 4, PROJECTS_DATA.length),
           ];
           setOverlayOpacities(opacities);
 
-          // In Selected Work, update selected project if manual scroll enters another visual scene
-          if (progress >= 0.40 && progress <= 0.60) {
-            setSelectedProjectId((currentId) =>
-              resolveActiveProjectForProgress(progress, PROJECTS_DATA, currentId)
-            );
+          // Synchronize active project index from 3D presentation state
+          const workState = getWorkPresentationState(progress, PROJECTS_DATA.length);
+          if (workState.isInWork) {
+            const activeProj = PROJECTS_DATA[workState.activeProjectIndex];
+            if (activeProj) {
+              setSelectedProjectId(activeProj.id);
+            }
           }
         },
       });
     },
-    { scope: containerRef, dependencies: [runwayRef, getLenis] }
+    { scope: containerRef, dependencies: [runwayRef, getLenis, navSections] }
   );
 
   return (
@@ -159,7 +161,7 @@ export function CinematicOverlay({ scrollProgressRef, runwayRef }: CinematicOver
       ref={containerRef}
       className="absolute inset-0 w-full h-full text-[#FAF8F5] pointer-events-none z-10"
     >
-      {/* --- PREMIUM EDITORIAL FILM HEADER --- */}
+      {/* --- REFINED MINIMAL EDITORIAL HEADER --- */}
       <header className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-4 sm:px-8 lg:px-12 py-3 sm:py-3.5 pointer-events-none backdrop-blur-md bg-[#0E0C0A]/40 border-b border-[#E8E2D8]/10 text-[#FAF8F5] transition-all duration-300">
         {/* Left: Custom FM Monogram & Wordmark */}
         <div className="flex items-center gap-3 pointer-events-auto">
@@ -169,7 +171,7 @@ export function CinematicOverlay({ scrollProgressRef, runwayRef }: CinematicOver
             aria-label="Farouk Messai — Home"
           >
             {/* Custom FM Monogram Vector Icon */}
-            <div className="w-8 h-8 rounded-lg bg-[#15100E] border border-[#E8E2D8]/20 flex items-center justify-center p-1.5 shadow-sm group-hover:border-[#BA5227] transition-colors">
+            <div className="w-8 h-8 rounded-lg bg-[#15100E] border border-[#D4AF37]/30 flex items-center justify-center p-1.5 shadow-sm group-hover:border-[#D4AF37] transition-colors">
               <svg viewBox="0 0 64 64" fill="none" className="w-full h-full">
                 <rect x="12" y="12" width="7" height="40" rx="1.5" fill="#FAF8F5" />
                 <path d="M12 13.5C12 12.6716 12.6716 12 13.5 12H50.5C51.3284 12 52 12.6716 52 13.5V18.5C52 19.3284 51.3284 20 50.5 20H13.5C12.6716 20 12 19.3284 12 18.5V13.5Z" fill="#FAF8F5" />
@@ -191,12 +193,12 @@ export function CinematicOverlay({ scrollProgressRef, runwayRef }: CinematicOver
           </button>
         </div>
 
-        {/* Center: Editorial Navigation Links (Studio, Journey, Work, Craft, Contact) */}
+        {/* Center: Discreet Editorial Navigation Links (Studio, Journey, Work, Engineering, Contact) */}
         <nav
-          className="hidden md:flex items-center gap-1 px-3 py-1.5 rounded-full border border-[#E8E2D8]/15 bg-[#15100E]/70 backdrop-blur-md pointer-events-auto shadow-sm"
+          className="hidden md:flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-[#E8E2D8]/10 bg-[#140F0C]/80 backdrop-blur-md pointer-events-auto shadow-sm"
           aria-label="Portfolio Navigation"
         >
-          {NAV_SECTIONS.map((sec) => {
+          {navSections.map((sec) => {
             const isActive = activeSectionId === sec.id;
             return (
               <button
@@ -214,24 +216,17 @@ export function CinematicOverlay({ scrollProgressRef, runwayRef }: CinematicOver
           })}
         </nav>
 
-        {/* Right: Availability Status & Intentional CTA */}
+        {/* Right: Refined Let's Talk CTA */}
         <div className="flex items-center gap-3 pointer-events-auto">
-          {/* Availability Pill */}
-          <div className="hidden lg:flex items-center gap-2 px-3 py-1 rounded-full border border-[#E8E2D8]/10 bg-[#15100E]/60 text-[10px] font-mono text-[#D4C9BC]">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-pulse" />
-            <span>Available for Remote</span>
-          </div>
-
-          {/* Primary Let's Talk CTA */}
           <button
-            onClick={() => handleJumpToSection(0.80)}
+            onClick={() => handleJumpToSection(navSections[4]?.progress || 0.85)}
             className="px-4 py-1.5 rounded-full text-xs font-mono font-semibold bg-[#FAF8F5] text-[#15100E] hover:bg-[#BA5227] hover:text-[#FAF8F5] transition-all duration-200 shadow-sm cursor-pointer inline-flex items-center gap-1"
           >
             <span>Let&apos;s Talk</span>
             <span className="text-xs">↗</span>
           </button>
 
-          {/* Mobile Hamburger Toggle Button */}
+          {/* Mobile Menu Toggle Button */}
           <button
             onClick={() => setMobileMenuOpen((prev) => !prev)}
             aria-label="Toggle navigation menu"
@@ -259,8 +254,8 @@ export function CinematicOverlay({ scrollProgressRef, runwayRef }: CinematicOver
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="fixed inset-x-0 top-[53px] z-30 p-4 bg-[#15100E]/95 backdrop-blur-xl border-b border-[#E8E2D8]/15 flex flex-col gap-2 md:hidden pointer-events-auto animate-in slide-in-from-top-2 duration-200">
-          {NAV_SECTIONS.map((sec) => (
+        <div className="fixed inset-x-0 top-[53px] z-30 p-4 bg-[#140F0C]/95 backdrop-blur-2xl border-b border-[#E8E2D8]/15 flex flex-col gap-2 md:hidden pointer-events-auto animate-in slide-in-from-top-2 duration-200">
+          {navSections.map((sec) => (
             <button
               key={sec.id}
               onClick={() => handleJumpToSection(sec.progress)}
@@ -274,12 +269,11 @@ export function CinematicOverlay({ scrollProgressRef, runwayRef }: CinematicOver
             </button>
           ))}
           <div className="pt-2 border-t border-[#E8E2D8]/10 mt-1 flex items-center justify-between">
-            <span className="text-[10px] font-mono text-[#D4C9BC] flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#10B981]" />
-              Available for Remote
+            <span className="text-[10px] font-mono text-[#A89D8F]">
+              Farouk Messai Portfolio
             </span>
             <button
-              onClick={() => handleJumpToSection(0.80)}
+              onClick={() => handleJumpToSection(navSections[4]?.progress || 0.85)}
               className="px-3.5 py-1.5 rounded-md text-xs font-mono font-semibold bg-[#BA5227] text-[#FAF8F5]"
             >
               Contact ↗
@@ -290,27 +284,28 @@ export function CinematicOverlay({ scrollProgressRef, runwayRef }: CinematicOver
 
       {/* --- SYNCHRONIZED EDITORIAL OVERLAYS --- */}
 
-      {/* 1. STUDIO (0.00 - 0.20) */}
+      {/* 1. STUDIO (Section 01) */}
       <HeroOverlay
         opacity={overlayOpacities[0]}
-        onExploreWork={() => handleJumpToSection(0.40)}
-        onContactClick={() => handleJumpToSection(0.80)}
+        onExploreWork={() => handleJumpToSection(navSections[2]?.progress || 0.35)}
+        onContactClick={() => handleJumpToSection(navSections[4]?.progress || 0.85)}
       />
 
-      {/* 2. JOURNEY (0.20 - 0.40) */}
-      <JourneyOverlay opacity={overlayOpacities[1]} />
+      {/* 2. JOURNEY (Section 02) */}
+      <JourneyOverlay opacity={overlayOpacities[1]} progress={currentProgress} />
 
-      {/* 3. SELECTED WORK (0.40 - 0.60) */}
+      {/* 3. SELECTED WORK (Section 03: Finite 3D Curved Screen Carousel) */}
       <ProjectsOverlay
         opacity={overlayOpacities[2]}
         selectedProjectId={selectedProjectId}
         onSelectProject={handleSelectProject}
+        globalProgress={currentProgress}
       />
 
-      {/* 4. ENGINEERING (0.60 - 0.80) */}
+      {/* 4. ENGINEERING (Section 04) */}
       <SkillsOverlay opacity={overlayOpacities[3]} />
 
-      {/* 5. CONTACT (0.80 - 1.00) */}
+      {/* 5. CONTACT (Section 05) */}
       <ContactOverlay
         opacity={overlayOpacities[4]}
         onBackToTop={() => handleJumpToSection(0)}

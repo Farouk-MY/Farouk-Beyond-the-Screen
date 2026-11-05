@@ -19,7 +19,7 @@ export function SkillsOverlay({ opacity }: SkillsOverlayProps) {
     <section
       id="scene-engineering"
       aria-label="Engineering: Systems Lab & Specializations"
-      className={`absolute inset-0 flex flex-col justify-center p-4 sm:p-10 lg:p-14 pt-16 sm:pt-20 pointer-events-none transition-opacity duration-200 ease-out ${
+      className={`absolute inset-0 flex flex-col justify-center p-4 sm:p-10 lg:p-14 pt-24 sm:pt-28 pointer-events-none transition-opacity duration-200 ease-out ${
         isVisible ? 'visible' : 'invisible'
       }`}
       style={{ opacity }}

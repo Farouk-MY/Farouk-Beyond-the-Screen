@@ -1,218 +1,253 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import { PROJECTS_DATA } from '@/config/portfolioData';
 import type { ProjectItem } from '@/types/portfolio';
 import { ProjectDetailModal } from './ProjectDetailModal';
 import { ProjectGalleryModal } from './ProjectGalleryModal';
+import { getWorkPresentationState } from '@/config/cinematicTimeline';
 
 interface ProjectsOverlayProps {
   opacity: number;
-  selectedProjectId: string;
+  selectedProjectId?: string;
   onSelectProject: (projectId: string) => void;
+  globalProgress?: number;
 }
 
 export function ProjectsOverlay({
   opacity,
-  selectedProjectId,
   onSelectProject,
+  globalProgress = 0.5,
 }: ProjectsOverlayProps) {
   const [detailModalProject, setDetailModalProject] = useState<ProjectItem | null>(null);
   const [galleryModalProject, setGalleryModalProject] = useState<ProjectItem | null>(null);
-  const [projectsList, setProjectsList] = useState<ProjectItem[]>(PROJECTS_DATA);
 
-  // Expose test automation hooks for dynamic project scalability testing
-  React.useEffect(() => {
-    if (typeof window === 'undefined') return;
-    (window as unknown as { __FAROUK_INJECT_PROJECT?: (p: ProjectItem) => void }).__FAROUK_INJECT_PROJECT = (newProj: ProjectItem) => {
-      setProjectsList((prev) => [...prev, newProj]);
-    };
-    (window as unknown as { __FAROUK_RESET_PROJECTS?: () => void }).__FAROUK_RESET_PROJECTS = () => {
-      setProjectsList(PROJECTS_DATA);
-    };
-  }, []);
+  const projects = PROJECTS_DATA;
+  const projectCount = projects.length;
 
-  const activeProject =
-    projectsList.find((p) => p.id === selectedProjectId) || projectsList[0];
+  // Derive continuous presentation state from global scroll progress
+  const workState = useMemo(() => {
+    return getWorkPresentationState(globalProgress, projectCount);
+  }, [globalProgress, projectCount]);
 
-  const isVisible = opacity > 0.01;
+  const activeIndex = Math.max(0, Math.min(projectCount - 1, workState.activeProjectIndex));
+  const activeProject = projects[activeIndex] || projects[0];
+
+  // Touch swipe support for mobile
+  const touchStartXRef = useRef<number | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartXRef.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartXRef.current === null) return;
+    const deltaX = e.changedTouches[0].clientX - touchStartXRef.current;
+    if (Math.abs(deltaX) > 40) {
+      if (deltaX < 0 && activeIndex < projectCount - 1) {
+        onSelectProject(projects[activeIndex + 1].id);
+      } else if (deltaX > 0 && activeIndex > 0) {
+        onSelectProject(projects[activeIndex - 1].id);
+      }
+    }
+    touchStartXRef.current = null;
+  };
+
+  // Visibility and fade scaling derived from work timeline state
+  const isVisible = opacity > 0.01 && workState.isInWork;
+  const stageOpacity = opacity * workState.carouselOpacity;
+  const stageScale = workState.carouselScale;
 
   return (
     <>
       <section
         id="scene-work"
-        aria-label="Selected Work: Digital Project Gallery"
-        className={`absolute inset-0 flex flex-col justify-center px-4 sm:px-10 lg:px-14 pt-16 sm:pt-20 pointer-events-none transition-opacity duration-200 ease-out ${
+        aria-label="Interactive Architectural Exhibition: Selected Work"
+        className={`fixed inset-0 z-20 flex flex-col justify-start items-start p-4 sm:p-8 lg:p-12 xl:p-16 pt-24 sm:pt-28 pb-6 pointer-events-none transition-opacity duration-300 ease-out select-none ${
           isVisible ? 'visible' : 'invisible'
         }`}
-        style={{ opacity }}
+        style={{
+          opacity: stageOpacity,
+          transform: `scale(${stageScale.toFixed(3)})`,
+          transition: 'transform 0.25s ease-out, opacity 0.25s ease-out',
+        }}
       >
-        {/* Left safe-area panel: Constrained to ~44% max width so exhibition display & Farouk stay visible on right */}
-        <div className="w-full max-w-lg lg:max-w-xl mr-auto pointer-events-auto">
-          {/* Editorial Section Label */}
-          <div className="flex items-center gap-2.5 mb-2 sm:mb-3">
-            <span className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-mono tracking-wider border border-[#BA5227]/30 bg-[#BA5227]/10 text-[#E59368]">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#BA5227]" />
-              SELECTED WORK
-            </span>
-            <span className="text-[10px] sm:text-[11px] font-mono tracking-widest text-[#D4C9BC] uppercase">
-              Project Showcase
-            </span>
-          </div>
-
-          {/* Heading */}
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-heading font-bold tracking-tight text-[#FAF8F5] mb-1 sm:mb-2">
-            Selected Work
-          </h2>
-          <p className="text-[11px] sm:text-xs text-[#D6CEC2] font-body leading-relaxed mb-3 sm:mb-4 line-clamp-2">
-            Production systems and architectures spanning cross-platform mobile systems, responsive web platforms, and interactive 3D commerce.
-          </p>
-
-          {/* Main Photo-First Exhibition Card */}
-          <div className="rounded-2xl border border-[#E8E2D8]/15 bg-[#15100E]/85 backdrop-blur-xl shadow-2xl p-4 sm:p-5 transition-all">
-            {/* Visual Anchor Scene Indicator */}
-            <div className="flex items-center justify-between gap-2 mb-2.5">
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded uppercase border border-[#E8E2D8]/15 bg-[#1C1512] text-[#D6CEC2]">
-                {activeProject.categoryLabel}
+        {/* --- LEFT-SIDE EDITORIAL EXHIBITION COLUMN (Keeps Farouk on the right completely visible!) --- */}
+        <div
+          className="w-full max-w-lg lg:max-w-xl xl:max-w-[580px] flex flex-col gap-3 sm:gap-4 pointer-events-auto"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
+          {/* 1. Header Bar: Section Pill, Subtitle & Project Step Counter */}
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2 sm:gap-2.5">
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] sm:text-[11px] font-mono tracking-widest border border-[#D4AF37]/40 bg-[#15100E]/80 backdrop-blur-md text-[#E59368] shadow-sm">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#BA5227] animate-pulse" />
+                03 / SELECTED WORK
               </span>
-
-              {activeProject.visualAnchor && (
-                <span className="text-[10px] font-mono text-[#D4AF37] flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-pulse" />
-                  <span>Display: {activeProject.visualAnchor.label}</span>
-                </span>
-              )}
+              <span className="hidden sm:inline-block text-[11px] font-mono tracking-wider text-[#D4C9BC] uppercase">
+                Architectural Exhibition
+              </span>
             </div>
 
-            {/* Large Interactive Project Cover Preview (Photo-First) */}
-            <div
-              onClick={() => setGalleryModalProject(activeProject)}
-              role="button"
-              tabIndex={0}
-              aria-label={`Open ${activeProject.name} image gallery`}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  setGalleryModalProject(activeProject);
-                }
-              }}
-              className="group relative w-full aspect-[16/10] rounded-xl overflow-hidden bg-[#0E0C0A] border border-[#E8E2D8]/15 mb-3 cursor-pointer select-none"
-            >
-              {activeProject.coverImage && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={activeProject.coverImage.src}
-                  alt={activeProject.coverImage.alt}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-              )}
+            {/* Step Counter Capsule */}
+            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#15100E]/80 border border-[#E8E2D8]/15 backdrop-blur-md text-[11px] font-mono text-[#FAF8F5] shadow-sm">
+              <span className="text-[#D4AF37] font-bold">
+                {String(activeIndex + 1).padStart(2, '0')}
+              </span>
+              <span className="text-[#A89D8F]">/</span>
+              <span className="text-[#A89D8F]">
+                {String(projectCount).padStart(2, '0')}
+              </span>
+            </div>
+          </div>
 
-              {/* Hover Badge / Action Prompt */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0E0C0A]/80 via-transparent to-transparent opacity-80 sm:opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-between p-3">
-                <span className="text-[11px] font-mono font-semibold text-[#FAF8F5] inline-flex items-center gap-1.5 bg-[#1C1512]/90 px-2.5 py-1 rounded-md border border-[#E8E2D8]/20 backdrop-blur-sm">
+          {/* 2. Left-Side 3D Architectural Project Screen Frame */}
+          <div
+            className="relative w-full aspect-[16/10] rounded-2xl cursor-pointer overflow-hidden transition-all duration-300 shadow-[0_20px_50px_-10px_rgba(0,0,0,0.85)] group"
+            style={{
+              perspective: '1000px',
+              transformStyle: 'preserve-3d',
+            }}
+            onClick={() => setGalleryModalProject(activeProject)}
+            role="button"
+            tabIndex={0}
+            aria-label={`View ${activeProject.name} Gallery`}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                setGalleryModalProject(activeProject);
+              }
+            }}
+          >
+            {/* Physical Walnut Bezel + Bronze Trim Frame */}
+            <div className="relative w-full h-full rounded-2xl bg-[#120D0B] border border-[#D4AF37]/35 p-2 sm:p-2.5 shadow-inner flex flex-col justify-between transition-transform duration-300 group-hover:scale-[1.01]">
+              {/* Inner Obsidian Display Bed */}
+              <div className="relative w-full h-full rounded-xl overflow-hidden bg-[#0A0706] border border-[#E8E2D8]/10 flex items-center justify-center">
+                {/* Active Project Cover Image (Object Contain ensures zero UI clipping) */}
+                {activeProject.coverImage && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    key={activeProject.id}
+                    src={activeProject.coverImage.src}
+                    alt={activeProject.coverImage.alt}
+                    className="w-full h-full object-contain select-none transition-opacity duration-300"
+                  />
+                )}
+
+                {/* Anti-reflective Glass Gloss Layer */}
+                <div className="absolute inset-0 bg-gradient-to-tr from-white/[0.04] via-transparent to-white/[0.06] pointer-events-none" />
+
+                {/* Subtle Inner Glass Vignette */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 pointer-events-none" />
+
+                {/* Architecture Spec Badge */}
+                {activeProject.coverImage?.isPlaceholder && (
+                  <div className="absolute top-2.5 left-2.5 px-2 py-0.5 rounded text-[9px] font-mono tracking-wider bg-black/75 text-[#D4AF37] border border-[#D4AF37]/40 backdrop-blur-sm shadow-sm">
+                    ARCHITECTURAL SPEC
+                  </div>
+                )}
+
+                {/* Interactive Explore Gallery Pill */}
+                <div className="absolute bottom-2.5 right-2.5 px-3 py-1 rounded-full bg-[#1C1512]/90 border border-[#D4AF37]/50 text-[10px] font-mono font-semibold text-[#FAF8F5] backdrop-blur-md flex items-center gap-1.5 shadow-lg group-hover:bg-[#BA5227] group-hover:border-[#FAF8F5] transition-all">
                   <span>Explore Gallery</span>
-                  <svg className="w-3 h-3 text-[#D4AF37]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                  </svg>
-                </span>
-                <span className="text-[10px] font-mono text-[#FAF8F5]/70 bg-black/50 px-2 py-0.5 rounded">
-                  {activeProject.galleryImages ? `${activeProject.galleryImages.length} Slides` : '1 View'}
-                </span>
+                  <span className="text-[#D4AF37] group-hover:text-white transition-colors">↗</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* 3. Refined Project Metadata & Spec Pedestal Card */}
+          <div className="w-full rounded-2xl border border-[#D4AF37]/25 bg-[#140F0C]/90 backdrop-blur-xl p-3.5 sm:p-4.5 shadow-2xl">
+            {/* Header: Category, Status, Title, Tagline & Action Buttons */}
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2.5 mb-2">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded uppercase border border-[#BA5227]/40 bg-[#BA5227]/10 text-[#E59368] font-bold">
+                    {activeProject.categoryLabel}
+                  </span>
+                  <span className="text-[10px] font-mono text-[#D4AF37]">
+                    {activeProject.status}
+                  </span>
+                </div>
+                <h3 className="text-lg sm:text-xl font-heading font-bold text-[#FAF8F5] leading-tight truncate">
+                  {activeProject.name}
+                </h3>
+                <p className="text-xs font-mono text-[#E59368] mt-0.5 truncate">
+                  {activeProject.tagline}
+                </p>
+              </div>
+
+              {/* Action Buttons: Gallery & Architecture Specs */}
+              <div className="flex items-center gap-2 self-start sm:self-center flex-shrink-0">
+                <button
+                  onClick={() => setGalleryModalProject(activeProject)}
+                  className="px-3.5 py-1.5 rounded-lg text-xs font-mono font-semibold bg-[#BA5227] text-[#FAF8F5] hover:bg-[#CF6234] transition-all cursor-pointer inline-flex items-center gap-1.5 shadow-sm active:scale-95"
+                >
+                  <span>Gallery</span>
+                  <span className="text-[10px]">↗</span>
+                </button>
+
+                <button
+                  onClick={() => setDetailModalProject(activeProject)}
+                  className="px-3 py-1.5 rounded-lg text-xs font-mono border border-[#E8E2D8]/20 bg-[#1C1512] text-[#D6CEC2] hover:text-[#FAF8F5] hover:border-[#D4AF37]/60 transition-colors inline-flex items-center gap-1.5 cursor-pointer active:scale-95"
+                >
+                  <span>Architecture</span>
+                  <span className="text-[10px]">&rarr;</span>
+                </button>
               </div>
             </div>
 
-            {/* Title & Tagline */}
-            <div className="mb-2">
-              <h3 className="text-lg sm:text-xl font-heading font-bold text-[#FAF8F5] leading-tight">
-                {activeProject.name}
-              </h3>
-              <p className="text-xs font-mono text-[#E59368] mt-0.5">
-                {activeProject.tagline}
-              </p>
-            </div>
-
-            {/* Concise Summary */}
-            <p className="text-xs text-[#D6CEC2] font-body leading-relaxed mb-3 line-clamp-2">
+            {/* Concise Description */}
+            <p className="text-xs text-[#D6CEC2] font-body leading-relaxed mb-2.5 line-clamp-2">
               {activeProject.description}
             </p>
 
-            {/* Horizontal Project Thumbnail Rail */}
-            <div className="mb-3 pt-2.5 border-t border-[#E8E2D8]/10">
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="text-[10px] font-mono tracking-wider text-[#A89D8F] uppercase">
-                  Project Gallery Rail ({projectsList.length})
-                </span>
-                <span className="text-[10px] font-mono text-[#D4AF37]">
-                  Click to switch scene
-                </span>
+            {/* Technology Badges & Interactive Step Dot Rail */}
+            <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-[#E8E2D8]/10">
+              <div className="flex flex-wrap gap-1.5">
+                {activeProject.technologies.slice(0, 5).map((t) => (
+                  <span
+                    key={t}
+                    className="px-2 py-0.5 rounded text-[10px] font-mono border border-[#E8E2D8]/10 bg-[#1C1512] text-[#FAF8F5]"
+                  >
+                    {t}
+                  </span>
+                ))}
               </div>
 
-              <div
-                role="tablist"
-                aria-label="Project Thumbnails"
-                className="flex items-center gap-2 overflow-x-auto py-1 scrollbar-none"
-              >
-                {projectsList.map((proj, idx) => {
-                  const isActive = proj.id === selectedProjectId;
-                  return (
-                    <button
-                      key={proj.id}
-                      role="tab"
-                      aria-selected={isActive}
-                      onClick={() => onSelectProject(proj.id)}
-                      className={`group relative flex-shrink-0 w-20 sm:w-24 aspect-[16/10] rounded-lg overflow-hidden border transition-all cursor-pointer ${
-                        isActive
-                          ? 'border-[#BA5227] ring-2 ring-[#BA5227]/40 scale-105'
-                          : 'border-[#E8E2D8]/15 opacity-60 hover:opacity-100 hover:border-[#E8E2D8]/40'
-                      }`}
-                      title={proj.name}
-                    >
-                      {proj.coverImage && (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={proj.coverImage.src}
-                          alt=""
-                          className="w-full h-full object-cover"
-                        />
-                      )}
-                      <div className="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-colors flex items-end p-1">
-                        <span className="text-[8px] font-mono font-bold text-[#FAF8F5] truncate">
-                          0{idx + 1}
-                        </span>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex items-center justify-between gap-2 pt-2.5 border-t border-[#E8E2D8]/10">
-              <button
-                onClick={() => setGalleryModalProject(activeProject)}
-                className="px-3.5 py-1.5 rounded-lg text-xs font-mono font-semibold bg-[#BA5227] text-[#FAF8F5] hover:bg-[#CF6234] transition-all cursor-pointer inline-flex items-center gap-1.5 shadow-sm"
-              >
-                <span>Explore Gallery</span>
-                <svg className="w-3.5 h-3.5 text-[#FAF8F5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-              </button>
-
-              <button
-                onClick={() => setDetailModalProject(activeProject)}
-                className="px-3 py-1.5 rounded-lg text-xs font-mono border border-[#E8E2D8]/20 bg-[#1C1512] text-[#D6CEC2] hover:text-[#FAF8F5] hover:border-[#BA5227]/50 transition-colors inline-flex items-center gap-1.5 cursor-pointer"
-              >
-                <span>Architecture</span>
-                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
+              {/* Interactive Step Dot Rail (Clicking jumps smoothly to project) */}
+              {projectCount > 1 && (
+                <div
+                  className="flex items-center gap-1.5"
+                  role="tablist"
+                  aria-label="Select Project Step"
+                >
+                  {projects.map((p, i) => {
+                    const isCurrent = i === activeIndex;
+                    return (
+                      <button
+                        key={p.id}
+                        role="tab"
+                        aria-selected={isCurrent}
+                        onClick={() => onSelectProject(p.id)}
+                        aria-label={`Jump to ${p.name}`}
+                        className={`h-1.5 rounded-full transition-all cursor-pointer ${
+                          isCurrent
+                            ? 'w-6 bg-[#D4AF37]'
+                            : 'w-2 bg-[#E8E2D8]/20 hover:bg-[#E8E2D8]/50'
+                        }`}
+                      />
+                    );
+                  })}
+                </div>
+              )}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Project Detail Modal */}
+      {/* Deep Architecture Details Modal */}
       <ProjectDetailModal
         project={detailModalProject}
         isOpen={Boolean(detailModalProject)}
