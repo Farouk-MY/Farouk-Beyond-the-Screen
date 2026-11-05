@@ -161,99 +161,96 @@ export function CinematicOverlay({ scrollProgressRef, runwayRef }: CinematicOver
       ref={containerRef}
       className="absolute inset-0 w-full h-full text-[#FAF8F5] pointer-events-none z-10"
     >
-      {/* --- CREATIVE FLOATING ARCHITECTURAL HEADER --- */}
-      <header className="fixed top-3 sm:top-5 left-3 sm:left-6 right-3 sm:right-6 z-40 flex items-center justify-between px-3 sm:px-6 py-2 sm:py-2.5 rounded-full bg-[#0D0A08]/75 backdrop-blur-2xl border border-[#D4AF37]/25 shadow-[0_16px_40px_rgba(0,0,0,0.55)] transition-all duration-300 pointer-events-auto">
-        {/* Left: Custom FM Monogram & Wordmark */}
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => handleJumpToSection(0)}
-            className="flex items-center gap-2.5 cursor-pointer group text-left"
-            aria-label="Farouk Messai — Home"
-          >
-            {/* Custom FM Monogram Vector Icon */}
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-[#1E1612] to-[#0A0706] border border-[#D4AF37]/40 flex items-center justify-center p-1.5 shadow-sm group-hover:border-[#D4AF37] transition-all">
-              <svg viewBox="0 0 64 64" fill="none" className="w-full h-full">
-                <rect x="12" y="12" width="7" height="40" rx="1.5" fill="#FAF8F5" />
-                <path d="M12 13.5C12 12.6716 12.6716 12 13.5 12H50.5C51.3284 12 52 12.6716 52 13.5V18.5C52 19.3284 51.3284 20 50.5 20H13.5C12.6716 20 12 19.3284 12 18.5V13.5Z" fill="#FAF8F5" />
-                <rect x="12" y="28" width="18" height="6" rx="1.2" fill="#BA5227" />
-                <path d="M30 19L36.5 36.5C36.8 37.3 37.9 37.3 38.2 36.5L44.5 19H50.5L40.2 46C39.5 47.8 36.9 47.8 36.2 46L27 21.5L30 19Z" fill="#FAF8F5" />
-                <rect x="45" y="19" width="7" height="33" rx="1.5" fill="#FAF8F5" />
-                <circle cx="37.5" cy="28" r="2.2" fill="#D4AF37" />
-              </svg>
-            </div>
-
-            <div className="flex flex-col">
-              <span className="text-xs sm:text-sm font-heading font-extrabold tracking-[0.18em] uppercase text-[#FAF8F5] group-hover:text-[#E59368] transition-colors leading-tight">
-                FAROUK
-              </span>
-              <span className="text-[8px] sm:text-[9px] font-mono tracking-[0.22em] uppercase text-[#D4AF37]">
-                SOFTWARE DEVELOPER
-              </span>
-            </div>
-          </button>
-        </div>
-
-        {/* Center: Creative Floating Editorial Navigation Dock */}
-        <nav
-          className="hidden md:flex items-center gap-1 px-1.5 py-1 rounded-full bg-black/40 border border-[#E8E2D8]/10 backdrop-blur-sm"
-          aria-label="Portfolio Navigation"
+      {/* --- 1. TOP-LEFT FLOATING BRAND LOGO (Independent, Zero Background Box) --- */}
+      <div className="fixed top-4 sm:top-5 left-4 sm:left-8 z-40 pointer-events-auto">
+        <button
+          onClick={() => handleJumpToSection(0)}
+          className="flex items-center gap-2.5 cursor-pointer group text-left select-none"
+          aria-label="Farouk Messai — Home"
         >
-          {navSections.map((sec) => {
-            const isActive = activeSectionId === sec.id;
-            return (
-              <button
-                key={sec.id}
-                onClick={() => handleJumpToSection(sec.progress)}
-                className={`relative px-3 sm:px-3.5 py-1 text-xs font-mono tracking-wider transition-all cursor-pointer rounded-full flex items-center gap-1.5 ${
-                  isActive
-                    ? 'text-[#FAF8F5] font-semibold bg-[#BA5227] shadow-[0_2px_12px_rgba(186,82,39,0.35)]'
-                    : 'text-[#D4C9BC] hover:text-[#FAF8F5] hover:bg-white/[0.06]'
-                }`}
-              >
-                {isActive && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                )}
-                <span>{sec.label}</span>
-              </button>
-            );
-          })}
-        </nav>
-
-        {/* Right: Refined Creative Action CTA & Mobile Trigger */}
-        <div className="flex items-center gap-2 sm:gap-3">
-          <button
-            onClick={() => handleJumpToSection(navSections[4]?.progress || 0.85)}
-            className="px-3.5 sm:px-4 py-1.5 rounded-full text-xs font-mono font-semibold border border-[#D4AF37]/40 bg-[#1A1310] text-[#FAF8F5] hover:border-[#FAF8F5] hover:bg-[#BA5227] hover:text-[#FAF8F5] transition-all duration-300 shadow-sm cursor-pointer inline-flex items-center gap-1.5 group active:scale-95"
-          >
-            <span>Let&apos;s Talk</span>
-            <span className="text-xs group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">↗</span>
-          </button>
-
-          {/* Mobile Menu Toggle Button */}
-          <button
-            onClick={() => setMobileMenuOpen((prev) => !prev)}
-            aria-label="Toggle navigation menu"
-            className="md:hidden p-1.5 rounded-full border border-[#E8E2D8]/15 bg-[#15100E]/80 text-[#FAF8F5] cursor-pointer"
-          >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              {mobileMenuOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              )}
+          {/* Custom FM Monogram Vector Medallion */}
+          <div className="w-8 h-8 rounded-full bg-[#18110E]/80 backdrop-blur-md border border-[#D4AF37]/40 flex items-center justify-center p-1.5 shadow-lg group-hover:border-[#D4AF37] group-hover:scale-105 transition-all">
+            <svg viewBox="0 0 64 64" fill="none" className="w-full h-full">
+              <rect x="12" y="12" width="7" height="40" rx="1.5" fill="#FAF8F5" />
+              <path d="M12 13.5C12 12.6716 12.6716 12 13.5 12H50.5C51.3284 12 52 12.6716 52 13.5V18.5C52 19.3284 51.3284 20 50.5 20H13.5C12.6716 20 12 19.3284 12 18.5V13.5Z" fill="#FAF8F5" />
+              <rect x="12" y="28" width="18" height="6" rx="1.2" fill="#BA5227" />
+              <path d="M30 19L36.5 36.5C36.8 37.3 37.9 37.3 38.2 36.5L44.5 19H50.5L40.2 46C39.5 47.8 36.9 47.8 36.2 46L27 21.5L30 19Z" fill="#FAF8F5" />
+              <rect x="45" y="19" width="7" height="33" rx="1.5" fill="#FAF8F5" />
+              <circle cx="37.5" cy="28" r="2.2" fill="#D4AF37" />
             </svg>
-          </button>
-        </div>
+          </div>
 
-        {/* Real-time Integrated Bronze Progress Hairline */}
-        <div className="absolute -bottom-[1px] inset-x-8 h-[1.5px] rounded-full overflow-hidden bg-[#E8E2D8]/10 pointer-events-none">
+          <div className="flex flex-col">
+            <span className="text-xs sm:text-sm font-heading font-extrabold tracking-[0.18em] uppercase text-[#FAF8F5] group-hover:text-[#E59368] transition-colors leading-tight drop-shadow-md">
+              FAROUK
+            </span>
+            <span className="text-[8px] sm:text-[9px] font-mono tracking-[0.22em] uppercase text-[#D4AF37] drop-shadow-sm">
+              SOFTWARE DEVELOPER
+            </span>
+          </div>
+        </button>
+      </div>
+
+      {/* --- 2. TOP-CENTER FLOATING NAVIGATION DOCK (Standalone Capsule Alone) --- */}
+      <nav
+        className="fixed top-4 sm:top-5 left-1/2 -translate-x-1/2 z-40 hidden md:flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-[#0D0A08]/80 backdrop-blur-2xl border border-[#D4AF37]/30 shadow-[0_16px_40px_rgba(0,0,0,0.6)] pointer-events-auto select-none"
+        aria-label="Portfolio Navigation"
+      >
+        {navSections.map((sec) => {
+          const isActive = activeSectionId === sec.id;
+          return (
+            <button
+              key={sec.id}
+              onClick={() => handleJumpToSection(sec.progress)}
+              className={`relative px-3 sm:px-3.5 py-1 text-xs font-mono tracking-wider transition-all cursor-pointer rounded-full flex items-center gap-1.5 ${
+                isActive
+                  ? 'text-[#FAF8F5] font-semibold bg-[#BA5227] shadow-[0_2px_12px_rgba(186,82,39,0.45)]'
+                  : 'text-[#D4C9BC] hover:text-[#FAF8F5] hover:bg-white/[0.06]'
+              }`}
+            >
+              {isActive && (
+                <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+              )}
+              <span>{sec.label}</span>
+            </button>
+          );
+        })}
+
+        {/* Real-time Integrated Bronze Progress Hairline along bottom of dock */}
+        <div className="absolute -bottom-[1px] inset-x-5 h-[1.5px] rounded-full overflow-hidden bg-white/10 pointer-events-none">
           <div
             ref={progressBarRef}
             className="h-full w-full origin-left bg-gradient-to-r from-[#BA5227] via-[#D4AF37] to-[#E59368] transition-transform duration-75"
             style={{ transform: 'scaleX(0)' }}
           />
         </div>
-      </header>
+      </nav>
+
+      {/* --- 3. TOP-RIGHT STANDALONE ACTION CTA & MOBILE MENU TRIGGER --- */}
+      <div className="fixed top-4 sm:top-5 right-4 sm:right-8 z-40 pointer-events-auto flex items-center gap-2 select-none">
+        <button
+          onClick={() => handleJumpToSection(navSections[4]?.progress || 0.85)}
+          className="px-4 sm:px-5 py-2 rounded-full text-xs font-mono font-semibold border border-[#D4AF37]/40 bg-[#0D0A08]/80 hover:bg-[#BA5227] hover:border-white text-[#FAF8F5] backdrop-blur-2xl shadow-[0_8px_24px_rgba(0,0,0,0.5)] transition-all duration-300 cursor-pointer inline-flex items-center gap-1.5 group active:scale-95"
+        >
+          <span>Let&apos;s Talk</span>
+          <span className="text-xs group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">↗</span>
+        </button>
+
+        {/* Mobile Menu Toggle Button */}
+        <button
+          onClick={() => setMobileMenuOpen((prev) => !prev)}
+          aria-label="Toggle navigation menu"
+          className="md:hidden p-2 rounded-full border border-[#D4AF37]/30 bg-[#0D0A08]/80 text-[#FAF8F5] backdrop-blur-md shadow-lg cursor-pointer"
+        >
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            {mobileMenuOpen ? (
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            ) : (
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            )}
+          </svg>
+        </button>
+      </div>
 
       {/* Floating Mobile Drawer Menu */}
       {mobileMenuOpen && (
