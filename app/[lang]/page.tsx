@@ -1,8 +1,11 @@
+import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { CinematicExperience } from '@/components/cinematic/CinematicExperience';
 import { enDictionary } from '@/config/translations/en';
 import { arDictionary } from '@/config/translations/ar';
+
+export const instant = false;
 
 export function generateStaticParams() {
   return [{ lang: 'en' }, { lang: 'ar' }];
@@ -44,7 +47,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function LocalizedPage({
+async function LocalizedContent({
   params,
 }: {
   params: Promise<{ lang: string }>;
@@ -54,9 +57,19 @@ export default async function LocalizedPage({
     notFound();
   }
 
+  return <CinematicExperience />;
+}
+
+export default function LocalizedPage({
+  params,
+}: {
+  params: Promise<{ lang: string }>;
+}) {
   return (
     <main className="w-full min-h-screen bg-[#0E0C0A]">
-      <CinematicExperience />
+      <Suspense fallback={<div className="w-full min-h-screen bg-[#0E0C0A]" />}>
+        <LocalizedContent params={params} />
+      </Suspense>
     </main>
   );
 }

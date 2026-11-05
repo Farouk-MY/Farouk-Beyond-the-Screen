@@ -57,3 +57,4 @@ While the system is 100% production-ready out of the box with generated assets a
   - GitHub: `https://github.com/Farouk-MY`
   - LinkedIn: `https://linkedin.com/in/faroukmessai`
 - **Optional Action:** If your LinkedIn username or primary inbox changes in the future, simply update the constants in `config/portfolioData.ts`.
+

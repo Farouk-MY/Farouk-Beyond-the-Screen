@@ -376,3 +376,4 @@ await send('Browser.close');
 edge.kill();
 console.log('CV generation completed successfully!');
 process.exit(0);
+

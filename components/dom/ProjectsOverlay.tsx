@@ -96,7 +96,7 @@ export function ProjectsOverlay({
       >
         {/* --- UNIFIED ARCHITECTURAL EXHIBITION CONSOLE --- */}
         <div
-          className={`w-full max-w-[480px] lg:max-w-[520px] xl:max-w-[550px] rounded-3xl bg-[#0D0A08]/85 backdrop-blur-2xl border border-[#D4AF37]/30 shadow-[0_30px_70px_-15px_rgba(0,0,0,0.9)] p-4 sm:p-5 flex flex-col gap-3.5 pointer-events-auto transition-all duration-300 ${
+          className={`w-full max-w-[460px] lg:max-w-[500px] xl:max-w-[520px] max-h-[86vh] overflow-y-auto rounded-3xl bg-[#0D0A08]/85 backdrop-blur-2xl border border-[#D4AF37]/30 shadow-[0_30px_70px_-15px_rgba(0,0,0,0.9)] p-3.5 sm:p-4.5 flex flex-col gap-3 pointer-events-auto transition-all duration-300 ${
             isRtl ? 'text-right' : 'text-left'
           }`}
           onTouchStart={handleTouchStart}

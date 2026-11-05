@@ -33,7 +33,7 @@ export function HeroOverlay({ opacity, onExploreWork, onContactClick }: HeroOver
     <section
       id="scene-studio"
       aria-label="Studio: Architectural Workspace"
-      className={`absolute inset-0 flex flex-col justify-between p-6 sm:p-12 lg:p-16 pt-28 sm:pt-32 lg:pt-36 pointer-events-none transition-opacity duration-200 ease-out select-none ${
+      className={`absolute inset-0 flex flex-col justify-between p-4 sm:p-8 lg:p-12 pt-18 sm:pt-20 lg:pt-22 pb-4 sm:pb-5 pointer-events-none transition-opacity duration-200 ease-out select-none ${
         isVisible ? 'visible' : 'invisible'
       }`}
       style={{ opacity }}
@@ -41,8 +41,8 @@ export function HeroOverlay({ opacity, onExploreWork, onContactClick }: HeroOver
       {/* Editorial Content — Positioned in the clean upper negative space */}
       <div className="max-w-[88vw] sm:max-w-lg lg:max-w-xl pointer-events-auto">
         {/* Availability Pill & Section Label */}
-        <div className="flex flex-wrap items-center gap-2 mb-3 sm:mb-4">
-          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] sm:text-[11px] font-mono tracking-wider border border-[#BA5227]/40 bg-[#15100E]/85 backdrop-blur-md text-[#E59368] shadow-sm">
+        <div className="flex flex-wrap items-center gap-2 mb-2 sm:mb-2.5">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-mono tracking-wider border border-[#BA5227]/40 bg-[#15100E]/85 backdrop-blur-md text-[#E59368] shadow-sm">
             <span className="w-1.5 h-1.5 rounded-full bg-[#BA5227] animate-pulse" />
             {t.hero.eyebrow}
           </span>
@@ -52,24 +52,24 @@ export function HeroOverlay({ opacity, onExploreWork, onContactClick }: HeroOver
         </div>
 
         {/* Developer Name & Core Title */}
-        <h1 className="text-3xl sm:text-5xl lg:text-6xl font-heading font-extrabold tracking-tight leading-[1.08] mb-2 text-[#FAF8F5] drop-shadow-sm">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-extrabold tracking-tight leading-[1.08] mb-1.5 text-[#FAF8F5] drop-shadow-sm">
           {t.hero.name}
         </h1>
 
-        <p className="text-base sm:text-lg lg:text-xl font-body font-medium tracking-tight mb-4 text-[#E59368] drop-shadow-sm">
+        <p className="text-sm sm:text-base lg:text-lg font-body font-medium tracking-tight mb-2.5 sm:mb-3 text-[#E59368] drop-shadow-sm">
           {t.hero.role}
         </p>
 
         {/* Concise Editorial Statement */}
-        <p className="text-xs sm:text-sm font-body leading-relaxed mb-5 sm:mb-6 max-w-md sm:max-w-lg text-[#D6CEC2] drop-shadow-sm">
+        <p className="text-xs sm:text-[13px] font-body leading-relaxed mb-4 sm:mb-4.5 max-w-md sm:max-w-lg text-[#D6CEC2] drop-shadow-sm">
           {t.hero.bioIntro}
         </p>
 
         {/* Primary Actions: Explore, Contact, and Download CV */}
-        <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 mb-6 sm:mb-7">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 mb-4 sm:mb-5">
           <button
             onClick={handleExplore}
-            className="px-5 sm:px-6 py-2.5 rounded-full text-xs font-mono font-semibold tracking-wider transition-all duration-200 cursor-pointer bg-[#BA5227] text-[#FAF8F5] hover:bg-[#CF6234] hover:shadow-lg hover:shadow-[#BA5227]/25 inline-flex items-center gap-1.5 active:scale-95 shadow-sm"
+            className="px-4 sm:px-5 py-2 rounded-full text-xs font-mono font-semibold tracking-wider transition-all duration-200 cursor-pointer bg-[#BA5227] text-[#FAF8F5] hover:bg-[#CF6234] hover:shadow-lg hover:shadow-[#BA5227]/25 inline-flex items-center gap-1.5 active:scale-95 shadow-sm"
           >
             <span>{t.common.exploreWork}</span>
             <span className={isRtl ? 'rtl-flip' : ''}>&rarr;</span>
@@ -77,7 +77,7 @@ export function HeroOverlay({ opacity, onExploreWork, onContactClick }: HeroOver
 
           <button
             onClick={handleContact}
-            className="px-4 sm:px-5 py-2.5 rounded-full text-xs font-mono font-medium tracking-wider transition-all duration-200 cursor-pointer border border-[#E8E2D8]/20 bg-[#15100E]/80 text-[#FAF8F5] hover:bg-[#1C1512] hover:border-[#D4AF37]/50 backdrop-blur-md active:scale-95 shadow-sm inline-flex items-center gap-1.5"
+            className="px-3.5 sm:px-4 py-2 rounded-full text-xs font-mono font-medium tracking-wider transition-all duration-200 cursor-pointer border border-[#E8E2D8]/20 bg-[#15100E]/80 text-[#FAF8F5] hover:bg-[#1C1512] hover:border-[#D4AF37]/50 backdrop-blur-md active:scale-95 shadow-sm inline-flex items-center gap-1.5"
           >
             <span>{t.common.getInTouch}</span>
             <span className="text-xs">↗</span>

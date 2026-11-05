@@ -328,3 +328,4 @@ export const arDictionary: TranslationDictionary = {
     linkedinSubtitle: 'الشبكة المهنية',
   },
 };
+

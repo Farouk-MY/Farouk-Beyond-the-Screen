@@ -45,7 +45,7 @@ export function JourneyOverlay({ opacity, progress }: JourneyOverlayProps) {
     <section
       id="scene-journey"
       aria-label="Journey: Architectural Promenade"
-      className={`absolute inset-0 flex flex-col justify-start p-6 sm:p-12 lg:p-16 pt-28 sm:pt-32 lg:pt-36 pointer-events-none transition-opacity duration-200 ease-out select-none ${
+      className={`absolute inset-0 flex flex-col justify-start p-4 sm:p-8 lg:p-12 pt-18 sm:pt-20 lg:pt-22 pb-4 sm:pb-5 pointer-events-none transition-opacity duration-200 ease-out select-none ${
         isVisible ? 'visible' : 'invisible'
       }`}
       style={{ opacity }}
@@ -53,8 +53,8 @@ export function JourneyOverlay({ opacity, progress }: JourneyOverlayProps) {
       {/* Editorial Narrative — Positioned over negative space */}
       <div className={`w-full max-w-md sm:max-w-lg lg:max-w-xl ${isRtl ? 'ml-auto text-right' : 'mr-auto text-left'} pointer-events-auto`}>
         {/* Section Pill */}
-        <div className={`flex items-center gap-2 mb-3 sm:mb-4 ${isRtl ? 'flex-row-reverse justify-end' : ''}`}>
-          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] sm:text-[11px] font-mono tracking-wider border border-[#D4AF37]/40 bg-[#15100E]/80 backdrop-blur-md text-[#D4AF37] shadow-sm">
+        <div className={`flex items-center gap-2 mb-2 sm:mb-2.5 ${isRtl ? 'flex-row-reverse justify-end' : ''}`}>
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-mono tracking-wider border border-[#D4AF37]/40 bg-[#15100E]/80 backdrop-blur-md text-[#D4AF37] shadow-sm">
             <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-pulse" />
             {t.journey.eyebrow}
           </span>
@@ -64,16 +64,16 @@ export function JourneyOverlay({ opacity, progress }: JourneyOverlayProps) {
         </div>
 
         {/* Narrative Title & Atmospheric Statement */}
-        <h2 className="text-2xl sm:text-4xl lg:text-5xl font-heading font-extrabold tracking-tight leading-[1.1] text-[#FAF8F5] mb-2 sm:mb-3 drop-shadow-sm">
+        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-heading font-extrabold tracking-tight leading-tight text-[#FAF8F5] mb-1.5 sm:mb-2 drop-shadow-sm">
           {t.journey.title}
         </h2>
 
-        <p className="text-xs sm:text-sm text-[#D6CEC2] font-body leading-relaxed mb-6 sm:mb-7 max-w-md lg:max-w-lg drop-shadow-sm">
+        <p className="text-xs sm:text-[13px] text-[#D6CEC2] font-body leading-relaxed mb-4 sm:mb-5 max-w-md lg:max-w-lg drop-shadow-sm">
           {t.journey.subtitle}
         </p>
 
         {/* Scroll-Progressive Animated Timeline Track */}
-        <div className={`relative ${isRtl ? 'pr-6 sm:pr-7' : 'pl-6 sm:pl-7'} space-y-4`}>
+        <div className={`relative ${isRtl ? 'pr-5 sm:pr-6' : 'pl-5 sm:pl-6'} space-y-3 sm:space-y-3.5`}>
           {/* Background vertical architectural guideline */}
           <div
             className={`absolute ${isRtl ? 'right-[7px]' : 'left-[7px]'} top-2 bottom-2 w-0.5 bg-[#E8E2D8]/15 rounded-full pointer-events-none`}

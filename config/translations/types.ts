@@ -140,3 +140,4 @@ export interface TranslationDictionary {
     linkedinSubtitle: string;
   };
 }
+
