@@ -5,6 +5,7 @@
     --font-heading: var(--font-space-grotesk), sans-serif;
     --font-body: var(--font-manrope), sans-serif;
     --font-mono: var(--font-ibm-plex-mono), monospace;
+    --font-arabic: var(--font-noto-sans-arabic), sans-serif;
 
     /* DAY THEME (Warm Mediterranean Plaster, Natural Walnut & Linen) */
     --theme-bg: #F7F5F0;
@@ -69,6 +70,37 @@ h1, h2, h3, h4, .font-heading {
 
 .font-mono, code, pre {
   font-family: var(--font-mono);
+}
+
+/* Arabic RTL Typography Overrides */
+html[lang="ar"], html[dir="rtl"], .rtl-layout {
+  --font-heading: var(--font-noto-sans-arabic), var(--font-space-grotesk), sans-serif;
+  --font-body: var(--font-noto-sans-arabic), var(--font-manrope), sans-serif;
+}
+
+html[lang="ar"] h1,
+html[lang="ar"] h2,
+html[lang="ar"] h3,
+html[lang="ar"] h4,
+html[lang="ar"] .font-heading,
+[dir="rtl"] h1,
+[dir="rtl"] h2,
+[dir="rtl"] h3,
+[dir="rtl"] h4,
+[dir="rtl"] .font-heading {
+  font-family: var(--font-noto-sans-arabic), var(--font-space-grotesk), sans-serif;
+  letter-spacing: normal;
+}
+
+html[lang="ar"] body,
+[dir="rtl"] body {
+  font-family: var(--font-noto-sans-arabic), var(--font-manrope), sans-serif;
+}
+
+/* Directional Arrow Flip */
+[dir="rtl"] .rtl-flip {
+  display: inline-block;
+  transform: scaleX(-1);
 }
 
 /* Editorial Glass Morphism */

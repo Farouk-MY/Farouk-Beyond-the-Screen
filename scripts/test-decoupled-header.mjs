@@ -112,3 +112,4 @@ await send('Browser.close');
 edge.kill();
 console.log('Done captures!');
 process.exit(0);
+

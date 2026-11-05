@@ -19,10 +19,10 @@ export const DEVELOPER_PROFILE: DeveloperProfile = {
       'Today, engineering focuses on unified user experiences across web and mobile surfaces — leveraging TypeScript, modern frameworks, and component-driven modularity to build reliable production tools.',
   },
   contact: {
-    email: 'farouk.messai.dev@gmail.com',
+    email: 'faroukmessai221@gmail.com',
     github: 'https://github.com/Farouk-MY',
     linkedin: 'https://linkedin.com/in/faroukmessai',
-    location: 'Algeria (Available for Remote Worldwide)',
+    location: 'Tunisia (Available for Remote Worldwide)',
     availability: 'Open to Software Developer Roles & Collaborative Projects',
   },
 };

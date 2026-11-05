@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
+import { LocaleProvider } from '@/context/LocaleContext';
+import { AudioProvider } from '@/context/AudioContext';
 
 const spaceGrotesk = localFont({
   src: '../public/FAROUK_REDESIGN_ASSETS/Fonts/Space_Grotesk/SpaceGrotesk-VariableFont_wght.ttf',
@@ -41,6 +43,12 @@ const ibmPlexMono = localFont({
   display: 'swap',
 });
 
+const notoSansArabic = localFont({
+  src: '../public/FAROUK_REDESIGN_ASSETS/Fonts/Noto_Sans_Arabic/NotoSansArabic-VariableFont_wght.ttf',
+  variable: '--font-noto-sans-arabic',
+  display: 'swap',
+});
+
 export const viewport: Viewport = {
   themeColor: '#1C1512',
   colorScheme: 'dark',
@@ -49,6 +57,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://farouk-beyond-the-screen.vercel.app'),
   title: {
     default: 'Farouk Messai — Software Developer | Mobile & Web Development',
     template: '%s | Farouk Messai',
@@ -57,7 +66,9 @@ export const metadata: Metadata = {
     'Cinematic digital portfolio of Farouk Messai, featuring production systems in Next.js, React Native, and Flutter across modern web and cross-platform architectures.',
   keywords: [
     'Farouk Messai',
+    'فاروق مسعي',
     'Software Developer',
+    'مطوّر برمجيات',
     'Mobile Development',
     'Web Development',
     'Flutter',
@@ -65,13 +76,22 @@ export const metadata: Metadata = {
     'React Native',
     'TypeScript',
     'FastAPI',
+    'Tunisia',
     'Portfolio',
   ],
   authors: [{ name: 'Farouk Messai' }],
   creator: 'Farouk Messai',
+  alternates: {
+    canonical: '/en',
+    languages: {
+      en: '/en',
+      ar: '/ar',
+    },
+  },
   openGraph: {
     type: 'website',
     locale: 'en_US',
+    alternateLocale: ['ar_TN'],
     title: 'Farouk Messai — Software Developer | Mobile & Web Development',
     description:
       'Explore the continuous cinematic portfolio film of Farouk Messai, featuring production systems in Next.js, React Native, and Flutter.',
@@ -108,11 +128,15 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${spaceGrotesk.variable} ${manrope.variable} ${ibmPlexMono.variable} h-full antialiased`}
+      className={`${spaceGrotesk.variable} ${manrope.variable} ${ibmPlexMono.variable} ${notoSansArabic.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col font-sans transition-colors duration-500 bg-[#0E0C0A] text-[#FAF8F5]">
-        {children}
+        <LocaleProvider>
+          <AudioProvider>
+            {children}
+          </AudioProvider>
+        </LocaleProvider>
       </body>
     </html>
   );

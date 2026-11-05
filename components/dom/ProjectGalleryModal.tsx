@@ -3,6 +3,8 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import type { ProjectItem, ProjectMedia } from '@/types/portfolio';
 import { useSmoothScroll } from '@/components/providers/SmoothScrollProvider';
+import { useTranslation } from '@/context/LocaleContext';
+import { useAudio } from '@/context/AudioContext';
 
 interface ProjectGalleryModalProps {
   project: ProjectItem | null;
@@ -17,6 +19,8 @@ export function ProjectGalleryModal({
   onClose,
   initialImageIndex = 0,
 }: ProjectGalleryModalProps) {
+  const { t, isRtl } = useTranslation();
+  const { playClick } = useAudio();
   const [currentIndex, setCurrentIndex] = useState<number>(initialImageIndex);
   const touchStartXRef = useRef<number | null>(null);
   const touchStartYRef = useRef<number | null>(null);
@@ -51,13 +55,15 @@ export function ProjectGalleryModal({
   // Navigate images
   const handlePrev = useCallback(() => {
     if (totalImages <= 1) return;
+    playClick('light');
     setCurrentIndex((prev) => (prev > 0 ? prev - 1 : totalImages - 1));
-  }, [totalImages]);
+  }, [totalImages, playClick]);
 
   const handleNext = useCallback(() => {
     if (totalImages <= 1) return;
+    playClick('light');
     setCurrentIndex((prev) => (prev < totalImages - 1 ? prev + 1 : 0));
-  }, [totalImages]);
+  }, [totalImages, playClick]);
 
   // Background Scroll Lock, Focus Management & Keyboard Trap
   useEffect(() => {
@@ -69,11 +75,11 @@ export function ProjectGalleryModal({
     const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
 
-    // 2. Focus management: save active element, focus close button
+    // 2. Focus management
     const prevActiveElement = document.activeElement as HTMLElement | null;
     closeButtonRef.current?.focus();
 
-    // 3. Keyboard handlers (Escape, ArrowLeft, ArrowRight, Tab focus trap)
+    // 3. Keyboard handlers
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.preventDefault();
@@ -83,13 +89,15 @@ export function ProjectGalleryModal({
 
       if (e.key === 'ArrowLeft') {
         e.preventDefault();
-        handlePrev();
+        if (isRtl) handleNext();
+        else handlePrev();
         return;
       }
 
       if (e.key === 'ArrowRight') {
         e.preventDefault();
-        handleNext();
+        if (isRtl) handlePrev();
+        else handleNext();
         return;
       }
 
@@ -100,18 +108,18 @@ export function ProjectGalleryModal({
         );
         if (focusable.length === 0) return;
 
-        const firstElement = focusable[0];
-        const lastElement = focusable[focusable.length - 1];
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
 
         if (e.shiftKey) {
-          if (document.activeElement === firstElement) {
+          if (document.activeElement === first) {
             e.preventDefault();
-            lastElement.focus();
+            last.focus();
           }
         } else {
-          if (document.activeElement === lastElement) {
+          if (document.activeElement === last) {
             e.preventDefault();
-            firstElement.focus();
+            first.focus();
           }
         }
       }
@@ -125,9 +133,9 @@ export function ProjectGalleryModal({
       if (lenis) lenis.start();
       prevActiveElement?.focus();
     };
-  }, [isOpen, onClose, handlePrev, handleNext, getLenis]);
+  }, [isOpen, onClose, getLenis, handleNext, handlePrev, isRtl]);
 
-  // Touch swipe handling with directional detection
+  // Touch swipe support for mobile
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartXRef.current = e.touches[0].clientX;
     touchStartYRef.current = e.touches[0].clientY;
@@ -138,14 +146,17 @@ export function ProjectGalleryModal({
     const deltaX = e.changedTouches[0].clientX - touchStartXRef.current;
     const deltaY = e.changedTouches[0].clientY - touchStartYRef.current;
 
-    // Only trigger horizontal swipe if deltaX is dominant over deltaY
-    if (Math.abs(deltaX) > 40 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5) {
-      if (deltaX > 0) {
-        handlePrev();
+    // Only swipe if horizontal motion exceeds vertical
+    if (Math.abs(deltaX) > 45 && Math.abs(deltaX) > Math.abs(deltaY)) {
+      if (deltaX < 0) {
+        if (isRtl) handlePrev();
+        else handleNext();
       } else {
-        handleNext();
+        if (isRtl) handleNext();
+        else handlePrev();
       }
     }
+
     touchStartXRef.current = null;
     touchStartYRef.current = null;
   };
@@ -154,24 +165,31 @@ export function ProjectGalleryModal({
 
   const currentImage = images[currentIndex] || images[0];
 
+  const handleClose = () => {
+    playClick('light');
+    onClose();
+  };
+
   return (
     <div
       role="dialog"
       aria-modal="true"
       aria-label={`${project.name} Image Gallery`}
       className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 md:p-10 bg-[#0A0706]/90 backdrop-blur-2xl pointer-events-auto select-none"
-      onClick={onClose}
+      onClick={handleClose}
     >
       <div
         ref={modalContentRef}
         onClick={(e) => e.stopPropagation()}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
-        className="relative w-full max-w-5xl max-h-[92vh] flex flex-col rounded-3xl bg-[#140F0C] border border-[#D4AF37]/25 shadow-2xl overflow-hidden"
+        className={`relative w-full max-w-5xl max-h-[92vh] flex flex-col rounded-3xl bg-[#140F0C] border border-[#D4AF37]/25 shadow-2xl overflow-hidden ${
+          isRtl ? 'text-right' : 'text-left'
+        }`}
       >
         {/* Top Header Strip */}
-        <div className="flex items-center justify-between px-5 sm:px-8 py-3.5 border-b border-[#E8E2D8]/10 bg-[#1C1512]/80 backdrop-blur-md">
-          <div className="flex items-center gap-3">
+        <div className={`flex items-center justify-between px-5 sm:px-8 py-3.5 border-b border-[#E8E2D8]/10 bg-[#1C1512]/80 backdrop-blur-md ${isRtl ? 'flex-row-reverse' : ''}`}>
+          <div className={`flex items-center gap-3 ${isRtl ? 'flex-row-reverse' : ''}`}>
             <span className="px-2.5 py-0.5 rounded-full text-[11px] font-mono tracking-widest bg-[#BA5227]/20 border border-[#BA5227]/40 text-[#E59368] font-bold">
               {String(currentIndex + 1).padStart(2, '0')} / {String(totalImages).padStart(2, '0')}
             </span>
@@ -184,14 +202,14 @@ export function ProjectGalleryModal({
             </span>
           </div>
 
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] font-mono text-[#A89D8F] hidden sm:inline mr-2">
-              ESC to close
+          <div className={`flex items-center gap-2 ${isRtl ? 'flex-row-reverse' : ''}`}>
+            <span className="text-[10px] font-mono text-[#A89D8F] hidden sm:inline">
+              ESC {isRtl ? 'للإغلاق' : 'to close'}
             </span>
             <button
               ref={closeButtonRef}
-              onClick={onClose}
-              aria-label="Close project gallery"
+              onClick={handleClose}
+              aria-label={t.common.close}
               className="p-2 rounded-lg text-[#D4C9BC] hover:text-[#FAF8F5] hover:bg-white/10 transition-colors cursor-pointer border border-[#E8E2D8]/15 bg-[#1C1512]"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -214,6 +232,17 @@ export function ProjectGalleryModal({
             className="max-h-[62vh] max-w-full object-contain rounded-xl shadow-2xl border border-[#E8E2D8]/10 transition-opacity duration-200"
           />
 
+          {/* Asset Classification Badge */}
+          <div className={`absolute top-4 ${isRtl ? 'right-4' : 'left-4'} px-3 py-1 rounded-full text-[10px] font-mono border backdrop-blur-md ${
+            currentImage.isPlaceholder
+              ? 'border-[#D4AF37]/35 bg-[#1C1512]/90 text-[#D4AF37]'
+              : 'border-[#BA5227]/40 bg-[#BA5227]/20 text-[#E59368]'
+          }`}>
+            {currentImage.isPlaceholder
+              ? (isRtl ? 'مخطط معماري توضيحي للنظام' : 'Architectural System Illustration')
+              : (isRtl ? 'لقطة شاشة إنتاجية موثقة' : 'Verified Production Interface')}
+          </div>
+
           {/* Left / Right Previous & Next Buttons */}
           {totalImages > 1 && (
             <>
@@ -226,7 +255,7 @@ export function ProjectGalleryModal({
                 className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 p-3 sm:p-3.5 rounded-full bg-[#1C1512]/90 hover:bg-[#BA5227] text-[#FAF8F5] border border-[#D4AF37]/30 backdrop-blur-md transition-all shadow-xl cursor-pointer hover:scale-105 active:scale-95"
               >
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d={isRtl ? "M9 5l7 7-7 7" : "M15 19l-7-7 7-7"} />
                 </svg>
               </button>
 
@@ -239,51 +268,24 @@ export function ProjectGalleryModal({
                 className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 p-3 sm:p-3.5 rounded-full bg-[#1C1512]/90 hover:bg-[#BA5227] text-[#FAF8F5] border border-[#D4AF37]/30 backdrop-blur-md transition-all shadow-xl cursor-pointer hover:scale-105 active:scale-95"
               >
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d={isRtl ? "M15 19l-7-7 7-7" : "M9 5l7 7-7 7"} />
                 </svg>
               </button>
             </>
           )}
         </div>
 
-        {/* Footer Info & Thumbnail Strip */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 sm:px-8 py-3.5 border-t border-[#E8E2D8]/10 bg-[#1C1512]/90">
-          <div className="max-w-md">
-            <p className="text-xs sm:text-sm font-mono text-[#FAF8F5] font-semibold">
-              {currentImage.alt}
+        {/* Footer Info & Caption */}
+        <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 sm:px-8 py-3.5 border-t border-[#E8E2D8]/10 bg-[#1C1512]/90 ${isRtl ? 'flex-row-reverse' : ''}`}>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-mono text-[#D4C9BC] truncate">
+              {currentImage.caption || currentImage.alt}
             </p>
-            {currentImage.caption && (
-              <p className="text-xs text-[#D4C9BC] font-sans mt-0.5 line-clamp-2">
-                {currentImage.caption}
-              </p>
-            )}
-            {currentImage.isPlaceholder && (
-              <p className="text-[10px] font-mono text-[#D4AF37] mt-1 tracking-wider uppercase font-medium">
-                ARCHITECTURAL SPECIFICATION • PROVISIONAL SYSTEM DATA
-              </p>
-            )}
           </div>
 
-          {/* Interactive Thumbnail Previews */}
-          {totalImages > 1 && (
-            <div className="flex items-center gap-2 overflow-x-auto py-1 scrollbar-none">
-              {images.map((img, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setCurrentIndex(idx)}
-                  aria-label={`Jump to image ${idx + 1}`}
-                  className={`relative w-14 sm:w-16 aspect-[16/10] rounded-md overflow-hidden border transition-all cursor-pointer ${
-                    idx === currentIndex
-                      ? 'border-[#D4AF37] ring-2 ring-[#BA5227] scale-105 opacity-100'
-                      : 'border-[#E8E2D8]/20 opacity-50 hover:opacity-90'
-                  }`}
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={img.src} alt="" className="w-full h-full object-cover" />
-                </button>
-              ))}
-            </div>
-          )}
+          <div className={`flex items-center gap-2 text-xs font-mono text-[#A89D8F] ${isRtl ? 'flex-row-reverse' : ''}`}>
+            <span>{currentIndex + 1} / {totalImages}</span>
+          </div>
         </div>
       </div>
     </div>
