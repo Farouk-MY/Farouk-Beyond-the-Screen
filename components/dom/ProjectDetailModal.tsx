@@ -1,12 +1,13 @@
-'use client';
+"use client";
 
-import React, { useEffect, useRef } from 'react';
-import type { TranslationDictionary } from '@/config/translations/types';
-import { useTranslation } from '@/context/LocaleContext';
-import { useSmoothScroll } from '@/components/providers/SmoothScrollProvider';
-import { useAudio } from '@/context/AudioContext';
+import React, { useEffect, useRef } from "react";
+import type { TranslationDictionary } from "@/config/translations/types";
+import { useTranslation } from "@/context/LocaleContext";
+import { useSmoothScroll } from "@/components/providers/SmoothScrollProvider";
+import { useAudio } from "@/context/AudioContext";
+import { sendGTMEvent } from "@next/third-parties/google";
 
-type ProjectModalItem = TranslationDictionary['projects']['items'][number];
+type ProjectModalItem = TranslationDictionary["projects"]["items"][number];
 
 interface ProjectDetailModalProps {
   project: ProjectModalItem | null;
@@ -14,7 +15,11 @@ interface ProjectDetailModalProps {
   onClose: () => void;
 }
 
-export function ProjectDetailModal({ project, isOpen, onClose }: ProjectDetailModalProps) {
+export function ProjectDetailModal({
+  project,
+  isOpen,
+  onClose,
+}: ProjectDetailModalProps) {
   const { t, isRtl } = useTranslation();
   const { playClick } = useAudio();
   const modalContentRef = useRef<HTMLDivElement>(null);
@@ -34,19 +39,20 @@ export function ProjectDetailModal({ project, isOpen, onClose }: ProjectDetailMo
 
     // Prevent background scroll while modal is open
     const originalOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         onClose();
         return;
       }
 
       // Trap focus inside modal
-      if (e.key === 'Tab' && modalContentRef.current) {
-        const focusableElements = modalContentRef.current.querySelectorAll<HTMLElement>(
-          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-        );
+      if (e.key === "Tab" && modalContentRef.current) {
+        const focusableElements =
+          modalContentRef.current.querySelectorAll<HTMLElement>(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+          );
         if (focusableElements.length === 0) return;
 
         const firstElement = focusableElements[0];
@@ -66,20 +72,30 @@ export function ProjectDetailModal({ project, isOpen, onClose }: ProjectDetailMo
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = originalOverflow;
       if (lenis) lenis.start();
       prevActiveElement?.focus();
     };
   }, [isOpen, onClose, getLenis]);
 
+  const projectId = project?.id;
+
+  useEffect(() => {
+    if (!isOpen || !projectId) return;
+
+    sendGTMEvent({
+      event: "project_detail_open",
+    });
+  }, [isOpen, projectId]);
+
   if (!isOpen || !project) return null;
 
   const handleClose = () => {
-    playClick('light');
+    playClick("light");
     onClose();
   };
 
@@ -94,14 +110,18 @@ export function ProjectDetailModal({ project, isOpen, onClose }: ProjectDetailMo
       <div
         ref={modalContentRef}
         className={`relative w-full max-w-3xl max-h-[88vh] overflow-y-auto rounded-3xl border border-[#D4AF37]/30 bg-[#140F0C] p-6 sm:p-8 text-[#FAF8F5] shadow-2xl ${
-          isRtl ? 'text-right' : 'text-left'
+          isRtl ? "text-right" : "text-left"
         }`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top Header */}
-        <div className={`flex items-start justify-between gap-4 mb-5 border-b border-[#E8E2D8]/10 pb-4 ${isRtl ? 'flex-row-reverse' : ''}`}>
+        <div
+          className={`flex items-start justify-between gap-4 mb-5 border-b border-[#E8E2D8]/10 pb-4 ${isRtl ? "flex-row-reverse" : ""}`}
+        >
           <div>
-            <div className={`flex items-center gap-2 mb-1.5 ${isRtl ? 'flex-row-reverse justify-end' : ''}`}>
+            <div
+              className={`flex items-center gap-2 mb-1.5 ${isRtl ? "flex-row-reverse justify-end" : ""}`}
+            >
               <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full uppercase border border-[#BA5227]/30 bg-[#BA5227]/10 text-[#E59368] font-bold">
                 {project.categoryLabel}
               </span>
@@ -109,7 +129,10 @@ export function ProjectDetailModal({ project, isOpen, onClose }: ProjectDetailMo
                 {t.common.status}: {project.status}
               </span>
             </div>
-            <h2 id="modal-project-title" className="text-2xl sm:text-3xl font-heading font-extrabold text-[#FAF8F5]">
+            <h2
+              id="modal-project-title"
+              className="text-2xl sm:text-3xl font-heading font-extrabold text-[#FAF8F5]"
+            >
               {project.name}
             </h2>
             <p className="text-xs sm:text-sm text-[#E59368] font-mono mt-0.5 font-medium">
@@ -123,8 +146,18 @@ export function ProjectDetailModal({ project, isOpen, onClose }: ProjectDetailMo
             aria-label={t.common.close}
             className="rounded-full p-2 text-[#D6CEC2] hover:bg-white/10 hover:text-[#FAF8F5] transition-colors cursor-pointer border border-[#E8E2D8]/15 bg-[#1C1512] shrink-0"
           >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
@@ -144,7 +177,7 @@ export function ProjectDetailModal({ project, isOpen, onClose }: ProjectDetailMo
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
             <div className="p-4 rounded-2xl border border-red-500/20 bg-red-950/15">
               <h4 className="text-xs font-mono uppercase tracking-wider text-red-300 font-bold mb-1">
-                {isRtl ? 'التحدي الهندسي والاحتياج' : 'Engineering Challenge'}
+                {isRtl ? "التحدي الهندسي والاحتياج" : "Engineering Challenge"}
               </h4>
               <p className="text-xs text-[#E8DCD4] leading-relaxed">
                 {project.caseStudy.problem}
@@ -153,7 +186,7 @@ export function ProjectDetailModal({ project, isOpen, onClose }: ProjectDetailMo
 
             <div className="p-4 rounded-2xl border border-[#D4AF37]/25 bg-[#D4AF37]/10">
               <h4 className="text-xs font-mono uppercase tracking-wider text-[#D4AF37] font-bold mb-1">
-                {isRtl ? 'الحل المعماري المقترح' : 'Architectural Solution'}
+                {isRtl ? "الحل المعماري المقترح" : "Architectural Solution"}
               </h4>
               <p className="text-xs text-[#E8DCD4] leading-relaxed">
                 {project.caseStudy.solution}
@@ -166,7 +199,7 @@ export function ProjectDetailModal({ project, isOpen, onClose }: ProjectDetailMo
         <div className="mb-6 p-4 rounded-2xl border border-[#BA5227]/30 bg-[#BA5227]/10">
           <h3 className="text-xs font-mono uppercase tracking-wider text-[#E59368] mb-1.5 font-bold flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-[#BA5227]" />
-            {isRtl ? 'دوري ومساهمتي الهندسية' : 'Developer Role & Contribution'}
+            {isRtl ? "دوري ومساهمتي الهندسية" : "Developer Role & Contribution"}
           </h3>
           <p className="text-xs text-[#FAF8F5] leading-relaxed">
             {project.caseStudy.role}
@@ -188,25 +221,31 @@ export function ProjectDetailModal({ project, isOpen, onClose }: ProjectDetailMo
         </div>
 
         {/* 4. Key Architectural Decisions */}
-        {project.caseStudy.decisions && project.caseStudy.decisions.length > 0 && (
-          <div className="mb-6">
-            <h3 className="text-xs font-mono uppercase tracking-wider text-[#A89D8F] mb-3 font-bold">
-              {isRtl ? 'القرارات المعمارية المفتاحية' : 'Key Architectural Decisions'}
-            </h3>
-            <div className="space-y-2.5">
-              {project.caseStudy.decisions.map((dec, idx) => (
-                <div key={idx} className="p-3.5 rounded-xl border border-[#E8E2D8]/10 bg-[#16110E]">
-                  <div className="text-xs font-mono font-bold text-[#D4AF37] mb-1">
-                    {dec.title}
+        {project.caseStudy.decisions &&
+          project.caseStudy.decisions.length > 0 && (
+            <div className="mb-6">
+              <h3 className="text-xs font-mono uppercase tracking-wider text-[#A89D8F] mb-3 font-bold">
+                {isRtl
+                  ? "القرارات المعمارية المفتاحية"
+                  : "Key Architectural Decisions"}
+              </h3>
+              <div className="space-y-2.5">
+                {project.caseStudy.decisions.map((dec, idx) => (
+                  <div
+                    key={idx}
+                    className="p-3.5 rounded-xl border border-[#E8E2D8]/10 bg-[#16110E]"
+                  >
+                    <div className="text-xs font-mono font-bold text-[#D4AF37] mb-1">
+                      {dec.title}
+                    </div>
+                    <div className="text-xs text-[#D6CEC2] leading-relaxed">
+                      {dec.explanation}
+                    </div>
                   </div>
-                  <div className="text-xs text-[#D6CEC2] leading-relaxed">
-                    {dec.explanation}
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
         {/* 5. Core Capabilities */}
         <div className="mb-6">
@@ -215,8 +254,13 @@ export function ProjectDetailModal({ project, isOpen, onClose }: ProjectDetailMo
           </h3>
           <ul className="space-y-2">
             {project.keyFeatures.map((feat, idx) => (
-              <li key={idx} className={`flex items-start gap-2.5 text-xs text-[#D6CEC2] ${isRtl ? 'flex-row-reverse' : ''}`}>
-                <span className="text-[#BA5227] font-bold font-mono">0{idx + 1}.</span>
+              <li
+                key={idx}
+                className={`flex items-start gap-2.5 text-xs text-[#D6CEC2] ${isRtl ? "flex-row-reverse" : ""}`}
+              >
+                <span className="text-[#BA5227] font-bold font-mono">
+                  0{idx + 1}.
+                </span>
                 <span className="flex-1">{feat}</span>
               </li>
             ))}
@@ -241,7 +285,9 @@ export function ProjectDetailModal({ project, isOpen, onClose }: ProjectDetailMo
         </div>
 
         {/* 7. Links & Close */}
-        <div className={`flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-[#E8E2D8]/10 ${isRtl ? 'flex-row-reverse' : ''}`}>
+        <div
+          className={`flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-[#E8E2D8]/10 ${isRtl ? "flex-row-reverse" : ""}`}
+        >
           <div className="flex items-center gap-3">
             {project.links.github ? (
               <a
@@ -251,7 +297,7 @@ export function ProjectDetailModal({ project, isOpen, onClose }: ProjectDetailMo
                 className="px-4 py-2 rounded-xl text-xs font-mono border border-[#E8E2D8]/20 bg-[#1C1512] text-[#FAF8F5] hover:bg-white/10 transition-colors inline-flex items-center gap-1.5"
               >
                 <span>{t.common.githubSource}</span>
-                <span className={isRtl ? 'rtl-flip' : ''}>&rarr;</span>
+                <span className={isRtl ? "rtl-flip" : ""}>&rarr;</span>
               </a>
             ) : (
               <span className="text-[11px] font-mono text-[#A89D8F] italic">
