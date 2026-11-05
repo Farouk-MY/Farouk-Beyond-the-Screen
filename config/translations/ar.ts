@@ -61,6 +61,9 @@ export const arDictionary: TranslationDictionary = {
     currentLanguageName: 'العربية',
     otherLanguageName: 'EN',
     otherLocale: 'en',
+    loadingExperience: 'جاري الدخول إلى التجربة السينمائية',
+    loadingProgress: 'تهيئة بيئة الأستوديو...',
+    skipIntro: 'تخطي المقدمة',
   },
   navigation: {
     studio: 'الاستوديو',

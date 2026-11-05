@@ -2,6 +2,8 @@ import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { CinematicExperience } from '@/components/cinematic/CinematicExperience';
+import { LoadingProvider } from '@/components/loading/LoadingProvider';
+import { NarrativeLoader } from '@/components/loading/NarrativeLoader';
 import { LocaleProvider } from '@/context/LocaleContext';
 import { enDictionary } from '@/config/translations/en';
 import { arDictionary } from '@/config/translations/ar';
@@ -60,7 +62,10 @@ async function LocalizedContent({
 
   return (
     <LocaleProvider initialLocale={lang as 'en' | 'ar'}>
-      <CinematicExperience />
+      <LoadingProvider>
+        <NarrativeLoader />
+        <CinematicExperience />
+      </LoadingProvider>
     </LocaleProvider>
   );
 }

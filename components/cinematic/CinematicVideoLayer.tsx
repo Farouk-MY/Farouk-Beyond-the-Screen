@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
+import { useLoading } from '@/hooks/useLoadingProgress';
 import {
   getCinematicClips,
   IDLE_LOOP_CONFIG,
@@ -15,6 +16,7 @@ interface CinematicVideoLayerProps {
 
 export function CinematicVideoLayer({ scrollProgressRef }: CinematicVideoLayerProps) {
   const prefersReducedMotion = usePrefersReducedMotion();
+  const { reportReady } = useLoading();
 
   // Video element references
   const idleVideoRef = useRef<HTMLVideoElement>(null);
@@ -41,6 +43,61 @@ export function CinematicVideoLayer({ scrollProgressRef }: CinematicVideoLayerPr
   useEffect(() => {
     isIdleActiveRef.current = isIdleActive;
   }, [isIdleActive]);
+
+  // Track readiness of critical initial video assets for NarrativeLoader
+  useEffect(() => {
+    if (prefersReducedMotion) {
+      reportReady('idleVideo');
+      reportReady('scrubVideo');
+      return;
+    }
+
+    const idle = idleVideoRef.current;
+    const act1 = videoRefs.current[0];
+
+    const handleIdleReady = () => {
+      reportReady('idleVideo');
+    };
+
+    const handleAct1Ready = () => {
+      reportReady('scrubVideo');
+    };
+
+    if (idle) {
+      if (idle.readyState >= 2) {
+        handleIdleReady();
+      } else {
+        idle.addEventListener('canplay', handleIdleReady, { once: true });
+        idle.addEventListener('loadeddata', handleIdleReady, { once: true });
+        idle.addEventListener('error', handleIdleReady, { once: true });
+      }
+    }
+
+    if (act1) {
+      if (act1.readyState >= 1) {
+        handleAct1Ready();
+      } else {
+        act1.addEventListener('canplay', handleAct1Ready, { once: true });
+        act1.addEventListener('loadeddata', handleAct1Ready, { once: true });
+        act1.addEventListener('loadedmetadata', handleAct1Ready, { once: true });
+        act1.addEventListener('error', handleAct1Ready, { once: true });
+      }
+    }
+
+    return () => {
+      if (idle) {
+        idle.removeEventListener('canplay', handleIdleReady);
+        idle.removeEventListener('loadeddata', handleIdleReady);
+        idle.removeEventListener('error', handleIdleReady);
+      }
+      if (act1) {
+        act1.removeEventListener('canplay', handleAct1Ready);
+        act1.removeEventListener('loadeddata', handleAct1Ready);
+        act1.removeEventListener('loadedmetadata', handleAct1Ready);
+        act1.removeEventListener('error', handleAct1Ready);
+      }
+    };
+  }, [prefersReducedMotion, reportReady]);
 
   // Safe seek helper with frame coalescing and 24fps alignment
   const requestFrameSeek = useCallback((actIdx: number, targetTimeSeconds: number) => {
@@ -387,6 +444,8 @@ export function CinematicVideoLayer({ scrollProgressRef }: CinematicVideoLayerPr
         autoPlay
         poster={cinematicClips[0].poster}
         preload="auto"
+        onCanPlay={() => reportReady('idleVideo')}
+        onLoadedData={() => reportReady('idleVideo')}
         className="absolute inset-0 w-full h-full object-cover"
         style={{
           display: isIdleActive ? 'block' : 'none',
@@ -413,6 +472,9 @@ export function CinematicVideoLayer({ scrollProgressRef }: CinematicVideoLayerPr
           // Subsequent Acts (III, IV, V) start with 'metadata' to avoid downloading ~25MB on initial load,
           // dynamically upgrading to 'auto' as the user approaches them.
           preload={idx <= 1 ? 'auto' : 'metadata'}
+          onCanPlay={idx === 0 ? () => reportReady('scrubVideo') : undefined}
+          onLoadedData={idx === 0 ? () => reportReady('scrubVideo') : undefined}
+          onLoadedMetadata={idx === 0 ? () => reportReady('scrubVideo') : undefined}
           className="absolute inset-0 w-full h-full object-cover"
           style={{
             display: idx === 0 && isIdleActive ? 'none' : 'block',
