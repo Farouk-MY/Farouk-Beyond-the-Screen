@@ -1,5 +1,7 @@
 import type { MetadataRoute } from 'next';
 
+const BASE_URL = 'https://farouk-beyond-the-screen.vercel.app';
+
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: {
@@ -7,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/private/'],
     },
+    sitemap: `${BASE_URL}/sitemap.xml`,
   };
 }
-

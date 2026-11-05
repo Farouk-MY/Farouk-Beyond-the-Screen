@@ -145,7 +145,7 @@ Departing from conventional static CV templates, the portfolio guides visitors t
 ## Getting Started
 
 ### Prerequisites
-- Node.js 20.x or higher
+- Node.js 20.x or Node 24.x (CI verified on Node 24)
 - npm 10.x or higher
 
 ### Installation

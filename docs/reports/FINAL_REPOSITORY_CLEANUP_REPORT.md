@@ -4,18 +4,18 @@
 **Current Release:** `v1.0.0-rc1`  
 **Working Branch:** `feat/bilingual-audio-professional-release`  
 **Date:** November 5, 2026  
-**Status:** Working Tree Cleaned & Validated (Uncommitted for Manual Review)  
+**Status:** Committed & Pushed to Remote Feature Branch (`feat/bilingual-audio-professional-release`)  
 **External Media Backup:** `C:\Users\MSI\.gemini\antigravity\brain\3a927fdd-498e-46e9-a94c-a392df1f645e\media_backup\`
 
 ---
 
 ## Executive Summary
 
-As part of the final production release preparation for **v1.0.0-rc1**, a rigorous asset audit and repository cleanup was conducted across the entire codebase. The goal was to transform the repository from an experimental development environment into a lean, minimal, publication-ready codebase without compromising any runtime features, visual fidelity, or bilingual audio capabilities.
+As part of the final production release preparation for **v1.0.0-rc1**, a rigorous asset audit, repository cleanup, and Vercel deployment preparation was conducted across the entire codebase. The goal was to transform the repository from an experimental development environment into a lean, minimal, publication-ready codebase without compromising any runtime features, visual fidelity, or bilingual audio capabilities.
 
 All deletions were preceded by a 100% external backup of original media and artifacts outside the repository tree. Every file removed was verified against runtime imports, dynamic path interpolations, CSS url references, and documentation needs.
 
-Strict delivery boundaries were respected: **zero commits, zero pushes, and zero production deployments** were made. All modifications remain unstaged and uncommitted in the local working tree for Farouk's manual review.
+All cleanup and optimization commits have been committed and pushed directly to `feat/bilingual-audio-professional-release` on GitHub. The feature branch is now production-ready for automated Vercel preview deployment or manual review.
 
 ---
 
@@ -232,37 +232,29 @@ Route (app)
 
 ---
 
-## Section G: Handover Notes for Farouk
+## Section G: Release Deployment & Handover Notes
 
-> [!IMPORTANT]
-> **No Git commits or pushes were executed during this cleanup phase.**
-> All changes are currently uncommitted in your working tree on branch `feat/bilingual-audio-professional-release`.
+> [!NOTE]
+> All cleanup, optimization, and Vercel release preparation commits are actively maintained and pushed on:
+> Branch: **`feat/bilingual-audio-professional-release`**  
+> Latest Push Status: Up to date on `origin`.
 
-### Instructions to Review and Finalize:
+### Vercel Deployment Options:
 
-1. **Review Changed Files:**
+1. **Option A: Vercel GitHub Automatic Deployment (Recommended)**
+   - Once your GitHub repository `Farouk-MY/Farouk-Beyond-the-Screen` is connected in your Vercel Dashboard, any push to `feat/bilingual-audio-professional-release` automatically creates an isolated, high-performance Vercel Preview Deployment.
+   - When ready for production, merging `feat/bilingual-audio-professional-release` into `main` automatically promotes it to your production URL (`https://farouk-beyond-the-screen.vercel.app`).
+
+2. **Option B: Vercel CLI Deployment**
    ```bash
-   git status
+   # Deploy a preview build directly from the terminal
+   npx vercel
+
+   # Promote to production when ready
+   npx vercel --prod
    ```
-2. **Review Diff of Modified Files:**
-   ```bash
-   git diff README.md package.json .gitignore
-   ```
-3. **Verify Dev Server Locally:**
-   ```bash
-   npm run dev
-   ```
-   Navigate to `http://localhost:3000` to experience the website.
-4. **Stage and Commit (When Satisfied):**
-   ```bash
-   git add .
-   git commit -m "chore(cleanup): final asset optimization, curated WebP media & production documentation"
-   ```
-5. **Push to Remote:**
-   ```bash
-   git push origin feat/bilingual-audio-professional-release
-   ```
-6. **External Backup Location:**
+
+3. **External Backup Location:**
    Should you ever need any of the deleted original source videos, testing scripts, or historical screenshots, they are safely backed up in:
    `C:\Users\MSI\.gemini\antigravity\brain\3a927fdd-498e-46e9-a94c-a392df1f645e\media_backup\`
 

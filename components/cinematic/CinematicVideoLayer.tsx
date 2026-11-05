@@ -316,9 +316,14 @@ export function CinematicVideoLayer({ scrollProgressRef }: CinematicVideoLayerPr
           video.style.opacity = '0';
           video.style.visibility = 'hidden';
 
-          const activeAct = clips.findIndex(
-            (c) => scroll >= c.scrollRange[0] && scroll <= c.scrollRange[1]
-          );
+          // Proactively buffer adjacent scenes (active act ± 1) so video seeking is instant upon crossing thresholds
+          let activeAct = 0;
+          for (let cIdx = clips.length - 1; cIdx >= 0; cIdx--) {
+            if (scroll >= clips[cIdx].scrollRange[0] - 0.01) {
+              activeAct = cIdx;
+              break;
+            }
+          }
           const isAdjacent = Math.abs(idx - activeAct) <= 1;
           if (isAdjacent && video.preload !== 'auto') {
             video.preload = 'auto';
@@ -404,7 +409,10 @@ export function CinematicVideoLayer({ scrollProgressRef }: CinematicVideoLayerPr
           poster={clip.poster}
           muted
           playsInline
-          preload="auto"
+          // Acts I & II preload automatically for instant initial scrub & adjacent handoff.
+          // Subsequent Acts (III, IV, V) start with 'metadata' to avoid downloading ~25MB on initial load,
+          // dynamically upgrading to 'auto' as the user approaches them.
+          preload={idx <= 1 ? 'auto' : 'metadata'}
           className="absolute inset-0 w-full h-full object-cover"
           style={{
             display: idx === 0 && isIdleActive ? 'none' : 'block',
