@@ -45,6 +45,9 @@ export interface TranslationDictionary {
     currentLanguageName: string;
     otherLanguageName: string;
     otherLocale: Locale;
+    loadingExperience: string;
+    loadingProgress: string;
+    skipIntro: string;
   };
   navigation: {
     studio: string;

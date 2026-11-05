@@ -60,6 +60,9 @@ export const enDictionary: TranslationDictionary = {
     currentLanguageName: 'EN',
     otherLanguageName: 'العربية',
     otherLocale: 'ar',
+    loadingExperience: 'Entering Cinematic Experience',
+    loadingProgress: 'Initializing Studio Environment...',
+    skipIntro: 'Skip Intro',
   },
   navigation: {
     studio: 'Studio',
