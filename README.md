@@ -1,149 +1,148 @@
 # FAROUK — BEYOND THE SCREEN
-> **Interactive Cinematic Experience & Digital Portfolio**  
-> **Release:** `v1.0.0-rc1` | **Author:** Farouk Messai (Software Developer | Mobile & Web Development)  
-> **Location:** Tunisia (Available for Remote Worldwide) | **Availability:** Open to PFE Internships & Junior Software Development Opportunities
+### An Interactive Cinematic Developer Portfolio
+
+[![Next.js](https://img.shields.io/badge/Next.js-16.4.4-black?logo=next.js)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19.3.0-61dafb?logo=react)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x_Strict-3178c6?logo=typescript)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38bdf8?logo=tailwindcss)](https://tailwindcss.com/)
+[![Web Audio](https://img.shields.io/badge/Web_Audio-Procedural_0KB-orange)](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)
+[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+
+**FAROUK — BEYOND THE SCREEN** is an interactive, scroll-orchestrated developer portfolio showcasing the engineering capabilities of **Farouk Messai** across mobile systems (React Native, Flutter) and modern web architectures (Next.js, TypeScript, FastAPI).
+
+Departing from conventional static CV templates, the portfolio guides visitors through a continuous five-act Mediterranean architectural narrative. As visitors scroll, an authoritative 600svh runway synchronizes frame-accurate video seeking (`requestVideoFrameCallback` + coalesced seek queue) alongside an idle typing loop in Act I, revealing an interactive 3D-style project vitrine and deep architectural case studies.
 
 ---
 
-## 1. Overview & Creative Identity
+## Experience Preview
 
-**FAROUK — BEYOND THE SCREEN** is an interactive, scroll-orchestrated cinematic web experience showcasing Farouk Messai's engineering capabilities across cross-platform mobile development (React Native, Flutter) and modern web platforms (Next.js, TypeScript, Python/FastAPI).
+### Desktop Experience (English & Arabic RTL)
 
-Departing from conventional flat developer resumes, the portfolio guides visitors through a continuous five-act Mediterranean architectural narrative:
+| Act I: Studio (English) | Act II: Journey (English) |
+| :---: | :---: |
+| ![English Studio](docs/screenshots/en-studio.webp) | ![Cinematic Journey](docs/screenshots/en-journey.webp) |
+
+| Act III: Selected Work (English) | Act V: Contact (English) |
+| :---: | :---: |
+| ![Selected Work Exhibition](docs/screenshots/en-selected-work.webp) | ![Contact Vista](docs/screenshots/en-contact.webp) |
+
+| Arabic RTL Studio (Desktop) | Arabic RTL Mobile (390×844) |
+| :---: | :---: |
+| ![Arabic RTL Studio](docs/screenshots/ar-studio.webp) | ![Arabic RTL Mobile](docs/screenshots/ar-mobile.webp) |
+
+---
+
+## Core Features
+
+- **Five-Act Cinematic Experience:** A continuous visual journey spanning Mediterranean architectural environments: Studio, Journey, Selected Work, Engineering, and Contact.
+- **Scroll-Driven Video Synchronization:** 24 FPS frame-accurate video seeking powered by `requestVideoFrameCallback` and a coalesced seek queue. Includes a seamless idle typing loop handoff in Act I.
+- **Dynamic 3D Project Exhibition:** Interactive vitrine wall in Act III that automatically cycles and scales across showcase projects without video stutter.
+- **Architectural Project Case Studies:** In-depth technical drawers breaking down problem statements, engineering roles, system architectures, and tradeoff decisions with private repository integrity.
+- **Complete Bilingual Support (EN / AR RTL):** Native routes for `/en` and `/ar` via Next.js 16 App Router. Modern Standard Arabic (الفصحى) with complete Right-to-Left (RTL) layout mirroring, logical properties, and directional asset flipping.
+- **Local Arabic Typography:** Google's variable `Noto Sans Arabic` packaged locally via `next/font/local` (SIL OFL 1.1), integrated with Space Grotesk, Manrope, and IBM Plex Mono.
+- **Procedural Web Audio Sound Engine:** 100% synthesized in real time via the native Web Audio API (0 KB external download). Tactile walnut mechanical clicks, harmonic chimes, and noise sweeps. **Sound is OFF by default** and requires explicit user opt-in.
+- **Accessible Reduced-Motion Experience:** Automatic detection of `prefers-reduced-motion: reduce`, rendering a clean, multi-section semantic HTML portfolio with complete keyboard accessibility.
+- **Localized Curriculum Vitae Integration:** Downloadable, pixel-perfect PDF resumes available directly in English (`/cv/farouk-messai-cv-en.pdf`) and Arabic (`/cv/farouk-messai-cv-ar.pdf`).
+
+---
+
+## The Five-Act Journey
 
 ```
 [ Act I: Studio ] ──> [ Act II: Journey ] ──> [ Act III: Selected Work ] ──> [ Act IV: Engineering ] ──> [ Act V: Contact ]
 ```
 
-### Visual & Architectural Language
-- **Mediterranean Modernist Aesthetic:** Sun-drenched limestone, warm architectural surfaces, deep walnut wood, and tactile bronze detailing.
-- **Continuous Cinematic Timeline:** 600svh scroll runway synchronized with frame-accurate video seeking (`requestVideoFrameCallback` + coalesced seek queue) alongside an idle typing loop in Act I.
-- **Dynamic 3D Exhibition:** Interactive project vitrine wall in Act III that automatically cycles and scales with any number of showcase projects.
-- **Decoupled Floating Navigation:** Standalone brand mark, standalone "Let's Talk" CTA, and a centered floating capsule dock with real-time hairline progress, language toggle, and sound controls.
-- **Zero Neon / Anti-Gimmick:** Free of gratuitous cyber HUDs, neon lasers, or artificial metrics. Grounded strictly in authentic engineering craft and production-ready code.
+1. **Act I — The Studio (`0.00 – 0.20`):** The developer's sunlit architectural workspace. Ambient typing idle loop that transitions smoothly into scrub mode upon scroll.
+2. **Act II — The Journey (`0.20 – 0.40`):** Architectural promenade across the threshold. Visual metaphor for transitioning from local experiments to distributed production applications.
+3. **Act III — Selected Work (`0.40 – 0.60`):** 3D curved exhibition wall showcasing flagship applications with synchronized hardware displays and architectural drawers.
+4. **Act IV — Engineering (`0.60 – 0.80`):** Systems laboratory presenting core competencies across Mobile Engineering, Web Platforms, Clean Architecture, and Developer Tooling.
+5. **Act V — Contact (`0.80 – 1.00`):** Sunset coastal balcony overlook providing direct mail dispatch, Tunisia location tag, availability badge, and CV downloads.
 
 ---
 
-## 2. Key Features
+## Featured Projects
 
-### 🌐 Complete Bilingual Support (English & Arabic RTL)
-- **Routes:** `/en` (default) and `/ar` via Next.js 16 App Router. Root `/` redirects to `/en` via `proxy.ts`.
-- **Full Right-to-Left (RTL) Layout:** Native `dir="rtl"`, mirrored timeline tracks, logical CSS positioning, and icon flips.
-- **Professional Modern Standard Arabic:** Clean, idiomatic Arabic translations (الفصحى) across all navigation items, project specs, engineering domains, and interactive case study modals.
-- **Local Typography:** Google's variable `Noto Sans Arabic` font packaged locally via `next/font/local` (SIL Open Font License 1.1), seamlessly combined with Space Grotesk, Manrope, and IBM Plex Mono.
-- **State Preservation:** Instant language switching via the dock preserves the visitor's current scroll progress and active project.
+### 1. MediConnect
+*Cross-Platform Telemedicine & Clinical Coordination System*
+- **Stack:** React Native, Expo SDK 54, TypeScript, FastAPI (Python), WebRTC, Supabase / PostgreSQL.
+- **Architecture:** Mobile client communicating via WebSocket and REST to an asynchronous FastAPI backend. Features real-time practitioner schedule resolution, peer-to-peer encrypted WebRTC video sessions, and QR check-in workflows.
+- **Status:** Verified Architecture Prototype (Private Commercial Repository).
 
-### 🔊 Procedural Web Audio Sound Engine
-- **Zero Asset Bandwidth (0 KB download):** Procedurally synthesized via the native Web Audio API using filtered oscillator networks, walnut mechanical tap simulation, harmonic pentatonic chimes, and soft pink-noise sweeps.
-- **Strictly Opt-In:** Sound is **OFF by default** to honor visitor autonomy and mobile bandwidth. Requires explicit user activation via the dock toggle (`🔇 / 🔊`).
-- **Tactile Feedback:** Subtle auditory cues on section changes, language toggles, case study opens, and email copy.
-- **Accessibility Sync:** Automatically suppressed when `prefers-reduced-motion: reduce` is detected.
+### 2. Smart Class
+*Intelligent Collaborative Virtual Learning & Pedagogical Platform*
+- **Stack:** Flutter, Dart, Riverpod, Node.js, Express, TypeScript, PostgreSQL 17, pgvector, Prisma ORM.
+- **Architecture:** Virtual classroom ecosystem combining multi-surface Flutter client applications with Retrieval-Augmented Generation (RAG) through PostgreSQL pgvector for interactive AI tutoring and automated course structuring.
+- **Status:** Architecture Prototype.
 
-### 💼 Comprehensive Architectural Case Studies
-Detailed breakdown of four flagship projects:
-1. **MediConnect** — Cross-Platform Telemedicine & Clinical Coordination System (React Native, Expo SDK 54, TypeScript, FastAPI, WebRTC, PostgreSQL).
-2. **SmartClass** — Educational Resource & Automated Classroom Intelligence Platform (Next.js 15, React 19, TypeScript, PostgreSQL, Prisma, Tailwind CSS).
-3. **NexForm** — Enterprise Headless Form Engine & Dynamic Schema Runtime (TypeScript, React 19, Tailwind CSS, Zod, Radix UI).
-4. **LinguaMate** — Cross-Platform Conversational Language Acquisition & Speech Recognition Engine (Flutter 3.x, Dart, Riverpod, Supabase, Whisper AI).
+### 3. NEXFORM
+*Interactive 3D Setup Studio & Product Customization Platform*
+- **Stack:** Next.js (App Router), React 19, Three.js, React Three Fiber, TypeScript, Supabase, Tailwind CSS, Zustand, Zod.
+- **Architecture:** Connected design-to-purchase 3D e-commerce platform. Features a browser-based dimensional room editor for assembling desks and peripherals, real-time material shader customization, and a PC hardware clearance validation engine.
+- **Status:** Production Prototype.
 
-Each case study features:
-- Core Problem Statement
-- Solution & Implementation Strategy
-- Developer Role & Responsibilities
-- System Architecture Highlights
-- Key Technical Decisions & Tradeoffs
-- Clear status notices (Verified Production Prototype / Private Commercial Repository) without dead or broken external links.
-
-### 📄 Localized Curriculum Vitae Integration
-- Downloadable official CVs directly accessible from Hero, Contact, and Static Fallback overlays:
-  - English: `/cv/farouk-messai-cv-en.pdf`
-  - Arabic: `/cv/farouk-messai-cv-ar.pdf`
-
-### ♿ Accessible Static Fallback
-- Full support for `prefers-reduced-motion: reduce` and devices where video decoding or hardware acceleration is restricted.
-- Renders a clean, semantic, multi-section editorial portfolio with complete tab navigation, modal inspection, and contact capabilities.
+### 4. LinguaMate
+*Multilingual AI Companion & Interactive Language Learning App*
+- **Stack:** Flutter, Dart, Riverpod, Supabase, GoRouter, Dio, Flutter TTS, Speech-to-Text.
+- **Architecture:** Cross-platform conversational speech application combining real-time audio dialogue, pronunciation feedback scoring, and spaced-repetition vocabulary retention with offline storage caching.
+- **Status:** Production Prototype.
 
 ---
 
-## 3. Technology Stack
+## Technology Stack
 
-| Layer | Technologies |
+| Domain | Technologies |
 | :--- | :--- |
-| **Framework** | [Next.js 16.4.4](https://nextjs.org/) (App Router, Turbopack, Partial Prerendering) |
-| **Runtime** | [React 19.3.0](https://react.dev/) + TypeScript 5.x (Strict Mode) |
-| **Animation & Scroll** | [GSAP 3.15](https://gsap.com/) + [ScrollTrigger](https://gsap.com/docs/v3/Plugins/ScrollTrigger/) + [@gsap/react](https://gsap.com/docs/v3/Plugins/useGSAP/) |
-| **Smooth Scroll** | [@studio-freight/lenis](https://lenis.darkroom.engineering/) (v1.3.27) |
-| **Styling** | [Tailwind CSS v4](https://tailwindcss.com/) with CSS variables & logical properties |
-| **Typography** | Space Grotesk, Manrope, IBM Plex Mono, Noto Sans Arabic (Local Variable Font) |
-| **Audio** | Native Web Audio API (100% Procedural Synthesis) |
-| **State Management** | React Context (`LocaleContext`, `AudioContext`) + Zustand 5 |
-| **Testing & Tooling** | ESLint 9, Headless Edge / Chrome CDP automation, GitHub Actions CI |
+| **Framework** | [Next.js 16.4.4](https://nextjs.org/) (App Router, Turbopack, Partial Prerendering, Proxy convention) |
+| **Runtime** | [React 19.3.0](https://react.dev/) + [TypeScript 5.x](https://www.typescriptlang.org/) (Strict Mode) |
+| **Animation & Orchestration** | [GSAP 3.15](https://gsap.com/) + [ScrollTrigger](https://gsap.com/docs/v3/Plugins/ScrollTrigger/) + [@gsap/react](https://gsap.com/docs/v3/Plugins/useGSAP/) |
+| **Smooth Scroll Engine** | [@studio-freight/lenis](https://lenis.darkroom.engineering/) (v1.3.27) synchronized with GSAP ticker |
+| **Styling** | [Tailwind CSS v4](https://tailwindcss.com/) with CSS custom properties and logical directional utilities |
+| **Typography** | Space Grotesk, Manrope, IBM Plex Mono, Google Noto Sans Arabic (Local Variable Font) |
+| **Audio Engine** | Native Web Audio API (100% Procedural Synthesis, 0 KB Network Overhead) |
+| **State & Localization** | React 19 Context (`LocaleContext`, `AudioContext`) with `localStorage` persistence |
+| **CI / CD Automation** | GitHub Actions (`.github/workflows/ci.yml`) |
 
 ---
 
-## 4. Architecture & File Structure
+## Architecture Overview
 
 ```
-portfolio/
-├── .github/
-│   └── workflows/
-│       └── ci.yml                   # Automated typecheck, lint, and build verification
-├── app/
-│   ├── [lang]/
-│   │   └── page.tsx                 # Dynamic bilingual localized root ([lang] = en | ar)
-│   ├── globals.css                  # Tailwind v4 theme, fonts, and RTL utilities
-│   ├── layout.tsx                   # Root HTML shell with font definitions & providers
-│   └── page.tsx                     # Server redirect to /en
-├── components/
-│   ├── canvas/
-│   │   ├── CinematicCanvas.tsx      # Video layer container with dynamic client import
-│   │   └── CinematicVideoLayer.tsx  # Frame-accurate seek queue + idle typing loop
-│   ├── cinematic/
-│   │   ├── CinematicOverlay.tsx     # Master decoupled navigation dock & scene manager
-│   │   └── StaticAccessiblePortfolio.tsx # Reduced-motion accessible static view
-│   ├── dom/
-│   │   ├── ContactOverlay.tsx       # Direct dispatch console, Tunisia location, CV
-│   │   ├── HeroOverlay.tsx          # Act I intro, developer identity, CV download
-│   │   ├── JourneyOverlay.tsx       # Act II threshold timeline
-│   │   ├── ProjectDetailModal.tsx   # Architectural case study drawer
-│   │   ├── ProjectGalleryModal.tsx  # Project screenshot & diagram viewer
-│   │   ├── ProjectsOverlay.tsx      # Act III 3D curved exhibition showcase
-│   │   └── SkillsOverlay.tsx        # Act IV engineering domains
-│   └── providers/
-│       └── SmoothScrollProvider.tsx # Lenis ticker sync & scoped teardown
-├── config/
-│   ├── cinematicTimeline.ts         # Authoritative 600svh runway & dynamic bounds
-│   ├── portfolioData.ts             # Developer profile, verified projects, tech stack
-│   └── translations/
-│       ├── types.ts                 # Typed translation schema
-│       ├── en.ts                    # English dictionary
-│       └── ar.ts                    # Modern Standard Arabic dictionary
-├── context/
-│   ├── AudioContext.tsx             # Sound state, volume, preference persistence
-│   └── LocaleContext.tsx            # Locale provider, RTL synchronization
-├── docs/                            # Comprehensive engineering and design documentation
-│   ├── ARCHITECTURE.md
-│   ├── ASSET_INVENTORY.md
-│   ├── DEVELOPMENT_ROADMAP.md
-│   ├── PROJECT_OVERVIEW.md
-│   ├── STORYBOARD.md
-│   └── USER_ASSET_REQUEST.md
-├── lib/
-│   └── audio/
-│       └── SoundEngine.ts           # Procedural Web Audio API sound generator
-├── proxy.ts                         # Next.js 16 proxy routing convention
-├── public/
-│   ├── cv/                          # Generated official curriculum vitae (EN & AR)
-│   ├── posters/                     # High-res video poster fallbacks
-│   └── videos/                      # 5 master cinematic scrub clips + idle loop
-└── scripts/
-    ├── generate-cv-documents.mjs    # Edge CDP print-to-PDF CV builder
-    └── test-bilingual-release.mjs   # Headless visual verification suite
++-----------------------------------------------------------------------------------------+
+|                                  Next.js 16 App Router                                  |
+|                                                                                         |
+|   +-----------------------+     +-----------------------------+     +---------------+   |
+|   |       proxy.ts        |     |   app/[lang]/layout.tsx     |     |  app/page.tsx |   |
+|   |  (/ -> /en redirect)  |     |   (Font Loading, Metadata)  |     |  (Redirect)   |   |
+|   +-----------------------+     +--------------+--------------+     +---------------+   |
+|                                                |                                        |
++------------------------------------------------|----------------------------------------+
+                                                 v
++-----------------------------------------------------------------------------------------+
+|                                    Client Root Shell                                    |
+|                                                                                         |
+|   +--------------------+     +---------------------+     +--------------------------+   |
+|   |   LocaleProvider   |     |    AudioProvider    |     |   SmoothScrollProvider   |   |
+|   | (i18n & RTL State) |     | (Web Audio Engine)  |     |   (Lenis + GSAP Sync)    |   |
+|   +---------+----------+     +----------+----------+     +------------+-------------+   |
+|             |                           |                             |                 |
++-------------|---------------------------|-----------------------------|-----------------+
+              v                           v                             v
++-----------------------------------------------------------------------------------------+
+|                               Cinematic Page Experience                                 |
+|                                                                                         |
+|   +---------------------------------------+   +-------------------------------------+   |
+|   |      CinematicVideoLayer (Canvas)     |   |       CinematicOverlay (DOM)        |   |
+|   |  - 5-Act Frame-Accurate Scrubbing     |   |  - Decoupled Floating Header        |   |
+|   |  - requestVideoFrameCallback          |   |  - 5 Synchronized Act Overlays      |   |
+|   |  - Idle Typing Loop in Act I          |   |  - Architectural Case Study Modals  |   |
+|   |  - Video Seek Coalescing Queue        |   |  - Language Switcher & Audio Toggle |   |
+|   +---------------------------------------+   +-------------------------------------+   |
++-----------------------------------------------------------------------------------------+
 ```
 
 ---
 
-## 5. Local Development & Verification
+## Getting Started
 
 ### Prerequisites
 - Node.js 20.x or higher
@@ -153,19 +152,23 @@ portfolio/
 ```bash
 git clone https://github.com/Farouk-MY/Farouk-Beyond-the-Screen.git
 cd Farouk-Beyond-the-Screen
-npm install
+npm ci
 ```
 
 ### Development Server
 ```bash
 npm run dev
 ```
-Open [http://localhost:3000](http://localhost:3000) to view the site (automatically redirects to `/en`).
+Open [http://localhost:3000](http://localhost:3000) to view the application (automatically redirects to `/en`).
 
-### Quality Assurance & Validation
-Run the full verification suite before committing:
+---
+
+## Quality Assurance & Verification
+
+The project enforces strict verification gates before release:
+
 ```bash
-# 1. Strict TypeScript check
+# 1. Strict TypeScript compilation check
 npx tsc --noEmit
 
 # 2. Next.js 16 ESLint validation
@@ -177,23 +180,19 @@ npm run build
 
 ---
 
-## 6. Deployment
+## Author
 
-The project is configured for deployment on [Vercel](https://vercel.com):
-- Framework Preset: **Next.js**
-- Node.js Version: **20.x**
-- Build Command: `next build`
-- Output Directory: `.next`
-
-All static routes (`/en`, `/ar`, `/robots.txt`, `/sitemap.xml`) are pre-rendered at build time for optimal CDN edge caching and fast First Contentful Paint (FCP).
+**Farouk Messai**  
+*Software Developer | Mobile & Web Development*  
+- **Location:** Tunisia (Available for Remote Worldwide)  
+- **Availability:** Open to PFE Internships & Junior Software Development Opportunities  
+- **Email:** [faroukmessai221@gmail.com](mailto:faroukmessai221@gmail.com)  
+- **GitHub:** [@Farouk-MY](https://github.com/Farouk-MY)  
+- **LinkedIn:** [Farouk Messai](https://linkedin.com/in/faroukmessai)  
 
 ---
 
-## 7. License & Credits
+## License
 
-- **Codebase:** MIT License © 2026 Farouk Messai.
-- **Cinematic Footage & Concepts:** Bespoke production assets for Farouk Messai.
-- **Typography:**
-  - *Noto Sans Arabic* — SIL Open Font License 1.1 (Google Fonts).
-  - *Space Grotesk*, *Manrope*, *IBM Plex Mono* — SIL Open Font License.
-- **Audio:** 100% Procedural synthesis created for this project (CC0 / Public Domain equivalent).
+This project is open-source software licensed under the [MIT License](LICENSE).  
+Bespoke production footage and graphic assets are copyright © 2026 Farouk Messai.

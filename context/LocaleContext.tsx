@@ -25,22 +25,11 @@ export function LocaleProvider({
   initialLocale?: Locale;
   children: React.ReactNode;
 }) {
-  const [locale, setLocaleState] = useState<Locale>(() => {
-    if (typeof window !== 'undefined') {
-      const path = window.location.pathname;
-      if (path.startsWith('/ar')) return 'ar';
-      if (path.startsWith('/en')) return 'en';
-      try {
-        const stored = localStorage.getItem(STORAGE_KEY) as Locale | null;
-        if (stored === 'en' || stored === 'ar') return stored;
-        if (navigator.language?.startsWith('ar')) return 'ar';
-      } catch {}
-    }
-    return initialLocale;
-  });
+  // Deterministic initialization ensures SSR HTML and initial client hydration match exactly
+  const [locale, setLocaleState] = useState<Locale>(initialLocale);
+  const [prevInitialLocale, setPrevInitialLocale] = useState<Locale>(initialLocale);
 
-  // Track prop changes if route changes from /en to /ar or vice versa
-  const [prevInitialLocale, setPrevInitialLocale] = useState(initialLocale);
+  // Adjust state during render when prop changes (standard React pattern without effect cascading)
   if (initialLocale !== prevInitialLocale) {
     setPrevInitialLocale(initialLocale);
     setLocaleState(initialLocale);

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import React, { createContext, useContext, useEffect, useCallback, useSyncExternalStore } from 'react';
 import { soundEngine } from '@/lib/audio/SoundEngine';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 
@@ -20,33 +20,64 @@ const AudioContext = createContext<AudioContextValue | null>(null);
 
 const STORAGE_KEY = 'farouk_sound_enabled_v1';
 const VOLUME_KEY = 'farouk_sound_volume_v1';
+const SOUND_EVENT = 'farouk_sound_change';
+const VOLUME_EVENT = 'farouk_volume_change';
+
+function subscribeSound(callback: () => void) {
+  if (typeof window === 'undefined') return () => {};
+  window.addEventListener('storage', callback);
+  window.addEventListener(SOUND_EVENT, callback);
+  return () => {
+    window.removeEventListener('storage', callback);
+    window.removeEventListener(SOUND_EVENT, callback);
+  };
+}
+
+function getSoundSnapshot(): boolean {
+  try {
+    return localStorage.getItem(STORAGE_KEY) === 'true';
+  } catch {
+    return false;
+  }
+}
+
+function getSoundServerSnapshot(): boolean {
+  return false;
+}
+
+function subscribeVolume(callback: () => void) {
+  if (typeof window === 'undefined') return () => {};
+  window.addEventListener('storage', callback);
+  window.addEventListener(VOLUME_EVENT, callback);
+  return () => {
+    window.removeEventListener('storage', callback);
+    window.removeEventListener(VOLUME_EVENT, callback);
+  };
+}
+
+function getVolumeSnapshot(): number {
+  try {
+    const storedVol = localStorage.getItem(VOLUME_KEY);
+    if (storedVol !== null) {
+      const parsed = parseFloat(storedVol);
+      if (!isNaN(parsed)) return parsed;
+    }
+  } catch {}
+  return 0.5;
+}
+
+function getVolumeServerSnapshot(): number {
+  return 0.5;
+}
 
 export function AudioProvider({ children }: { children: React.ReactNode }) {
   const prefersReducedMotion = usePrefersReducedMotion();
-  // Sound is OFF by default as required by specification; initialize lazily from storage
-  const [soundEnabled, setSoundEnabledState] = useState<boolean>(() => {
-    if (typeof window === 'undefined') return false;
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      return stored === 'true';
-    } catch {
-      return false;
-    }
-  });
 
-  const [volume, setVolumeState] = useState<number>(() => {
-    if (typeof window === 'undefined') return 0.5;
-    try {
-      const storedVol = localStorage.getItem(VOLUME_KEY);
-      if (storedVol !== null) {
-        const parsedVol = parseFloat(storedVol);
-        if (!isNaN(parsedVol)) return parsedVol;
-      }
-    } catch {}
-    return 0.5;
-  });
+  // useSyncExternalStore guarantees zero hydration mismatch and safe client state synchronization
+  const rawSoundEnabled = useSyncExternalStore(subscribeSound, getSoundSnapshot, getSoundServerSnapshot);
+  const volume = useSyncExternalStore(subscribeVolume, getVolumeSnapshot, getVolumeServerSnapshot);
 
-  const effectiveSoundEnabled = soundEnabled && !prefersReducedMotion;
+  const effectiveSoundEnabled = rawSoundEnabled && !prefersReducedMotion;
 
   // Sync sound engine whenever state changes
   useEffect(() => {
@@ -55,10 +86,10 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   }, [effectiveSoundEnabled, volume]);
 
   const setSoundEnabled = useCallback((enabled: boolean) => {
-    setSoundEnabledState(enabled);
     soundEngine.setEnabled(enabled);
     try {
       localStorage.setItem(STORAGE_KEY, String(enabled));
+      window.dispatchEvent(new Event(SOUND_EVENT));
     } catch {}
 
     if (enabled) {
@@ -67,15 +98,15 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const toggleSound = useCallback(() => {
-    setSoundEnabled(!soundEnabled);
-  }, [soundEnabled, setSoundEnabled]);
+    setSoundEnabled(!rawSoundEnabled);
+  }, [rawSoundEnabled, setSoundEnabled]);
 
   const setVolume = useCallback((vol: number) => {
     const clamped = Math.max(0, Math.min(1, vol));
-    setVolumeState(clamped);
     soundEngine.setVolume(clamped);
     try {
       localStorage.setItem(VOLUME_KEY, String(clamped));
+      window.dispatchEvent(new Event(VOLUME_EVENT));
     } catch {}
   }, []);
 

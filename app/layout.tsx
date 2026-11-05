@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
-import { LocaleProvider } from '@/context/LocaleContext';
 import { AudioProvider } from '@/context/AudioContext';
 
 const spaceGrotesk = localFont({
@@ -132,11 +131,9 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col font-sans transition-colors duration-500 bg-[#0E0C0A] text-[#FAF8F5]">
-        <LocaleProvider>
-          <AudioProvider>
-            {children}
-          </AudioProvider>
-        </LocaleProvider>
+        <AudioProvider>
+          {children}
+        </AudioProvider>
       </body>
     </html>
   );

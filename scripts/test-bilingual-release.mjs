@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const PORT = 3456;
-const ARTIFACT_DIR = path.resolve('docs/reports/bilingual-release-screenshots');
+const ARTIFACT_DIR = path.resolve('C:\\Users\\MSI\\AppData\\Local\\Temp\\farouk-test-screenshots');
 fs.mkdirSync(ARTIFACT_DIR, { recursive: true });
 
 const edgePort = 9877;

@@ -114,8 +114,18 @@ export function CinematicOverlay({ scrollProgressRef, runwayRef }: CinematicOver
     };
   }, [runwayRef, getLenis, scrollProgressRef]);
 
-  // Track previous section for transition audio cues
+  // Track previous section for transition audio cues (refs survive GSAP closure)
   const prevSectionRef = useRef<string>('origin');
+  const activeSectionRef = useRef<string>('origin');
+  const selectedProjectRef = useRef<string>(PROJECTS_DATA[0].id);
+
+  // Keep refs in sync with state via layout-timing effect so GSAP onUpdate reads fresh values
+  React.useEffect(() => {
+    activeSectionRef.current = activeSectionId;
+  }, [activeSectionId]);
+  React.useEffect(() => {
+    selectedProjectRef.current = selectedProjectId;
+  }, [selectedProjectId]);
 
   useGSAP(
     () => {
@@ -145,7 +155,7 @@ export function CinematicOverlay({ scrollProgressRef, runwayRef }: CinematicOver
           );
           setOverlayOpacities(opacities);
 
-          // Determine current active section
+          // Determine current active section — use ref to read latest value and avoid stale closure
           let activeSec = navSections[0];
           for (let i = navSections.length - 1; i >= 0; i--) {
             if (progress >= navSections[i].progress - 0.02) {
@@ -153,7 +163,7 @@ export function CinematicOverlay({ scrollProgressRef, runwayRef }: CinematicOver
               break;
             }
           }
-          if (activeSec && activeSec.id !== activeSectionId) {
+          if (activeSec && activeSec.id !== activeSectionRef.current) {
             setActiveSectionId(activeSec.id);
             if (activeSec.id !== prevSectionRef.current) {
               prevSectionRef.current = activeSec.id;
@@ -165,7 +175,7 @@ export function CinematicOverlay({ scrollProgressRef, runwayRef }: CinematicOver
           const workState = getWorkPresentationState(progress, PROJECTS_DATA.length);
           if (workState.isInWork) {
             const activeProj = PROJECTS_DATA[workState.activeProjectIndex];
-            if (activeProj && activeProj.id !== selectedProjectId) {
+            if (activeProj && activeProj.id !== selectedProjectRef.current) {
               setSelectedProjectId(activeProj.id);
             }
           }

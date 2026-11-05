@@ -2,6 +2,7 @@ import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { CinematicExperience } from '@/components/cinematic/CinematicExperience';
+import { LocaleProvider } from '@/context/LocaleContext';
 import { enDictionary } from '@/config/translations/en';
 import { arDictionary } from '@/config/translations/ar';
 
@@ -57,7 +58,11 @@ async function LocalizedContent({
     notFound();
   }
 
-  return <CinematicExperience />;
+  return (
+    <LocaleProvider initialLocale={lang as 'en' | 'ar'}>
+      <CinematicExperience />
+    </LocaleProvider>
+  );
 }
 
 export default function LocalizedPage({
