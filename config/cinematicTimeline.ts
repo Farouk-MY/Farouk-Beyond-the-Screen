@@ -429,23 +429,62 @@ export function computeActOpacitiesAndTimes(
 
     if (idx === 2) {
       // Act III: Selected Work video integration
-      // 0.0s -> 3.2s during intro (Farouk enters gallery and approaches display)
-      // 3.2s -> 9.2s during project presentation (Farouk interacts with wall display across all projects)
-      // 9.2s -> 9.65s during outro (Farouk completes interaction safely before EOF buffer)
+      // 0.0s -> 3.50s during intro (Farouk enters showroom and approaches wall screen)
+      // During projects presentation: cycles through the 3 wall screen scenes matching real footage:
+      //   Scene 0: Smartphone Display (Example 1) ~ 3.50s
+      //   Scene 1: Dashboard Display (Example 2) ~ 5.50s
+      //   Scene 2: 3D Controller Configurator (Example 3) ~ 7.50s
+      //   Transitions: 0 -> 1 (Click 1) and 1 -> 2 (Click 2) play natural physical hand taps.
+      //   Transition 2 -> 0 loops seamlessly back to Scene 0 for arbitrary project counts (>= 1).
+      // During outro: gracefully advances without visual tearing or blur as Act IV Systems Lab fades in.
       const introEnd = bounds.workIntroFraction;
       const outroStart = 1.0 - bounds.workOutroFraction;
 
       if (localProgress < introEnd) {
-        const introRatio = localProgress / introEnd;
-        localTimes[2] = introRatio * 3.2;
+        const introRatio = Math.max(0, localProgress / introEnd);
+        localTimes[2] = introRatio * 3.50;
       } else if (localProgress > outroStart) {
-        const outroRatio = (localProgress - outroStart) / bounds.workOutroFraction;
-        localTimes[2] = 9.2 + outroRatio * (9.65 - 9.2);
+        const outroRatio = Math.max(0, Math.min(1, (localProgress - outroStart) / bounds.workOutroFraction));
+        const lastSceneIdx = (projectCount - 1) % 3;
+        if (lastSceneIdx === 2) {
+          // Final project was Gamepad (7.50s) -> smoothly advance through 7.50s to 9.20s
+          localTimes[2] = 7.50 + outroRatio * (9.20 - 7.50);
+        } else if (lastSceneIdx === 1) {
+          // Final project was Dashboard (5.50s) -> subtle natural hold
+          localTimes[2] = 5.50 + outroRatio * 0.60;
+        } else {
+          // Final project was Smartphone (3.50s) -> subtle natural hold
+          localTimes[2] = 3.50 + outroRatio * 0.60;
+        }
       } else {
-        // Continuous interactive playback: background video smoothly advances as projects change
         const projectsSpan = outroStart - introEnd;
         const normalizedProg = Math.max(0, Math.min(1, (localProgress - introEnd) / projectsSpan));
-        localTimes[2] = 3.2 + normalizedProg * (9.2 - 3.2);
+
+        if (projectCount <= 1) {
+          localTimes[2] = 3.50;
+        } else {
+          const fractionalIdx = normalizedProg * (projectCount - 1);
+          const k = Math.min(projectCount - 2, Math.floor(fractionalIdx));
+          const sub = Math.max(0, Math.min(1, fractionalIdx - k));
+
+          const s1 = k % 3;
+          const s2 = (k + 1) % 3;
+
+          if (s1 === 0 && s2 === 1) {
+            // Scene 0 (Smartphone 3.50s) -> Scene 1 (Dashboard 5.50s) via Click 1 gesture
+            localTimes[2] = 3.50 + sub * (5.50 - 3.50);
+          } else if (s1 === 1 && s2 === 2) {
+            // Scene 1 (Dashboard 5.50s) -> Scene 2 (Gamepad 7.50s) via Click 2 gesture
+            localTimes[2] = 5.50 + sub * (7.50 - 5.50);
+          } else {
+            // s1 === 2 && s2 === 0: Cyclic loop from Scene 2 (Gamepad) back to Scene 0 (Smartphone)
+            if (sub < 0.5) {
+              localTimes[2] = 7.50 + sub * 0.35;
+            } else {
+              localTimes[2] = 3.32 + (sub - 0.5) * 0.36;
+            }
+          }
+        }
       }
     } else {
       localTimes[idx] = localProgress * Math.min(clip.duration - 0.25, 9.65);

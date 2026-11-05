@@ -175,7 +175,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
     ],
     visualAnchor: {
       sceneKey: 'dashboard-display',
-      timeSeconds: 6.0,
+      timeSeconds: 5.5,
       label: 'Dashboard / Learning Platform Display',
     },
     coverImage: {
@@ -228,7 +228,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
     ],
     visualAnchor: {
       sceneKey: '3d-configurator',
-      timeSeconds: 8.5,
+      timeSeconds: 7.5,
       label: '3D Controller Configurator',
     },
     coverImage: {
