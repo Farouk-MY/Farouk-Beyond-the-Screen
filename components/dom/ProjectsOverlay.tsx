@@ -10,6 +10,7 @@ import { ProjectShowcaseGraphic } from './ProjectShowcaseGraphic';
 import { getWorkPresentationState } from '@/config/cinematicTimeline';
 import { useTranslation } from '@/context/LocaleContext';
 import { useAudio } from '@/context/AudioContext';
+import { sendGTMEvent } from '@next/third-parties/google';
 
 type LocalizedProject = TranslationDictionary['projects']['items'][number];
 
@@ -70,13 +71,27 @@ export function ProjectsOverlay({
   const stageOpacity = opacity * workState.carouselOpacity;
   const stageScale = workState.carouselScale;
 
+  const trackProjectOpen = (
+  interactionType: 'gallery' | 'architecture'
+  ) => {
+    sendGTMEvent({
+      event: 'project_detail_open',
+      project_id: String(activeLocalized.id),
+      project_name: activeLocalized.name,
+      project_category: activeLocalized.categoryLabel,
+      interaction_type: interactionType,
+    });
+  };
+  
   const handleOpenGallery = () => {
     playClick('light');
+    trackProjectOpen('gallery');
     setGalleryModalProject(activeRaw);
   };
-
+  
   const handleOpenSpecs = () => {
     playClick('light');
+    trackProjectOpen('architecture');
     setDetailModalProject(activeLocalized);
   };
 
