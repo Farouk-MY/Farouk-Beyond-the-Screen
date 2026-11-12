@@ -5,7 +5,6 @@ import type { TranslationDictionary } from "@/config/translations/types";
 import { useTranslation } from "@/context/LocaleContext";
 import { useSmoothScroll } from "@/components/providers/SmoothScrollProvider";
 import { useAudio } from "@/context/AudioContext";
-import { sendGTMEvent } from "@next/third-parties/google";
 
 type ProjectModalItem = TranslationDictionary["projects"]["items"][number];
 
@@ -82,20 +81,7 @@ export function ProjectDetailModal({
     };
   }, [isOpen, onClose, getLenis]);
 
-  const projectId = project?.id;
-  const projectName = project?.name;
-  const projectCategory = project?.categoryLabel;
-
-  useEffect(() => {
-    if (!isOpen || projectId == null) return;
-
-    sendGTMEvent({
-      event: "project_detail_open",
-      project_id: String(projectId),
-      project_name: projectName,
-      project_category: projectCategory,
-    });
-  }, [isOpen, projectId, projectName, projectCategory]);
+  
 
   if (!isOpen || !project) return null;
 
